@@ -1,4 +1,20 @@
-function input()
+function write(...)
+    local args = {...}
+    for i, v in ipairs(args) do
+        io.write(v)
+    end
+end
+
+function writeln(...)
+	write(...)
+    io.write("\n")
+end
+
+function input(s)
+	if s then
+    	write(s)
+    end
+    io.flush();
 	s = io.read()
     x = tonumber(s)
     if x == nil then
@@ -8,14 +24,6 @@ function input()
     end
 end
 
-function write(s)
-	io.write(s)
-end
-
-function writeln(s)
-	io.write(s.."\n")
-end
-
 function int(x)
-  return math.floor(x)
+	return math.floor(x)
 end
