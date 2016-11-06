@@ -27,3 +27,23 @@ end
 function int(x)
 	return math.floor(x)
 end
+
+text = 0
+graphic = 1
+
+local currentmode = text
+
+function SetMode(mode)
+  currentmode = mode
+end
+
+
+if love2d then
+	function setcolor(color)
+
+    end
+
+	function circle(x, y, radius)
+       love.graphics.circle("line", x, y, radius)
+    end
+end
