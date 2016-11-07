@@ -5,19 +5,18 @@ draw = {}
 --load_module = require "main_load"
 --love.load = load_module.load
 
-function game()
-	local g = require(game_file)
-end
+run_file = arg[2] .. ".lua"
+run = assert(loadfile(run_file))
 
 function love.load()
 -- create canvas
-	game_file = arg[2]
     canvas = love.graphics.newCanvas()
-
---    love.graphics.setCanvas(canvas)
---    love.graphics.setCanvas()
-    if game_file then
-    	co = coroutine.create(game)
+    love.graphics.setCanvas(canvas)
+	love.graphics.setColor(255,255,255)
+    love.graphics.setCanvas()
+    if run then
+    	print("doing it")
+    	co = coroutine.create(run)
         print(coroutine.status)
         coroutine.resume(co)
         print(coroutine.status)
@@ -25,12 +24,10 @@ function love.load()
 end
 
 function love.draw()
-    love.graphics.setColor(255,255,255)
+    --love.graphics.setColor(255,255,255)
     love.graphics.draw(canvas)
     if co then
-        print(coroutine.status(co))
     	if not coroutine.resume(co) then
-        	print "not resumed"
             co = nil
     	end
 	end
@@ -42,7 +39,7 @@ end
 -----------------------------------------------------
 
 function refresh()
-   --coroutine.yield()
+   coroutine.yield()
 end
 
 text = 0
