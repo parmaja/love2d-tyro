@@ -1,7 +1,7 @@
 canvas = {
     buffer = nil,
     lockbuffer = nil,
-	lockCount = 0,
+    lockCount = 0,
 }
 
 --load_module = require "main_load"
@@ -18,41 +18,43 @@ function love.load()
     love.graphics.setLineWidth(1)
 
     if run then
-    	co = coroutine.create(run)
-        coroutine.resume(co)
+        co = coroutine.create(run)
+        assert(coroutine.resume(co))
     end
 end
 
 function love.draw()
-    --love.graphics.setColor(255,255,255)
     love.graphics.push("all")
+    love.graphics.setColor(255,255,255)
     love.graphics.setBlendMode("alpha", "premultiplied")
 
     if canvas.lockbuffer then --locked
-    	love.graphics.draw(canvas.lockbuffer)
+        love.graphics.draw(canvas.lockbuffer)
     else
-    	love.graphics.draw(canvas.buffer)
-	end
+        love.graphics.draw(canvas.buffer)
+    end
 
     love.graphics.pop()
 
     if canvas.draw then
-    	canvas.draw()
+        canvas.draw()
     end
 
     if co then
-    	if paused and (paused < os.clock()) then
-        	paused = nil
-    	end
+        if paused and (paused < os.clock()) then
+            paused = nil
+        end
 
         if not paused then
-    		love.graphics.setCanvas(canvas.buffer)
-    	    if not coroutine.resume(co) then
+            love.graphics.setCanvas(canvas.buffer)
+            if coroutine.status(co) == "dead" then
                 co = nil
-    	    end
+            else
+                assert(coroutine.resume(co))
+            end
             love.graphics.setCanvas()
         end
-	end
+    end
 end
 
 -----------------------------------------------------
@@ -62,34 +64,36 @@ end
 
 function refresh()
     if co then
-		coroutine.yield()
-	end
+        coroutine.yield()
+    end
 end
 
 function canvas.lock()
     canvas.lockCount = canvas.lockCount + 1
     canvas.lockbuffer, canvas.buffer = canvas.buffer, love.graphics.newCanvas()
-end
 
-function canvas.unlock()
-	love.graphics.setCanvas(canvas.lockbuffer)
+    love.graphics.setCanvas(canvas.buffer)
     love.graphics.push("all")
     love.graphics.setBlendMode("alpha", "premultiplied")
-    love.graphics.draw(canvas.buffer)
+    love.graphics.draw(canvas.lockbuffer)
     love.graphics.pop()
     love.graphics.setCanvas()
 
-	canvas.buffer, canvas.lockbuffer = canvas.lockbuffer, nil
+    refresh()
+end
 
+function canvas.unlock()
+    canvas.lockbuffer = nil
     canvas.lockCount = canvas.lockCount - 1
+    refresh()
 end
 
 function canvas.locked()
     return canvas.lockCount > 0
 end
 
-text = 0
-graphic = 1
+local text = 0
+local graphic = 1
 
 local screenmode = text
 
@@ -100,12 +104,12 @@ function screen(mode)
 end
 
 function canvas.setcolor(r, b, g)
-	love.graphics.setColor(r, b, g)
+    love.graphics.setColor(r, b, g)
     --no need to referesh
 end
 
 function canvas.circle(x, y, r)
-	love.graphics.circle("line", x, y, r)
+    love.graphics.circle("line", x, y, r)
     refresh()
 end
 
@@ -129,6 +133,6 @@ function sleep(seconds)
 end
 
 function pause(seconds)
-	paused = os.clock() + seconds
+    paused = os.clock() + seconds
     refresh()
 end
