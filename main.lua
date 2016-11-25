@@ -1,14 +1,24 @@
+-----------------------------------------
+--
+--
+-----------------------------------------
+require "utils"
+
+--print(arg[1])
+run_file = arg[#arg]
+run = assert(loadfile(run_file))
+
+
 canvas = {
     buffer = nil,
     lockbuffer = nil,
     lockCount = 0,
+    objects = {}
 }
 
 --load_module = require "main_load"
 --love.load = load_module.load
 
-run_file = arg[#arg]
-run = assert(loadfile(run_file))
 
 local paused = nil --a end time to finish, and resume run coroutine
 
@@ -33,7 +43,9 @@ function love.draw()
     else
         love.graphics.draw(canvas.buffer)
     end
-
+    for k, o in pairs(canvas.objects) do
+        o.draw()
+    end
     love.graphics.pop()
 
     if canvas.draw then
@@ -62,7 +74,7 @@ end
 --
 -----------------------------------------------------
 
-function present()
+local function present()
     if co then
         coroutine.yield()
     end
@@ -123,8 +135,48 @@ function canvas.clear()
     present()
 end
 
+function canvas.text(s, x, y)
+    love.graphics.print(s, x, y);
+    present()
+end
+
 --------------------------
--- Freeze your program
+--
+--------------------------
+
+
+--------------------------
+--
+--------------------------
+
+images = {
+}
+
+function images.new(filename)
+    local self = {
+        x =0 , y = 0,
+        visible = true,
+        img = nil
+    }
+
+    function self.move(new_x, new_y)
+        x, y = new_x, new_y
+    end
+
+    function self.draw()
+        love.graphics.draw(self.img, x, y)
+    end
+
+    --filename = love.filesystem.getWorkingDirectory() .. "/".. filename
+    print(filename)
+    self.img = love.graphics.newImage(filename)
+    canvas.objects[#canvas.objects] = self
+    return self
+end
+
+
+--------------------------
+--
 --------------------------
 
 function sleep(seconds)
@@ -141,3 +193,10 @@ function quit()
     love.event.quit()
     present()
 end
+
+
+-------------------------
+--
+--
+-------------------------
+

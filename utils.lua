@@ -6,24 +6,28 @@ function write(...)
 end
 
 function writeln(...)
-	write(...)
+    write(...)
     io.write("\n")
 end
 
 function input(s)
-	if s then
-    	write(s)
+    if s then
+        write(s)
     end
     io.flush();
-	s = io.read()
+    s = io.read()
     x = tonumber(s)
     if x == nil then
-    	return s
+        return s
     else
-    	return x
+        return x
     end
 end
 
 function int(x)
-	return math.floor(x)
+    return math.floor(x)
+end
+
+function extractFilename(filename)
+    return string.match(filename, "(.-)([^\\]-([^\\%.]+))$")
 end

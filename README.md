@@ -1,12 +1,14 @@
-# BASIC
+# Lua LÖVE BASIC
 
-Small Lua lib to add more simple functions make it more easy for kids
+Small Lua and Love2D module to add more simple functions make it easy for kids
 
  * input()  Wrap to io.read but it detect if the string is number it will convert the result to number
 
  * write(...) Wrap to io.write nothing else
 
  * writeln(...)
+
+ * int alias of math.floor(x)
 
 # TODO
 
@@ -17,6 +19,7 @@ for example from my mind
     sperite = sperites.new
     sperite.load('sperite.png')
     sperite.move(x, y)
+    sperite.jump
 
 also like to make shapes as sperite
 
@@ -27,3 +30,10 @@ also like to make shapes as sperite
     circle.hide
 
 I still work on it, do not use it.
+
+# How to use it
+
+Put it folder, run love point to this folder with command param of ur lua file
+
+	c:\lua\love\love . projects\circles.lua
+    c:\lua\love\lovec . projects\circles.lua
