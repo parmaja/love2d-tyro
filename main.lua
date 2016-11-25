@@ -1,12 +1,7 @@
 canvas = {
-	lockCount = 0;
-	function lock(){
-    	lockCount++
-    }
-
-	function unlock(){
-    	lockCount
-    }
+    buffer = nil,
+    lockbuffer = nil,
+	lockCount = 0,
 }
 
 --load_module = require "main_load"
@@ -14,10 +9,14 @@ canvas = {
 
 run_file = arg[#arg]
 run = assert(loadfile(run_file))
+
 local paused = nil --a end time to finish, and resume run coroutine
 
 function love.load()
-    buffer = love.graphics.newCanvas()
+    canvas.buffer = love.graphics.newCanvas()
+    --love.graphics.setBlendMode("screen")
+    love.graphics.setLineWidth(1)
+
     if run then
     	co = coroutine.create(run)
         coroutine.resume(co)
@@ -28,7 +27,13 @@ function love.draw()
     --love.graphics.setColor(255,255,255)
     love.graphics.push("all")
     love.graphics.setBlendMode("alpha", "premultiplied")
-    love.graphics.draw(buffer)
+
+    if canvas.lockbuffer then --locked
+    	love.graphics.draw(canvas.lockbuffer)
+    else
+    	love.graphics.draw(canvas.buffer)
+	end
+
     love.graphics.pop()
 
     if canvas.draw then
@@ -41,7 +46,7 @@ function love.draw()
     	end
 
         if not paused then
-    		love.graphics.setCanvas(buffer)
+    		love.graphics.setCanvas(canvas.buffer)
     	    if not coroutine.resume(co) then
                 co = nil
     	    end
@@ -59,6 +64,28 @@ function refresh()
     if co then
 		coroutine.yield()
 	end
+end
+
+function canvas.lock()
+    canvas.lockCount = canvas.lockCount + 1
+    canvas.lockbuffer, canvas.buffer = canvas.buffer, love.graphics.newCanvas()
+end
+
+function canvas.unlock()
+	love.graphics.setCanvas(canvas.lockbuffer)
+    love.graphics.push("all")
+    love.graphics.setBlendMode("alpha", "premultiplied")
+    love.graphics.draw(canvas.buffer)
+    love.graphics.pop()
+    love.graphics.setCanvas()
+
+	canvas.buffer, canvas.lockbuffer = canvas.lockbuffer, nil
+
+    canvas.lockCount = canvas.lockCount - 1
+end
+
+function canvas.locked()
+    return canvas.lockCount > 0
 end
 
 text = 0
