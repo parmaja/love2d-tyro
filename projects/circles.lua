@@ -17,5 +17,6 @@ for i = 0, 50 do
     canvas.rectangle(x, y, 100, 100)
     canvas.circle(x, y, 50)
     canvas.unlock()
+    quit()
     sleep(0.01)
 end

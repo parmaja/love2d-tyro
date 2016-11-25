@@ -62,7 +62,7 @@ end
 --
 -----------------------------------------------------
 
-function refresh()
+function present()
     if co then
         coroutine.yield()
     end
@@ -79,13 +79,13 @@ function canvas.lock()
     love.graphics.pop()
     love.graphics.setCanvas()
 
-    refresh()
+    present()
 end
 
 function canvas.unlock()
     canvas.lockbuffer = nil
     canvas.lockCount = canvas.lockCount - 1
-    refresh()
+    present()
 end
 
 function canvas.locked()
@@ -100,7 +100,7 @@ local screenmode = text
 function screen(mode)
   screenmode = mode
   --todo check if locked
-  refresh()
+  present()
 end
 
 function canvas.setcolor(r, b, g)
@@ -110,17 +110,17 @@ end
 
 function canvas.circle(x, y, r)
     love.graphics.circle("line", x, y, r)
-    refresh()
+    present()
 end
 
 function canvas.rectangle(x, y, size)
     love.graphics.rectangle('line',x, y, size, size)
-    refresh()
+    present()
 end
 
 function canvas.clear()
     love.graphics.clear();
-    refresh()
+    present()
 end
 
 --------------------------
@@ -129,10 +129,15 @@ end
 
 function sleep(seconds)
     love.timer.sleep(seconds)
-    --refresh()
+    --present()
 end
 
 function pause(seconds)
     paused = os.clock() + seconds
-    refresh()
+    present()
+end
+
+function quit()
+    love.event.quit()
+    present()
 end
