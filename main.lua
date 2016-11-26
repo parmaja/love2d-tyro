@@ -195,7 +195,7 @@ function images.new(filename)
 
     --filename = love.filesystem.getWorkingDirectory() .. "/".. filename
     self.img = love.graphics.newImage(filename)
-    canvas.objects[#canvas.objects] = self
+    canvas.objects[#canvas.objects + 1] = self
     return self
 end
 
@@ -225,11 +225,40 @@ function circles.new(new_x, new_y, new_r)
 
     --self.x, self.y, self.r = new_x, new_y, new_r
 
-    canvas.objects[#canvas.objects+1] = self
+    canvas.objects[#canvas.objects + 1] = self
     return self
 end
 
+--------------------------
+-- Circles
+--------------------------
 
+rectangles = {
+}
+
+function rectangles.new(new_x, new_y, new_width, new_height)
+    local self = {
+        visible = true,
+        x =  new_x, y = new_y,
+        width = new_width,
+        height = new_height,
+        color = Green,
+    }
+
+    function self.move(new_x, new_y)
+        self.x, self.y = new_x, new_y
+    end
+
+    function self.draw()
+        love.graphics.setColorByName(self.color)
+        love.graphics.rectangle("line", self.x, self.y, self.width, self.height)
+    end
+
+    --self.x, self.y, self.r = new_x, new_y, new_r
+
+    canvas.objects[#canvas.objects + 1] = self
+    return self
+end
 
 --------------------------
 --

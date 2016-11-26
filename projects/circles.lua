@@ -10,7 +10,6 @@ function c1:update()
     self.r = self.r + 2
 end
 
-
 c2 = circles.new(50, 50, 5)
 c2.color = Blue
 
@@ -20,6 +19,14 @@ function c2:update()
 end
 
 
+r1 = rectangles.new(50, 50, 100, 100)
+r1.color = Red
+
+function r1:update()
+    self.width = self.width + 2
+    self.height = self.height + 2
+end
+
 for i = 0, 50 do
     --print(i)
     --pause(0.2)
@@ -28,8 +35,8 @@ for i = 0, 50 do
     canvas.lock()
     canvas.clear()
     canvas.setcolor(255, 0, 0)
-    --canvas.rectangle(x, y, 100, 100)
-    --canvas.circle(x, y, 50)
+    canvas.rectangle(x, y, 100, 100)
+    canvas.circle(x, y, 50)
     canvas.text("Hello", x, y)
     humster.move(x, y)
     c1.move(x + 2, y)
