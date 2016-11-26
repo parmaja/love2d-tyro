@@ -1,13 +1,11 @@
 -----------------------------------------
 --
---
 -----------------------------------------
 require "utils"
 
 --print(arg[1])
 run_file = arg[#arg]
 run = assert(loadfile(run_file))
-
 
 canvas = {
     buffer = nil,
@@ -32,6 +30,18 @@ function love.load()
         assert(coroutine.resume(co))
     end
 end
+
+-------------------------------------------------------
+
+function love.update()
+    for k, o in pairs(canvas.objects) do
+        if o.update then
+            o.update(o)
+        end
+    end
+end
+
+-------------------------------------------------------
 
 function love.draw()
     love.graphics.push("all")
@@ -74,7 +84,24 @@ function love.draw()
 end
 
 -----------------------------------------------------
---
+-- Colors
+-----------------------------------------------------
+
+Red = 1
+Blue = 2
+Green = 3
+
+function love.graphics.setColorByName(index)
+    if index == Red then
+        love.graphics.setColor(255, 0, 0)
+    elseif index == Blue then
+        love.graphics.setColor(0, 0, 255)
+    elseif index == Green then
+        love.graphics.setColor(0, 255, 0)
+    end
+end
+
+-----------------------------------------------------
 --
 -----------------------------------------------------
 
@@ -145,12 +172,7 @@ function canvas.text(s, x, y)
 end
 
 --------------------------
---
---------------------------
-
-
---------------------------
---
+-- Images
 --------------------------
 
 images = {
@@ -158,8 +180,8 @@ images = {
 
 function images.new(filename)
     local self = {
-        x =0 , y = 0,
         visible = true,
+        x =0 , y = 0,
         img = nil
     }
 
@@ -172,11 +194,41 @@ function images.new(filename)
     end
 
     --filename = love.filesystem.getWorkingDirectory() .. "/".. filename
-    print(filename)
     self.img = love.graphics.newImage(filename)
     canvas.objects[#canvas.objects] = self
     return self
 end
+
+--------------------------
+-- Circles
+--------------------------
+
+circles = {
+}
+
+function circles.new(new_x, new_y, new_r)
+    local self = {
+        visible = true,
+        x =  new_x, y = new_y,
+        r = new_r,
+        color = Green,
+    }
+
+    function self.move(new_x, new_y)
+        self.x, self.y = new_x, new_y
+    end
+
+    function self.draw()
+        love.graphics.setColorByName(self.color)
+        love.graphics.circle("line", self.x, self.y, self.r)
+    end
+
+    --self.x, self.y, self.r = new_x, new_y, new_r
+
+    canvas.objects[#canvas.objects+1] = self
+    return self
+end
+
 
 
 --------------------------
@@ -198,8 +250,6 @@ function quit()
     present()
 end
 
-
 -------------------------
---
 --
 -------------------------
