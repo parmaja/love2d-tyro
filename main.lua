@@ -43,9 +43,13 @@ function love.draw()
     else
         love.graphics.draw(canvas.buffer)
     end
+
     for k, o in pairs(canvas.objects) do
-        o.draw()
+        if o.visible then
+            o.draw()
+        end
     end
+
     love.graphics.pop()
 
     if canvas.draw then
@@ -160,11 +164,11 @@ function images.new(filename)
     }
 
     function self.move(new_x, new_y)
-        x, y = new_x, new_y
+        self.x, self.y = new_x, new_y
     end
 
     function self.draw()
-        love.graphics.draw(self.img, x, y)
+        love.graphics.draw(self.img, self.x, self.y)
     end
 
     --filename = love.filesystem.getWorkingDirectory() .. "/".. filename
@@ -199,4 +203,3 @@ end
 --
 --
 -------------------------
-
