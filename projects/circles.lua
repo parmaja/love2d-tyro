@@ -18,9 +18,8 @@ function c2:update()
     self.x = self.x + 10
 end
 
-
 r1 = rectangles.new(50, 50, 100, 100)
-r1.color = Red
+r1.color = Yellow
 
 function r1:update()
     self.width = self.width + 2
@@ -28,19 +27,19 @@ function r1:update()
 end
 
 for i = 0, 50 do
-    --print(i)
-    --pause(0.2)
     x = x + 5
     y = y + 5
-    canvas.lock()
+    --canvas.lock()
     canvas.clear()
-    canvas.setcolor(255, 0, 0)
+    --canvas.setbackcolor(255, 255, 255)
+    canvas.setcolor(Green)
     canvas.rectangle(x, y, 100, 100)
+    canvas.setcolor(Red)
     canvas.circle(x, y, 50)
-    canvas.text("Hello", x, y)
+    canvas.text("Hello", x + 150, y)
     humster.move(x, y)
     c1.move(x + 2, y)
-    canvas.unlock()
-    --pause(0.01)
+    --canvas.unlock()
+    pause(0.005)  -- one second
 end
 --quit()

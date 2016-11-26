@@ -3,12 +3,19 @@
 Small Lua and Love2D module to add more simple functions make it easy for kids
 
  * input()  Wrap to io.read but it detect if the string is number it will convert the result to number
-
  * write(...) Wrap to io.write nothing else
-
  * writeln(...)
-
  * int alias of math.floor(x)
+ * pause(number)
+ * canvas.lock()
+ * canvas.unlock()
+ * canvas.clear()
+ * canvas.update()
+ * canvas.setcolor(r, g, b)
+ * canvas.setcolor(number)
+ * canvas.rectangle(x, y, w, h)
+ * canvas.circle(x, y, r)
+ * canvas.text(text, x, y)
 
 # TODO
 

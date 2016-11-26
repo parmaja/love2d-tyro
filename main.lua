@@ -44,23 +44,21 @@ end
 -------------------------------------------------------
 
 function love.draw()
+    love.graphics.setColor(255, 255, 255)
     love.graphics.push("all")
-    love.graphics.setColor(255,255,255)
-    love.graphics.setBlendMode("alpha", "premultiplied")
-
+    love.graphics.setBlendMode("replace")
     if canvas.lockbuffer then --locked
         love.graphics.draw(canvas.lockbuffer)
     else
         love.graphics.draw(canvas.buffer)
     end
+    love.graphics.pop()
 
     for k, o in pairs(canvas.objects) do
         if o.visible then
             o.draw()
         end
     end
-
-    love.graphics.pop()
 
     if canvas.draw then
         canvas.draw()
@@ -87,17 +85,26 @@ end
 -- Colors
 -----------------------------------------------------
 
+Black = 0
 Red = 1
 Blue = 2
 Green = 3
+Yellow = 4
+White = 5
 
-function love.graphics.setColorByName(index)
-    if index == Red then
+function love.graphics.setColorByIndex(index)
+    if index == Black then
+        love.graphics.setColor(0, 0, 0)
+    elseif index == Red then
         love.graphics.setColor(255, 0, 0)
     elseif index == Blue then
         love.graphics.setColor(0, 0, 255)
+    elseif index == Yellow then
+        love.graphics.setColor(255, 255, 0)
     elseif index == Green then
         love.graphics.setColor(0, 255, 0)
+    elseif index == White then
+        love.graphics.setColor(255, 255, 255)
     end
 end
 
@@ -117,7 +124,8 @@ function canvas.lock()
 
     love.graphics.setCanvas(canvas.buffer)
     love.graphics.push("all")
-    love.graphics.setBlendMode("alpha", "premultiplied")
+    --love.graphics.setBlendMode("alpha", "premultiplied")
+    love.graphics.setBlendMode("replace")
     love.graphics.draw(canvas.lockbuffer)
     love.graphics.pop()
     love.graphics.setCanvas()
@@ -142,12 +150,20 @@ local screenmode = text
 
 function screen(mode)
   screenmode = mode
-  --todo check if locked
   present()
 end
 
-function canvas.setcolor(r, b, g)
-    love.graphics.setColor(r, b, g)
+function canvas.setbackcolor(r, g, b)
+      love.graphics.setBackgroundColor(r, g, b)
+    present()
+end
+
+function canvas.setcolor(r, g, b)
+    if b==nil and g==nil then
+        love.graphics.setColorByIndex(r)
+    else
+        love.graphics.setColor(r, g, b)
+    end
     --no need to referesh
 end
 
@@ -219,7 +235,7 @@ function circles.new(new_x, new_y, new_r)
     end
 
     function self.draw()
-        love.graphics.setColorByName(self.color)
+        love.graphics.setColorByIndex(self.color)
         love.graphics.circle("line", self.x, self.y, self.r)
     end
 
@@ -250,7 +266,7 @@ function rectangles.new(new_x, new_y, new_width, new_height)
     end
 
     function self.draw()
-        love.graphics.setColorByName(self.color)
+        love.graphics.setColorByIndex(self.color)
         love.graphics.rectangle("line", self.x, self.y, self.width, self.height)
     end
 
