@@ -1,7 +1,7 @@
 x, y = 0, 0
 c = 0
 
-humster = images.new("projects/hamster.png")
+humster = images.new("hamster.png")
 
 c1 = circles.new(10, 10, 5)
 c1.color = Green

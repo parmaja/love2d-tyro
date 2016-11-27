@@ -1,7 +1,7 @@
 -----------------------------------------
 --
 -----------------------------------------
-require "utils"
+require "basic.utils"
 
 --print(arg[1])
 run_file = arg[#arg]

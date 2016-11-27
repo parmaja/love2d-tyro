@@ -1,1 +1,1 @@
-c:\lua\love\lovec .. circles.lua
+c:\lua\love\lovec . circles.lua
