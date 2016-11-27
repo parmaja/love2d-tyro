@@ -11,7 +11,8 @@ canvas = {
     buffer = nil,
     lockbuffer = nil,
     lockCount = 0,
-    objects = {}
+    objects = {},
+    fillmode = false
 }
 
 --load_module = require "main_load"
@@ -19,6 +20,18 @@ canvas = {
 
 
 local paused = nil --a end time to finish, and resume run coroutine
+
+local function fillmode(b)
+    if not b then
+        b = canvas.fillmode
+    end
+
+    if b then
+        return "fill"
+    else
+        return "line"
+    end
+end
 
 function love.load()
     canvas.buffer = love.graphics.newCanvas()
@@ -168,7 +181,7 @@ function canvas.setcolor(r, g, b)
 end
 
 function canvas.circle(x, y, r)
-    love.graphics.circle("line", x, y, r)
+    love.graphics.circle(fillmode(), x, y, r)
     present()
 end
 
@@ -228,6 +241,7 @@ function circles.new(new_x, new_y, new_r)
         x =  new_x, y = new_y,
         r = new_r,
         color = Green,
+        fillmode = false
     }
 
     function self.move(new_x, new_y)
@@ -236,7 +250,7 @@ function circles.new(new_x, new_y, new_r)
 
     function self.draw()
         love.graphics.setColorByIndex(self.color)
-        love.graphics.circle("line", self.x, self.y, self.r)
+        love.graphics.circle(fillmode(self.fillmode), self.x, self.y, self.r)
     end
 
     --self.x, self.y, self.r = new_x, new_y, new_r
@@ -259,6 +273,7 @@ function rectangles.new(new_x, new_y, new_width, new_height)
         width = new_width,
         height = new_height,
         color = Green,
+        fillmode = false
     }
 
     function self.move(new_x, new_y)
@@ -267,7 +282,7 @@ function rectangles.new(new_x, new_y, new_width, new_height)
 
     function self.draw()
         love.graphics.setColorByIndex(self.color)
-        love.graphics.rectangle("line", self.x, self.y, self.width, self.height)
+        love.graphics.rectangle(fillmode(self.fillmode), self.x, self.y, self.width, self.height)
     end
 
     --self.x, self.y, self.r = new_x, new_y, new_r
@@ -293,6 +308,11 @@ end
 function quit()
     love.event.quit()
     present()
+end
+
+function stop()  --End the coroutine but dont exit
+    co = nil -- not sure, i want to kill coroutine
+    coroutine.yield()
 end
 
 -------------------------
