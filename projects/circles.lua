@@ -12,7 +12,7 @@ for i = 0, 50 do
     canvas.setcolor(Red)
     canvas.circle(x, y, 50)
     canvas.text("Hello", x + 150, y)
-    canvas.unlock()
+    --canvas.unlock()
     pause(0.005)  -- one second
 end
 --quit()
