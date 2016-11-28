@@ -14,10 +14,9 @@ for i = 0, 50 do
     canvas.text("Hello", x + 150, y)
     canvas.color(Black)
     canvas.point(150, 150)
-    --canvas.color(Black)
     canvas.line(200, 200)
     canvas.line(200, 150)
     canvas.unlock()
-    --pause(0.005)
+    --pause(0.05)
 end
 --quit()

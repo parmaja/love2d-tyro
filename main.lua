@@ -1,9 +1,14 @@
 -----------------------------------------
+-- License: MIT
+-- Author: Zaher Dirkey
+-----------------------------------------
 --
+-- Do not put this file in your project older
+-- create new main.lua and put require("basic.main")
+-- Have fun
 -----------------------------------------
 require "basic.utils"
 
---print(arg[1])
 run_file = arg[#arg]
 run = assert(loadfile(run_file))
 
@@ -44,9 +49,11 @@ end
 
 function love.load()
     canvas.buffer = love.graphics.newCanvas()
+    canvas.lockbuffer = love.graphics.newCanvas()
+
     love.graphics.setCanvas(canvas.buffer)
-        love.graphics.setBlendMode("screen")
-        love.graphics.setBackgroundColor(255, 255, 255)
+        --love.graphics.setBlendMode("screen")
+        love.graphics.setBackgroundColor(0, 0, 0)
         love.graphics.setLineWidth(1)
         --love.graphics.setLine(1, "smooth")
         love.graphics.setPointSize(1)
@@ -73,9 +80,8 @@ end
 function love.draw()
     love.graphics.push("all")
     love.graphics.setColor(255, 255, 255)
-    --love.graphics.setBlendMode("replace")
     love.graphics.setBlendMode("alpha", "premultiplied")
-    if canvas.lockbuffer then --locked
+    if canvas.locked() then --locked
         love.graphics.draw(canvas.lockbuffer)
     else
         love.graphics.draw(canvas.buffer)
@@ -98,13 +104,15 @@ function love.draw()
         end
 
         if not paused then
-            love.graphics.setCanvas(canvas.buffer)
-            if coroutine.status(co) == "dead" then
-                co = nil
-            else
+            if coroutine.status(co) ~= "dead" then
+                --love.graphics.push("all")
+                love.graphics.setCanvas(canvas.buffer)
                 assert(coroutine.resume(co))
+                love.graphics.setCanvas()
+                --love.graphics.pop()
+            else
+                co = nil
             end
-            love.graphics.setCanvas()
         end
     end
 end
@@ -143,43 +151,33 @@ end
 
 local function present()
     if co then
-        coroutine.yield()
+        if not canvas.locked() then
+            coroutine.yield()
+        end
     end
 end
 
 function canvas.lock()
     canvas.lockCount = canvas.lockCount + 1
-    canvas.lockbuffer, canvas.buffer = canvas.buffer, love.graphics.newCanvas()
+    --canvas.lockbuffer = love.graphics.newCanvas()
 
-    love.graphics.setCanvas(canvas.buffer)
     love.graphics.push("all")
+    love.graphics.setCanvas(canvas.lockbuffer)
     love.graphics.setBlendMode("alpha", "premultiplied")
-    --love.graphics.setBlendMode("replace")
-    love.graphics.draw(canvas.lockbuffer)
-    love.graphics.pop()
+    love.graphics.draw(canvas.buffer)
     love.graphics.setCanvas()
-
+    love.graphics.pop()
     present()
 end
 
 function canvas.unlock()
-    canvas.lockbuffer = nil
+    --canvas.lockbuffer = nil
     canvas.lockCount = canvas.lockCount - 1
     present()
 end
 
 function canvas.locked()
     return canvas.lockCount > 0
-end
-
-local text = 0
-local graphic = 1
-
-local screenmode = text
-
-function screen(mode)
-  screenmode = mode
-  present()
 end
 
 function canvas.backcolor(r, g, b) --todo: use color index
@@ -193,7 +191,7 @@ function canvas.color(r, g, b)
     else
         love.graphics.setColor(r, g, b)
     end
-    --no need to referesh
+    --no need to present()
 end
 
 function canvas.circle(x, y, r)
@@ -256,7 +254,10 @@ function images.new(filename)
     end
 
     function self.draw()
+        love.graphics.push("all")
+        love.graphics.setColor(255,255,255)
         love.graphics.draw(self.img, self.x, self.y)
+        love.graphics.pop()
     end
 
     --filename = love.filesystem.getWorkingDirectory() .. "/".. filename
@@ -357,7 +358,3 @@ function stop()  --End the coroutine but dont exit
     co = nil -- not sure, i want to kill coroutine
     coroutine.yield()
 end
-
--------------------------
---
--------------------------
