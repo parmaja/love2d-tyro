@@ -12,7 +12,16 @@ canvas = {
     lockbuffer = nil,
     lockCount = 0,
     objects = {},
-    fillmode = false
+    fillmode = false,
+    last_x, last_y = 0, 0
+}
+
+--todo
+console = {
+    buffer = nil,
+    lockbuffer = nil,
+    lockCount = 0,
+    lines = {}
 }
 
 --load_module = require "main_load"
@@ -35,8 +44,13 @@ end
 
 function love.load()
     canvas.buffer = love.graphics.newCanvas()
-    --love.graphics.setBlendMode("screen")
-    love.graphics.setLineWidth(1)
+    love.graphics.setCanvas(canvas.buffer)
+        love.graphics.setBlendMode("screen")
+        love.graphics.setBackgroundColor(255, 255, 255)
+        love.graphics.setLineWidth(1)
+        --love.graphics.setLine(1, "smooth")
+        love.graphics.setPointSize(1)
+    love.graphics.setCanvas()
 
     if run then
         co = coroutine.create(run)
@@ -57,9 +71,10 @@ end
 -------------------------------------------------------
 
 function love.draw()
-    love.graphics.setColor(255, 255, 255)
     love.graphics.push("all")
-    love.graphics.setBlendMode("replace")
+    love.graphics.setColor(255, 255, 255)
+    --love.graphics.setBlendMode("replace")
+    love.graphics.setBlendMode("alpha", "premultiplied")
     if canvas.lockbuffer then --locked
         love.graphics.draw(canvas.lockbuffer)
     else
@@ -98,7 +113,7 @@ end
 -- Colors
 -----------------------------------------------------
 
-Black = 0
+Black = 0 --TODO make it as table of RGB { 0, 0, 0 }
 Red = 1
 Blue = 2
 Green = 3
@@ -106,6 +121,7 @@ Yellow = 4
 White = 5
 
 function love.graphics.setColorByIndex(index)
+--i will improve it, wait
     if index == Black then
         love.graphics.setColor(0, 0, 0)
     elseif index == Red then
@@ -137,8 +153,8 @@ function canvas.lock()
 
     love.graphics.setCanvas(canvas.buffer)
     love.graphics.push("all")
-    --love.graphics.setBlendMode("alpha", "premultiplied")
-    love.graphics.setBlendMode("replace")
+    love.graphics.setBlendMode("alpha", "premultiplied")
+    --love.graphics.setBlendMode("replace")
     love.graphics.draw(canvas.lockbuffer)
     love.graphics.pop()
     love.graphics.setCanvas()
@@ -166,12 +182,12 @@ function screen(mode)
   present()
 end
 
-function canvas.setbackcolor(r, g, b)
-      love.graphics.setBackgroundColor(r, g, b)
+function canvas.backcolor(r, g, b) --todo: use color index
+    love.graphics.setBackgroundColor(r, g, b)
     present()
 end
 
-function canvas.setcolor(r, g, b)
+function canvas.color(r, g, b)
     if b==nil and g==nil then
         love.graphics.setColorByIndex(r)
     else
@@ -187,6 +203,27 @@ end
 
 function canvas.rectangle(x, y, size)
     love.graphics.rectangle('line',x, y, size, size)
+    present()
+end
+
+function canvas.line(x1, y1, x2, y2)
+    if x2 == nil then
+        x2, x1 = x1, canvas.last_x
+    end
+    if y2 == nil then
+        y2, y1 = y1, canvas.last_y
+    end
+
+    love.graphics.line(x1, y1, x2, y2)
+    canvas.last_x = x2
+    canvas.last_y = y2
+    present()
+end
+
+function canvas.point(x, y)
+    love.graphics.points(x, y)
+    canvas.last_x = x
+    canvas.last_y = y
     present()
 end
 
@@ -290,6 +327,12 @@ function rectangles.new(new_x, new_y, new_width, new_height)
     canvas.objects[#canvas.objects + 1] = self
     return self
 end
+
+--todo:
+
+turtles = {
+}
+
 
 --------------------------
 --

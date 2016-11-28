@@ -40,6 +40,6 @@ for i = 0, 50 do
     humster.move(x, y)
     c1.move(x + 2, y)
     canvas.unlock()
-    pause(0.005)  -- one second
+    pause(0.005)
 end
 --quit()
