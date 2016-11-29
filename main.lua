@@ -18,7 +18,9 @@ canvas = {
     lockCount = 0,
     objects = {},
     fillmode = false,
-    last_x, last_y = 0, 0
+    last_x, last_y = 0, 0,
+    width = 0,
+    height = 0,
 }
 
 --todo
@@ -47,9 +49,13 @@ local function fillmode(b)
     end
 end
 
+local co = nil
+
 function love.load()
     canvas.buffer = love.graphics.newCanvas()
     canvas.lockbuffer = love.graphics.newCanvas()
+    canvas.width = canvas.buffer:getWidth()
+    canvas.height = canvas.buffer:getHeight()
 
     love.graphics.setCanvas(canvas.buffer)
         --love.graphics.setBlendMode("screen")
@@ -117,6 +123,12 @@ function love.draw()
     end
 end
 
+local last_keypressed = nil
+
+function love.keypressed(key, scancode, isrepeat)
+    last_keypressed = key
+end
+
 -----------------------------------------------------
 -- Colors
 -----------------------------------------------------
@@ -155,6 +167,13 @@ local function present()
             coroutine.yield()
         end
     end
+end
+
+function canvas.reset()
+    canvas.objects = {}
+    canvas.lockCount = 0
+    --canvas.buffer:clear()
+    --canvas.lockbuffer.clear()
 end
 
 function canvas.lock()
@@ -200,7 +219,7 @@ function canvas.circle(x, y, r)
 end
 
 function canvas.rectangle(x, y, size)
-    love.graphics.rectangle('line',x, y, size, size)
+    love.graphics.rectangle(fillmode(),x, y, size, size)
     present()
 end
 
@@ -233,6 +252,23 @@ end
 function canvas.text(s, x, y)
     love.graphics.print(s, x, y);
     present()
+end
+
+
+--------------------------
+-- Objects
+--------------------------
+objects = {
+}
+
+object = {
+}
+
+function object.finish() --finish it and remove it from objects list
+end
+
+function inherite(object) --todo
+    return {}
 end
 
 --------------------------
@@ -335,6 +371,12 @@ turtles = {
 }
 
 
+function keypressed()
+    local k = last_keypressed
+    last_keypressed = nil
+    return k
+end
+
 --------------------------
 --
 --------------------------
@@ -356,5 +398,11 @@ end
 
 function stop()  --End the coroutine but dont exit
     co = nil -- not sure, i want to kill coroutine
+    coroutine.yield()
+end
+
+function reset()
+    canvas.reset()
+    co = coroutine.create(run)
     coroutine.yield()
 end
