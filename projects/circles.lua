@@ -1,11 +1,15 @@
 x, y = 0, 0
 c = 0
 
+graphics.translate(100, 100)
+
 for i = 0, 50 do
     x = x + 5
     y = y + 5
+--    graphics.rotate(-30)
     canvas.fillmode = true
     canvas.lock()
+
     canvas.clear()
     canvas.backcolor(255, 255, 255)
     canvas.color(Green)

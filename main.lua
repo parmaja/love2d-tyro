@@ -9,8 +9,10 @@
 -----------------------------------------
 require "basic.utils"
 
-run_file = arg[#arg]
-run = assert(loadfile(run_file))
+graphics = love.graphics
+
+program_file = arg[#arg]
+program = assert(loadfile(program_file))
 
 canvas = {
     buffer = nil,
@@ -35,21 +37,29 @@ console = {
 --love.load = load_module.load
 
 
-local paused = nil --a end time to finish, and resume run coroutine
-
-local function fillmode(b)
-    if not b then
-        b = canvas.fillmode
-    end
-
-    if b then
-        return "fill"
-    else
-        return "line"
-    end
-end
+local paused = nil --a end time to finish, and resume program coroutine
 
 local co = nil
+
+local function resume()
+    if co then
+        if paused and (paused < os.clock()) then
+            paused = nil
+        end
+
+        if not paused then
+            if coroutine.status(co) ~= "dead" then
+                --love.graphics.push("all")
+                love.graphics.setCanvas(canvas.buffer)
+                assert(coroutine.resume(co))
+                love.graphics.setCanvas()
+                --love.graphics.pop()
+            else
+                co = nil
+            end
+        end
+    end
+end
 
 function love.load()
     canvas.buffer = love.graphics.newCanvas()
@@ -65,9 +75,9 @@ function love.load()
         love.graphics.setPointSize(1)
     love.graphics.setCanvas()
 
-    if run then
-        co = coroutine.create(run)
-        assert(coroutine.resume(co))
+    if program then
+        co = coroutine.create(program)
+        resume()
     end
 end
 
@@ -104,29 +114,25 @@ function love.draw()
         canvas.draw()
     end
 
-    if co then
-        if paused and (paused < os.clock()) then
-            paused = nil
-        end
-
-        if not paused then
-            if coroutine.status(co) ~= "dead" then
-                --love.graphics.push("all")
-                love.graphics.setCanvas(canvas.buffer)
-                assert(coroutine.resume(co))
-                love.graphics.setCanvas()
-                --love.graphics.pop()
-            else
-                co = nil
-            end
-        end
-    end
+       resume()
 end
 
 local last_keypressed = nil
 
 function love.keypressed(key, scancode, isrepeat)
     last_keypressed = key
+end
+
+local function fillmode(b)
+    if not b then
+        b = canvas.fillmode
+    end
+
+    if b then
+        return "fill"
+    else
+        return "line"
+    end
 end
 
 -----------------------------------------------------
@@ -139,6 +145,8 @@ Blue = 2
 Green = 3
 Yellow = 4
 White = 5
+
+--do not look at me O.o
 
 function love.graphics.setColorByIndex(index)
 --i will improve it, wait
@@ -242,6 +250,13 @@ function canvas.point(x, y)
     canvas.last_x = x
     canvas.last_y = y
     present()
+end
+
+--not draw just set the start point to use it in line
+
+function canvas.setpoint(x, y)
+    canvas.last_x = x
+    canvas.last_y = y
 end
 
 function canvas.clear()
@@ -381,6 +396,8 @@ end
 --
 --------------------------
 
+--not recomended to use sleep, use pause instead
+
 function sleep(seconds)
     love.timer.sleep(seconds)
     --present()
@@ -396,13 +413,15 @@ function quit()
     present()
 end
 
-function stop()  --End the coroutine but dont exit
+--End the routine but dont exit
+
+function stop()
     co = nil -- not sure, i want to kill coroutine
     coroutine.yield()
 end
 
 function reset()
     canvas.reset()
-    co = coroutine.create(run)
+    co = coroutine.create(program)
     coroutine.yield()
 end
