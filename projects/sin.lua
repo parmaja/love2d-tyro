@@ -1,6 +1,6 @@
-canvas.setpoint(0, 100)
 
+canvas.setpoint(0, 100) --set start point
 for x=0, canvas.width, 5 do
-    s = math.cos(x  / 100) * 100
-    canvas.line(x, 100 + s)
+    y = math.cos(x  / 50) * 50
+    canvas.line(x,  y + 200) --drawing line to this point
 end

@@ -36,6 +36,32 @@ console = {
 --load_module = require "main_load"
 --love.load = load_module.load
 
+--ref: https://gist.github.com/BlackBulletIV/4218802
+
+gl_glow = [[// adapted from http://www.youtube.com/watch?v=qNM0k522R7o
+
+extern vec2 size;
+extern int samples = 5; // pixels per axis; higher = bigger glow, worse performance
+extern float quality = 2.5; // lower = smaller glow, better quality
+
+vec4 effect(vec4 colour, Image tex, vec2 tc, vec2 sc)
+{
+  vec4 source = Texel(tex, tc);
+  vec4 sum = vec4(0);
+  int diff = (samples - 1) / 2;
+  vec2 sizeFactor = vec2(1) / size * quality;
+
+  for (int x = -diff; x <= diff; x++)
+  {
+    for (int y = -diff; y <= diff; y++)
+    {
+      vec2 offset = vec2(x, y) * sizeFactor;
+      sum += Texel(tex, tc + offset);
+    }
+  }
+
+  return ((sum / (samples * samples)) + source) * colour;
+}]]
 
 local paused = nil --a end time to finish, and resume program coroutine
 
@@ -51,7 +77,9 @@ local function resume()
             if coroutine.status(co) ~= "dead" then
                 --love.graphics.push("all")
                 love.graphics.setCanvas(canvas.buffer)
+                --love.graphics.setShader(effect)
                 assert(coroutine.resume(co))
+                --love.graphics.setShader()
                 love.graphics.setCanvas()
                 --love.graphics.pop()
             else
@@ -67,6 +95,8 @@ function love.load()
     canvas.width = canvas.buffer:getWidth()
     canvas.height = canvas.buffer:getHeight()
 
+    --glowShader = love.graphics.newShader(gl_glow)
+
     love.graphics.setCanvas(canvas.buffer)
         --love.graphics.setBlendMode("screen")
         love.graphics.setBackgroundColor(0, 0, 0)
@@ -76,6 +106,7 @@ function love.load()
     love.graphics.setCanvas()
 
     if program then
+        love.window.setTitle(program_file)
         co = coroutine.create(program)
         resume()
     end
@@ -83,7 +114,8 @@ end
 
 -------------------------------------------------------
 
-function love.update()
+function love.update(dt)
+    --glowShader:send("size", { x, y })
     for k, o in pairs(canvas.objects) do
         if o.update then
             o.update(o)
@@ -95,7 +127,8 @@ end
 
 function love.draw()
     love.graphics.push("all")
-    love.graphics.setColor(255, 255, 255)
+--	graphics.translate(dx, dy) --todo:
+    love.graphics.setColor(colors.White)
     love.graphics.setBlendMode("alpha", "premultiplied")
     if canvas.locked() then --locked
         love.graphics.draw(canvas.lockbuffer)
@@ -117,10 +150,14 @@ function love.draw()
        resume()
 end
 
-local last_keypressed = nil
+last_keypressed = nil
 
 function love.keypressed(key, scancode, isrepeat)
     last_keypressed = key
+end
+
+function love.keyreleased(key)
+    last_keypressed = nil
 end
 
 local function fillmode(b)
@@ -139,31 +176,54 @@ end
 -- Colors
 -----------------------------------------------------
 
-Black = 0 --TODO make it as table of RGB { 0, 0, 0 }
-Red = 1
-Blue = 2
-Green = 3
-Yellow = 4
-White = 5
+colors = {
+    count = 0 --deprecated, on lua 5.2 we can use #colors, but LOVE still at 5.1
+}
 
---do not look at me O.o
+colors_mt = {
+    items = {}
+}
 
-function love.graphics.setColorByIndex(index)
---i will improve it, wait
-    if index == Black then
-        love.graphics.setColor(0, 0, 0)
-    elseif index == Red then
-        love.graphics.setColor(255, 0, 0)
-    elseif index == Blue then
-        love.graphics.setColor(0, 0, 255)
-    elseif index == Yellow then
-        love.graphics.setColor(255, 255, 0)
-    elseif index == Green then
-        love.graphics.setColor(0, 255, 0)
-    elseif index == White then
-        love.graphics.setColor(255, 255, 255)
+colors_mt.__index =
+    function(self, key)
+        if type(key) == "number" then
+            return colors_mt.items[key]
+        end
     end
-end
+
+colors_mt.__newindex =
+    function(self, key, value)
+        self.count = #colors_mt.items + 1
+        colors_mt.items[self.count] = value
+        rawset(self, key, value)
+    end
+
+colors_mt.__len =
+    function(self)
+        return #colors_mt.items
+    end
+
+setmetatable(colors, colors_mt)
+
+colors.Black  = {0, 0 , 0}
+colors.Violet = {148, 0, 211}
+colors.Indigo = {75, 0, 130}
+colors.Blue   = {0, 0, 255}
+colors.Green  = {0, 255, 0}
+colors.Yellow = {255, 255, 0}
+colors.Orange = {255, 127, 0}
+colors.Red    = {255, 0, 0}
+colors.White  = {255,255,255}
+
+print (#colors)
+--------------
+-- Keyboard
+--------------
+
+keys = {}
+
+keys.Space = "space"
+keys.Escape = "escape"
 
 -----------------------------------------------------
 --
@@ -214,7 +274,7 @@ end
 
 function canvas.color(r, g, b)
     if b==nil and g==nil then
-        love.graphics.setColorByIndex(r)
+        love.graphics.setColor(r)
     else
         love.graphics.setColor(r, g, b)
     end
@@ -338,7 +398,7 @@ function circles.new(new_x, new_y, new_r)
     end
 
     function self.draw()
-        love.graphics.setColorByIndex(self.color)
+        love.graphics.setColor(self.color)
         love.graphics.circle(fillmode(self.fillmode), self.x, self.y, self.r)
     end
 
@@ -370,7 +430,7 @@ function rectangles.new(new_x, new_y, new_width, new_height)
     end
 
     function self.draw()
-        love.graphics.setColorByIndex(self.color)
+        love.graphics.setColor(self.color)
         love.graphics.rectangle(fillmode(self.fillmode), self.x, self.y, self.width, self.height)
     end
 
@@ -386,10 +446,8 @@ turtles = {
 }
 
 
-function keypressed()
-    local k = last_keypressed
-    last_keypressed = nil
-    return k
+function key()
+    return last_keypressed
 end
 
 --------------------------
@@ -416,12 +474,14 @@ end
 --End the routine but dont exit
 
 function stop()
+    canvas.lockCount = 0
     co = nil -- not sure, i want to kill coroutine
     coroutine.yield()
 end
 
-function reset()
+function restart()
     canvas.reset()
+    last_keypressed = nil -- move to console.reset()
     co = coroutine.create(program)
     coroutine.yield()
 end

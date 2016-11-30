@@ -43,4 +43,4 @@ for i = 0, 50 do
     --pause(0.005)
 end
 --quit()
-reset()
+restart()
