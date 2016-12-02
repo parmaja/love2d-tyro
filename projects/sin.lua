@@ -1,4 +1,4 @@
-
+--freeze(0.01)
 canvas.setpoint(0, 100) --set start point
 for x=0, canvas.width, 5 do
     y = math.cos(x  / 50) * 50

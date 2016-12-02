@@ -63,7 +63,9 @@ vec4 effect(vec4 colour, Image tex, vec2 tc, vec2 sc)
   return ((sum / (samples * samples)) + source) * colour;
 }]]
 
-local paused = nil --a end time to finish, and resume program coroutine
+local paused = nil --a time to finish, and resume program coroutine
+local freezed = nil --a time to finish, and refresh canvas
+local freezeTime = nil --time period to freeze
 
 local co = nil
 
@@ -84,6 +86,7 @@ local function resume()
                 --love.graphics.pop()
             else
                 co = nil
+                canvas.reset()
             end
         end
     end
@@ -126,6 +129,11 @@ end
 -------------------------------------------------------
 
 function love.draw()
+    if freezed and (freezed < os.clock()) then
+        canvas.lockCount = canvas.lockCount - 1
+        freezed = nil
+    end
+
     love.graphics.push("all")
 --	graphics.translate(dx, dy) --todo:
     love.graphics.setColor(colors.White)
@@ -136,6 +144,11 @@ function love.draw()
         love.graphics.draw(canvas.buffer)
     end
     love.graphics.pop()
+
+    if freezeTime then
+        canvas.lock()
+        freezed = os.clock() + freezeTime
+    end
 
     for k, o in pairs(canvas.objects) do
         if o.visible then
@@ -198,7 +211,7 @@ colors_mt.__newindex =
         rawset(self, key, value)
     end
 
-colors_mt.__len =
+colors_mt.__len =  --need >lua5.2
     function(self)
         return #colors_mt.items
     end
@@ -215,7 +228,6 @@ colors.Orange = {255, 127, 0}
 colors.Red    = {255, 0, 0}
 colors.White  = {255,255,255}
 
-print (#colors)
 --------------
 -- Keyboard
 --------------
@@ -239,6 +251,8 @@ end
 
 function canvas.reset()
     canvas.objects = {}
+    paused = nil
+    freezed = nil
     canvas.lockCount = 0
     --canvas.buffer:clear()
     --canvas.lockbuffer.clear()
@@ -463,6 +477,15 @@ end
 
 function pause(seconds)
     paused = os.clock() + seconds
+    present()
+end
+
+function freeze(seconds, repeated)
+    canvas.lock()
+    freezed = os.clock() + seconds
+    if repeated then
+        freezeTime = seconds
+    end
     present()
 end
 
