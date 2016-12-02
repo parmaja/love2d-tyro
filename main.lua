@@ -184,7 +184,7 @@ keys.Escape = "escape"
 --
 -----------------------------------------------------
 
-function canvas.referesh()
+function canvas.refresh()
     present()
 end
 
@@ -216,8 +216,8 @@ end
 function canvas.lock()
     love.graphics.push("all")
     love.graphics.setCanvas(canvas.lockbuffer)
-    love.graphics.setBlendMode("alpha", "premultiplied")
     love.graphics.setColor(colors.White)
+    love.graphics.setBlendMode("alpha", "premultiplied")
     love.graphics.draw(canvas.buffer)
     love.graphics.setCanvas()
     love.graphics.pop()
@@ -227,7 +227,6 @@ function canvas.lock()
 end
 
 function canvas.unlock()
-    --canvas.lockbuffer = nil
     canvas.lockCount = canvas.lockCount - 1
     --TODO: check if less than 0
     present()
