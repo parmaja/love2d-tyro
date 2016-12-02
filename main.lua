@@ -11,6 +11,8 @@ require "basic.utils"
 require "basic.colors"
 --require("mobdebug").start()
 
+debug_count = 0
+
 graphics = love.graphics
 
 program_file = arg[#arg]
@@ -99,10 +101,10 @@ function love.load()
     --glowShader = love.graphics.newShader(gl_glow)
 
     love.graphics.setCanvas(canvas.buffer)
-        love.graphics.setBackgroundColor(colors.Black)
-        love.graphics.setLineWidth(1)
-        --love.graphics.setLine(1, "smooth")
-        love.graphics.setPointSize(1)
+    love.graphics.setBackgroundColor(colors.Black)
+    love.graphics.setLineWidth(1)
+    --love.graphics.setLine(1, "smooth")
+    love.graphics.setPointSize(1)
     love.graphics.setCanvas()
 
     if program then
@@ -197,19 +199,18 @@ function canvas.reset()
 end
 
 local function present()
-    if co then
+    if co and coroutine.running()  then
         if freezed and (freezed < os.clock()) then
             freezed = nil
         end
 
-        if not freezed then
-               coroutine.yield()
+        if and not freezed then
+            coroutine.yield()
         end
 
         if not freezed and freezeTime then
             freezed = os.clock() + freezeTime
         end
-
     end
 end
 
@@ -276,8 +277,8 @@ function canvas.color(r, g, b)
     --no need to present()
 end
 
-function canvas.clear()
-    love.graphics.clear() --<-- clear the background only
+function canvas.clear(color)
+    love.graphics.clear(color) --<-- clear the background only
     --love.graphics.points(10, 10) --<-- it clear now
     present()
 end
