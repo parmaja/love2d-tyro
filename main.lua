@@ -9,6 +9,7 @@
 -----------------------------------------
 require "basic.utils"
 require "basic.colors"
+--require("mobdebug").start()
 
 graphics = love.graphics
 
@@ -89,16 +90,6 @@ local function resume()
     end
 end
 
-local function saveCanvas()
-    love.graphics.push("all")
-    love.graphics.setCanvas(canvas.lockbuffer)
-    love.graphics.setBlendMode("alpha", "premultiplied")
-    love.graphics.setColor(colors.White)
-    love.graphics.draw(canvas.buffer)
-    love.graphics.setCanvas()
-    love.graphics.pop()
-end
-
 function love.load()
     canvas.buffer = love.graphics.newCanvas()
     canvas.lockbuffer = love.graphics.newCanvas()
@@ -141,7 +132,6 @@ function love.draw()
     love.graphics.setBlendMode("alpha", "premultiplied")
     if not canvas.locked() then
         love.graphics.draw(canvas.buffer)
-        print("draw")
     else
         love.graphics.draw(canvas.lockbuffer)
     end
@@ -224,7 +214,14 @@ local function present()
 end
 
 function canvas.lock()
-    saveCanvas()
+    love.graphics.push("all")
+    love.graphics.setCanvas(canvas.lockbuffer)
+    love.graphics.setBlendMode("alpha", "premultiplied")
+    love.graphics.setColor(colors.White)
+    love.graphics.draw(canvas.buffer)
+    love.graphics.setCanvas()
+    love.graphics.pop()
+
     canvas.lockCount = canvas.lockCount + 1
     present()
 end
@@ -239,6 +236,8 @@ end
 function canvas.locked()
     return (canvas.lockCount > 0)
 end
+
+------------------------
 
 function canvas.defreeze()
     freezed = nil
@@ -258,8 +257,14 @@ function canvas.freeze(seconds, repeated)
     end
 end
 
+---------------------------
+
 function canvas.backcolor(r, g, b) --todo: use color index
-    love.graphics.setBackgroundColor(r, g, b)
+    if b == nil and g == nil then
+        love.graphics.setBackgroundColor(r)
+    else
+        love.graphics.setBackgroundColor(r, g, b)
+    end
     present()
 end
 
@@ -270,6 +275,12 @@ function canvas.color(r, g, b)
         love.graphics.setColor(r, g, b)
     end
     --no need to present()
+end
+
+function canvas.clear()
+    love.graphics.clear() --<-- clear the background only
+    --love.graphics.points(10, 10) --<-- it clear now
+    present()
 end
 
 function canvas.circle(x, y, r)
@@ -308,11 +319,6 @@ end
 function canvas.setpoint(x, y)
     canvas.last_x = x
     canvas.last_y = y
-end
-
-function canvas.clear()
-    love.graphics.clear()
-    present()
 end
 
 function canvas.text(s, x, y)
