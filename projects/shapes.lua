@@ -4,14 +4,14 @@ c = 0
 humster = images.new("hamster.png")
 
 c1 = circles.new(10, 10, 5)
-c1.color = Green
+c1.color = colors.Green
 
 function c1:update()
     self.r = self.r + 2
 end
 
 c2 = circles.new(50, 50, 5)
-c2.color = Blue
+c2.color = colors.Blue
 
 function c2:update()
     self.r = self.r + 2
@@ -19,7 +19,7 @@ function c2:update()
 end
 
 r1 = rectangles.new(50, 50, 100, 100)
-r1.color = Yellow
+r1.color = colors.Yellow
 
 function r1:update()
     self.width = self.width + 2
@@ -32,9 +32,9 @@ for i = 0, 50 do
     canvas.lock()
     canvas.clear()
     canvas.backcolor(0, 0, 0)
-    canvas.color(Green)
+    canvas.color(colors.Green)
     canvas.rectangle(x, y, 100, 100)
-    canvas.color(Red)
+    canvas.color(colors.Red)
     canvas.circle(x, y, 50)
     canvas.text("Hello", x + 150, y)
     humster.move(x, y)

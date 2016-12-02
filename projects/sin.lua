@@ -1,6 +1,6 @@
---freeze(0.01)
+--canvas.rectangle(10, 10, 100, 100)
 canvas.setpoint(0, 100) --set start point
-for x=0, canvas.width, 5 do
+for x = 0, canvas.width, 1 do
     y = math.cos(x  / 50) * 50
     canvas.line(x,  y + 200) --drawing line to this point
 end

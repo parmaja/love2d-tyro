@@ -8,6 +8,7 @@
 -- Have fun
 -----------------------------------------
 require "basic.utils"
+require "basic.colors"
 
 graphics = love.graphics
 
@@ -27,10 +28,6 @@ canvas = {
 
 --todo
 console = {
-    buffer = nil,
-    lockbuffer = nil,
-    lockCount = 0,
-    lines = {}
 }
 
 --load_module = require "main_load"
@@ -92,6 +89,16 @@ local function resume()
     end
 end
 
+local function saveCanvas()
+    love.graphics.push("all")
+    love.graphics.setCanvas(canvas.lockbuffer)
+    love.graphics.setBlendMode("alpha", "premultiplied")
+    love.graphics.setColor(colors.White)
+    love.graphics.draw(canvas.buffer)
+    love.graphics.setCanvas()
+    love.graphics.pop()
+end
+
 function love.load()
     canvas.buffer = love.graphics.newCanvas()
     canvas.lockbuffer = love.graphics.newCanvas()
@@ -101,8 +108,7 @@ function love.load()
     --glowShader = love.graphics.newShader(gl_glow)
 
     love.graphics.setCanvas(canvas.buffer)
-        --love.graphics.setBlendMode("screen")
-        love.graphics.setBackgroundColor(0, 0, 0)
+        love.graphics.setBackgroundColor(colors.Black)
         love.graphics.setLineWidth(1)
         --love.graphics.setLine(1, "smooth")
         love.graphics.setPointSize(1)
@@ -111,7 +117,7 @@ function love.load()
     if program then
         love.window.setTitle(program_file)
         co = coroutine.create(program)
-        resume()
+--	    resume()
     end
 end
 
@@ -129,26 +135,17 @@ end
 -------------------------------------------------------
 
 function love.draw()
-    if freezed and (freezed < os.clock()) then
-        canvas.lockCount = canvas.lockCount - 1
-        freezed = nil
-    end
-
+--	graphics.translate(offset_x, offset_y) --todo: canvas.offset(dx, dy)
     love.graphics.push("all")
---	graphics.translate(dx, dy) --todo:
     love.graphics.setColor(colors.White)
     love.graphics.setBlendMode("alpha", "premultiplied")
-    if canvas.locked() then --locked
-        love.graphics.draw(canvas.lockbuffer)
-    else
+    if not canvas.locked() then
         love.graphics.draw(canvas.buffer)
+        print("draw")
+    else
+        love.graphics.draw(canvas.lockbuffer)
     end
     love.graphics.pop()
-
-    if freezeTime then
-        canvas.lock()
-        freezed = os.clock() + freezeTime
-    end
 
     for k, o in pairs(canvas.objects) do
         if o.visible then
@@ -159,11 +156,10 @@ function love.draw()
     if canvas.draw then
         canvas.draw()
     end
-
-       resume()
+    resume()
 end
 
-last_keypressed = nil
+local last_keypressed = nil
 
 function love.keypressed(key, scancode, isrepeat)
     last_keypressed = key
@@ -185,49 +181,6 @@ local function fillmode(b)
     end
 end
 
------------------------------------------------------
--- Colors
------------------------------------------------------
-
-colors = {
-    count = 0 --deprecated, on lua 5.2 we can use #colors, but LOVE still at 5.1
-}
-
-colors_mt = {
-    items = {}
-}
-
-colors_mt.__index =
-    function(self, key)
-        if type(key) == "number" then
-            return colors_mt.items[key]
-        end
-    end
-
-colors_mt.__newindex =
-    function(self, key, value)
-        self.count = #colors_mt.items + 1
-        colors_mt.items[self.count] = value
-        rawset(self, key, value)
-    end
-
-colors_mt.__len =  --need >lua5.2
-    function(self)
-        return #colors_mt.items
-    end
-
-setmetatable(colors, colors_mt)
-
-colors.Black  = {0, 0 , 0}
-colors.Violet = {148, 0, 211}
-colors.Indigo = {75, 0, 130}
-colors.Blue   = {0, 0, 255}
-colors.Green  = {0, 255, 0}
-colors.Yellow = {255, 255, 0}
-colors.Orange = {255, 127, 0}
-colors.Red    = {255, 0, 0}
-colors.White  = {255,255,255}
-
 --------------
 -- Keyboard
 --------------
@@ -241,44 +194,68 @@ keys.Escape = "escape"
 --
 -----------------------------------------------------
 
-local function present()
-    if co then
-        if not canvas.locked() then
-            coroutine.yield()
-        end
-    end
+function canvas.referesh()
+    present()
 end
 
 function canvas.reset()
     canvas.objects = {}
     paused = nil
     freezed = nil
+    freezeTime = nil
     canvas.lockCount = 0
-    --canvas.buffer:clear()
-    --canvas.lockbuffer.clear()
+end
+
+local function present()
+    if co then
+        if freezed and (freezed < os.clock()) then
+            freezed = nil
+        end
+
+        if not freezed then
+               coroutine.yield()
+        end
+
+        if not freezed and freezeTime then
+            freezed = os.clock() + freezeTime
+        end
+
+    end
 end
 
 function canvas.lock()
+    saveCanvas()
     canvas.lockCount = canvas.lockCount + 1
-    --canvas.lockbuffer = love.graphics.newCanvas()
-
-    love.graphics.push("all")
-    love.graphics.setCanvas(canvas.lockbuffer)
-    love.graphics.setBlendMode("alpha", "premultiplied")
-    love.graphics.draw(canvas.buffer)
-    love.graphics.setCanvas()
-    love.graphics.pop()
     present()
 end
 
 function canvas.unlock()
     --canvas.lockbuffer = nil
     canvas.lockCount = canvas.lockCount - 1
+    --TODO: check if less than 0
     present()
 end
 
 function canvas.locked()
-    return canvas.lockCount > 0
+    return (canvas.lockCount > 0)
+end
+
+function canvas.defreeze()
+    freezed = nil
+    freezeTime = nil
+end
+
+function canvas.freeze(seconds, repeated)
+    if seconds then
+        present()
+        freezed = os.clock() + seconds
+        if repeated then
+            freezeTime = seconds
+        end
+    else
+        canvas.defreeze()
+        present()
+    end
 end
 
 function canvas.backcolor(r, g, b) --todo: use color index
@@ -287,7 +264,7 @@ function canvas.backcolor(r, g, b) --todo: use color index
 end
 
 function canvas.color(r, g, b)
-    if b==nil and g==nil then
+    if b == nil and g == nil then
         love.graphics.setColor(r)
     else
         love.graphics.setColor(r, g, b)
@@ -301,7 +278,7 @@ function canvas.circle(x, y, r)
 end
 
 function canvas.rectangle(x, y, size)
-    love.graphics.rectangle(fillmode(),x, y, size, size)
+    love.graphics.rectangle(fillmode(), x, y, size, size)
     present()
 end
 
@@ -334,7 +311,7 @@ function canvas.setpoint(x, y)
 end
 
 function canvas.clear()
-    love.graphics.clear();
+    love.graphics.clear()
     present()
 end
 
@@ -343,149 +320,18 @@ function canvas.text(s, x, y)
     present()
 end
 
-
 --------------------------
--- Objects
---------------------------
-objects = {
-}
-
-object = {
-}
-
-function object.finish() --finish it and remove it from objects list
-end
-
-function inherite(object) --todo
-    return {}
-end
-
---------------------------
--- Images
---------------------------
-
-images = {
-}
-
-function images.new(filename)
-    local self = {
-        visible = true,
-        x =0 , y = 0,
-        img = nil
-    }
-
-    function self.move(new_x, new_y)
-        self.x, self.y = new_x, new_y
-    end
-
-    function self.draw()
-        love.graphics.push("all")
-        love.graphics.setColor(255,255,255)
-        love.graphics.draw(self.img, self.x, self.y)
-        love.graphics.pop()
-    end
-
-    --filename = love.filesystem.getWorkingDirectory() .. "/".. filename
-    self.img = love.graphics.newImage(filename)
-    canvas.objects[#canvas.objects + 1] = self
-    return self
-end
-
---------------------------
--- Circles
---------------------------
-
-circles = {
-}
-
-function circles.new(new_x, new_y, new_r)
-    local self = {
-        visible = true,
-        x =  new_x, y = new_y,
-        r = new_r,
-        color = Green,
-        fillmode = false
-    }
-
-    function self.move(new_x, new_y)
-        self.x, self.y = new_x, new_y
-    end
-
-    function self.draw()
-        love.graphics.setColor(self.color)
-        love.graphics.circle(fillmode(self.fillmode), self.x, self.y, self.r)
-    end
-
-    --self.x, self.y, self.r = new_x, new_y, new_r
-
-    canvas.objects[#canvas.objects + 1] = self
-    return self
-end
-
---------------------------
--- Circles
---------------------------
-
-rectangles = {
-}
-
-function rectangles.new(new_x, new_y, new_width, new_height)
-    local self = {
-        visible = true,
-        x =  new_x, y = new_y,
-        width = new_width,
-        height = new_height,
-        color = Green,
-        fillmode = false
-    }
-
-    function self.move(new_x, new_y)
-        self.x, self.y = new_x, new_y
-    end
-
-    function self.draw()
-        love.graphics.setColor(self.color)
-        love.graphics.rectangle(fillmode(self.fillmode), self.x, self.y, self.width, self.height)
-    end
-
-    --self.x, self.y, self.r = new_x, new_y, new_r
-
-    canvas.objects[#canvas.objects + 1] = self
-    return self
-end
-
---todo:
-
-turtles = {
-}
-
-
-function key()
-    return last_keypressed
-end
-
---------------------------
---
+-- Utils
 --------------------------
 
 --not recomended to use sleep, use pause instead
-
 function sleep(seconds)
     love.timer.sleep(seconds)
-    --present()
 end
 
+--Do not call co.resume for a while
 function pause(seconds)
     paused = os.clock() + seconds
-    present()
-end
-
-function freeze(seconds, repeated)
-    canvas.lock()
-    freezed = os.clock() + seconds
-    if repeated then
-        freezeTime = seconds
-    end
     present()
 end
 
@@ -498,6 +344,7 @@ end
 
 function stop()
     canvas.lockCount = 0
+    freezed = nil
     co = nil -- not sure, i want to kill coroutine
     coroutine.yield()
 end
