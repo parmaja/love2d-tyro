@@ -9,6 +9,7 @@
 -----------------------------------------
 require "basic.utils"
 require "basic.colors"
+require "basic.shapes"
 --require("mobdebug").start()
 
 debug_count = 0
@@ -204,7 +205,7 @@ local function present()
             freezed = nil
         end
 
-        if and not freezed then
+        if not freezed then
             coroutine.yield()
         end
 
