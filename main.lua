@@ -12,8 +12,8 @@ require "basic.colors"
 require "basic.shapes"
 
 debug_count = 0
-
 local debugging = false
+local stopped = false --stop updating objects
 
 graphics = love.graphics
 
@@ -114,9 +114,19 @@ end
 
 function love.update(dt)
     --glowShader:send("size", { x, y })
-    for k, o in pairs(canvas.objects) do
-        if o.update then
-            o.update(o)
+    if not stopped then --if stoped only we stop updating, but drawing keep it
+        if canvas.update then
+            canvas.update()
+        end
+
+        for k, o in pairs(canvas.objects) do
+            if o.prepare and not o.prepared then
+                o:prepare()
+                o.prepared = true
+            end
+            if o.update then
+                o.update(o)
+            end
         end
     end
 end
@@ -147,14 +157,14 @@ function love.draw()
         love.graphics.print("NO FILE LOADED", 10, 10)
     end
 
+    if canvas.draw then
+        canvas.draw()
+    end
+
     for k, o in pairs(canvas.objects) do
         if o.visible then
             o.draw()
         end
-    end
-
-    if canvas.draw then
-        canvas.draw()
     end
 end
 
@@ -168,7 +178,7 @@ function love.keyreleased(key)
     last_keypressed = nil
 end
 
-local function fillmode(b)
+function fillmode(b)
     if not b then
         b = canvas.fillmode
     end
@@ -198,11 +208,15 @@ end
 -----------------------------------------------------
 
 function canvas.reset()
-    canvas.objects = {}
     paused = nil
     freezed = nil
     freezeTime = nil
     canvas.lockCount = 0
+end
+
+function canvas.restart()
+    canvas.objects = {}
+    canvas.reset()
 end
 
 function canvas.refresh() --not tested yet
@@ -380,14 +394,19 @@ end
 --End the routine but dont exit
 
 function stop()
-    canvas.lockCount = 0
+    canvas.reset()
     freezed = nil
+    stopped = true
+    local old = co
     co = nil -- not sure, i want to kill coroutine
-    coroutine.yield()
+
+    if old and coroutine.running()  then
+        coroutine.yield()
+    end
 end
 
 function restart()
-    canvas.reset()
+    canvas.restart()
     last_keypressed = nil -- move to console.reset()
     co = coroutine.create(program)
     coroutine.yield()

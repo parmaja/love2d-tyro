@@ -24,7 +24,7 @@ images = {
 function images.new(filename)
     local self = {
         visible = true,
-        x =0 , y = 0,
+        x = 0 , y = 0,
         img = nil
     }
 
@@ -34,7 +34,8 @@ function images.new(filename)
 
     function self.draw()
         love.graphics.push("all")
-        love.graphics.setColor(255,255,255)
+        love.graphics.setColor(colors.White)
+        love.graphics.setBlendMode("alpha", "premultiplied")
         love.graphics.draw(self.img, self.x, self.y)
         love.graphics.pop()
     end
@@ -112,5 +113,3 @@ end
 
 turtles = {
 }
-
-

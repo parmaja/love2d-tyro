@@ -31,7 +31,7 @@ for i = 0, 50 do
     y = y + 5
     canvas.lock()
     canvas.clear()
-    canvas.backcolor(0, 0, 0)
+    canvas.backcolor(colors.Black)
     canvas.color(colors.Green)
     canvas.rectangle(x, y, 100, 100)
     canvas.color(colors.Red)
@@ -43,4 +43,4 @@ for i = 0, 50 do
     --pause(0.005)
 end
 --quit()
-restart()
+--restart()
