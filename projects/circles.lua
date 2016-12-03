@@ -8,8 +8,8 @@ for i = 0, 50 do
 --    graphics.rotate(-30)
     canvas.fillmode = true
     canvas.lock()
-    canvas.clear()
     canvas.backcolor(colors.White)
+    canvas.clear()
     canvas.color(colors.Green)
     canvas.rectangle(x, y, 100, 100)
     canvas.color(colors.Red)
@@ -30,4 +30,4 @@ for i = 0, 50 do
     --pause(0.05)
 end
 --quit()
-restart()
+--restart()

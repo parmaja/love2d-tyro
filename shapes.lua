@@ -114,7 +114,3 @@ turtles = {
 }
 
 
-function key()
-    return last_keypressed
-end
-

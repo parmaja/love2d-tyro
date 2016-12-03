@@ -10,22 +10,42 @@
 require "basic.utils"
 require "basic.colors"
 require "basic.shapes"
---require("mobdebug").start()
 
 debug_count = 0
 
+local debugging = false
+
 graphics = love.graphics
 
-program_file = arg[#arg]
-program = assert(loadfile(program_file))
+if #arg > 1 then
+    for i = 2, #arg do
+        local s = arg[i]
+        if s == "-debug" then
+            debugging = true
+        elseif s:sub(1, 1) ~= "-" then
+            program_file = s
+            break
+        end
+    end
+    program = assert(loadfile(program_file))
+end
+
+if debugging then
+    require("mobdebug").start()
+end
 
 canvas = {
     buffer = nil,
     lockbuffer = nil,
     lockCount = 0,
     objects = {},
+    data = {
+        color = nil,
+        backcolor = nil
+    },
     fillmode = false,
-    last_x, last_y = 0, 0,
+    last_x = 0,
+    last_y = 0,
     width = 0,
     height = 0,
 }
@@ -38,31 +58,6 @@ console = {
 --love.load = load_module.load
 
 --ref: https://gist.github.com/BlackBulletIV/4218802
-
-gl_glow = [[// adapted from http://www.youtube.com/watch?v=qNM0k522R7o
-
-extern vec2 size;
-extern int samples = 5; // pixels per axis; higher = bigger glow, worse performance
-extern float quality = 2.5; // lower = smaller glow, better quality
-
-vec4 effect(vec4 colour, Image tex, vec2 tc, vec2 sc)
-{
-  vec4 source = Texel(tex, tc);
-  vec4 sum = vec4(0);
-  int diff = (samples - 1) / 2;
-  vec2 sizeFactor = vec2(1) / size * quality;
-
-  for (int x = -diff; x <= diff; x++)
-  {
-    for (int y = -diff; y <= diff; y++)
-    {
-      vec2 offset = vec2(x, y) * sizeFactor;
-      sum += Texel(tex, tc + offset);
-    }
-  }
-
-  return ((sum / (samples * samples)) + source) * colour;
-}]]
 
 local paused = nil --a time to finish, and resume program coroutine
 local freezed = nil --a time to finish, and refresh canvas
@@ -79,11 +74,9 @@ local function resume()
         if not paused then
             if coroutine.status(co) ~= "dead" then
                 --love.graphics.push("all")
-                love.graphics.setCanvas(canvas.buffer)
                 --love.graphics.setShader(effect)
                 assert(coroutine.resume(co))
                 --love.graphics.setShader()
-                love.graphics.setCanvas()
                 --love.graphics.pop()
             else
                 co = nil
@@ -102,7 +95,10 @@ function love.load()
     --glowShader = love.graphics.newShader(gl_glow)
 
     love.graphics.setCanvas(canvas.buffer)
-    love.graphics.setBackgroundColor(colors.Black)
+
+    canvas.color(colors.White)
+    canvas.backcolor(colors.Black)
+
     love.graphics.setLineWidth(1)
     --love.graphics.setLine(1, "smooth")
     love.graphics.setPointSize(1)
@@ -111,7 +107,6 @@ function love.load()
     if program then
         love.window.setTitle(program_file)
         co = coroutine.create(program)
---	    resume()
     end
 end
 
@@ -130,15 +125,27 @@ end
 
 function love.draw()
 --	graphics.translate(offset_x, offset_y) --todo: canvas.offset(dx, dy)
-    love.graphics.push("all")
-    love.graphics.setColor(colors.White)
-    love.graphics.setBlendMode("alpha", "premultiplied")
-    if not canvas.locked() then
-        love.graphics.draw(canvas.buffer)
+    if program then
+        love.graphics.setCanvas(canvas.buffer)
+        --love.graphics.setBlendMode("alpha")
+        resume()
+        love.graphics.setCanvas()
+
+        love.graphics.setColor(canvas.data.color)
+        love.graphics.setBackgroundColor(canvas.data.backcolor)
+
+        love.graphics.push("all")
+        love.graphics.setBlendMode("alpha", "premultiplied")
+        love.graphics.setColor({255, 255, 255})
+        if not canvas.locked() then
+            love.graphics.draw(canvas.buffer)
+        else
+            love.graphics.draw(canvas.lockbuffer)
+        end
+        love.graphics.pop()
     else
-        love.graphics.draw(canvas.lockbuffer)
+        love.graphics.print("NO FILE LOADED", 10, 10)
     end
-    love.graphics.pop()
 
     for k, o in pairs(canvas.objects) do
         if o.visible then
@@ -149,7 +156,6 @@ function love.draw()
     if canvas.draw then
         canvas.draw()
     end
-    resume()
 end
 
 local last_keypressed = nil
@@ -183,13 +189,13 @@ keys = {}
 keys.Space = "space"
 keys.Escape = "escape"
 
+function key()
+    return last_keypressed
+end
+
 -----------------------------------------------------
 --
 -----------------------------------------------------
-
-function canvas.refresh()
-    present()
-end
 
 function canvas.reset()
     canvas.objects = {}
@@ -199,9 +205,15 @@ function canvas.reset()
     canvas.lockCount = 0
 end
 
-local function present()
+function canvas.refresh() --not tested yet
     if co and coroutine.running()  then
-        if freezed and (freezed < os.clock()) then
+        coroutine.yield()
+    end
+end
+
+local function present(ignore) --ignore freezing
+    if co and coroutine.running()  then
+        if freezed and (freezed > 0) and (freezed < os.clock()) then --not forever, and expired
             freezed = nil
         end
 
@@ -218,8 +230,9 @@ end
 function canvas.lock()
     love.graphics.push("all")
     love.graphics.setCanvas(canvas.lockbuffer)
-    love.graphics.setColor(colors.White)
+    love.graphics.setColor({255, 255, 255})
     love.graphics.setBlendMode("alpha", "premultiplied")
+    love.graphics.clear()
     love.graphics.draw(canvas.buffer)
     love.graphics.setCanvas()
     love.graphics.pop()
@@ -243,39 +256,33 @@ end
 function canvas.defreeze()
     freezed = nil
     freezeTime = nil
+    present()
 end
 
 function canvas.freeze(seconds, repeated)
+    present()
     if seconds then
-        present()
         freezed = os.clock() + seconds
         if repeated then
             freezeTime = seconds
         end
     else
-        canvas.defreeze()
-        present()
+        freezed = 0 --forever, until defreeze
     end
 end
 
 ---------------------------
 
-function canvas.backcolor(r, g, b) --todo: use color index
-    if b == nil and g == nil then
-        love.graphics.setBackgroundColor(r)
-    else
-        love.graphics.setBackgroundColor(r, g, b)
-    end
-    present()
+function canvas.backcolor(color)
+    love.graphics.setBackgroundColor(color)
+    canvas.data.backcolor = color
+    --present() it will set in love.draw()
 end
 
-function canvas.color(r, g, b)
-    if b == nil and g == nil then
-        love.graphics.setColor(r)
-    else
-        love.graphics.setColor(r, g, b)
-    end
-    --no need to present()
+function canvas.color(color)
+    love.graphics.setColor(color)
+    canvas.data.color = color
+    --present() --maybe no need to present()
 end
 
 function canvas.clear(color)
@@ -284,13 +291,21 @@ function canvas.clear(color)
     present()
 end
 
+function canvas.save(filename)
+    data = canvas.buffer:newImageData()
+    data:encode("png", filename)
+end
+
 function canvas.circle(x, y, r)
     love.graphics.circle(fillmode(), x, y, r)
     present()
 end
 
-function canvas.rectangle(x, y, size)
-    love.graphics.rectangle(fillmode(), x, y, size, size)
+function canvas.rectangle(x, y, w, h)
+    if not h  then
+        h = w
+    end
+    love.graphics.rectangle(fillmode(), x, y, w, h)
     present()
 end
 
@@ -312,6 +327,21 @@ function canvas.point(x, y)
     love.graphics.points(x, y)
     canvas.last_x = x
     canvas.last_y = y
+    present()
+end
+
+function canvas.polygon(...)
+    love.graphics.polygon(fillmode(), ... )
+    present()
+end
+
+function canvas.square(x, y, size)  --x,y is center of rectangle
+    love.graphics.rectangle(fillmode(), x - size / 2, y - size / 2, size, size)
+    present()
+end
+
+function canvas.triangle(x, y, side)  --x,y is center of triangle
+    --love.graphics.polygone(fillmode(), ) --todo
     present()
 end
 
