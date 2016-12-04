@@ -1,4 +1,5 @@
-c1 = circles.new(100, 100, 50)
+c1 = rectangles.new(100, 100, 50, 50)
+--c1 = circles.new(100, 100, 50)
 --c1 = images.new("richard-say.png")
 
 function c1:prepare()

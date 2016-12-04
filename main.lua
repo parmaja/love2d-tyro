@@ -10,6 +10,7 @@
 require "basic.utils"
 require "basic.colors"
 require "basic.shapes"
+require "basic.shaders"
 
 debug_count = 0
 local debugging = false
@@ -35,6 +36,7 @@ if debugging then
 end
 
 canvas = {
+    shading = false,
     buffer = nil,
     lockbuffer = nil,
     lockCount = 0,
@@ -48,6 +50,10 @@ canvas = {
     last_y = 0,
     width = 0,
     height = 0,
+
+    add = function(o)
+        canvas.objects[#canvas.objects + 1] = o
+    end
 }
 
 --todo
@@ -90,7 +96,7 @@ function love.load()
     canvas.width = canvas.buffer:getWidth()
     canvas.height = canvas.buffer:getHeight()
 
-    glowShader = love.graphics.newShader(spotlight_glsl)
+    shader = love.graphics.newShader(glow_glsl)
 
     love.graphics.setCanvas(canvas.buffer)
 
@@ -132,17 +138,19 @@ end
 
 function love.draw()
 --	graphics.translate(offset_x, offset_y) --todo: canvas.offset(dx, dy)
+    if canvas.shading then
+        love.graphics.setShader(shader)
+
+        shader:send("size", { 0.1, 0.1 })
+        --shader:send("light_pos", {500, 200, 0})
+    else
+        love.graphics.setShader()
+    end
+
     if program then
         love.graphics.setCanvas(canvas.buffer)
-        --love.graphics.setBlendMode("alpha")
         resume()
-
         love.graphics.setCanvas()
-
-        love.graphics.setShader(glowShader)
-
-        --glowShader:send("size", { 0.1, 0.1 })
-        glowShader:send("light_pos", {500, 200, 0})
 
 
         love.graphics.setColor(canvas.data.color)
@@ -170,7 +178,9 @@ function love.draw()
             o.draw()
         end
     end
-    love.graphics.setShader()
+    if canvas.shading then
+        love.graphics.setShader()
+    end
 end
 
 local last_keypressed = nil
@@ -395,6 +405,10 @@ function sleep(seconds)
     love.timer.sleep(seconds)
 end
 
+function delay(seconds) --TODO
+
+end
+
 --Do not call co.resume for a while
 function pause(seconds)
     paused = os.clock() + seconds
@@ -426,3 +440,4 @@ function restart()
     co = coroutine.create(program)
     coroutine.yield()
 end
+

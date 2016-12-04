@@ -29,7 +29,7 @@ end
 for i = 0, 50 do
     x = x + 5
     y = y + 5
-    canvas.lock()
+    --canvas.lock()
     canvas.clear()
     canvas.backcolor(colors.Black)
     canvas.color(colors.Green)
@@ -37,9 +37,9 @@ for i = 0, 50 do
     canvas.color(colors.Red)
     canvas.circle(x, y, 50)
     canvas.text("Hello", x + 150, y)
-    humster.move(x, y)
-    c1.move(x + 2, y)
-    canvas.unlock()
+    humster:move(x, y)
+    c1:move(x + 2, y)
+    --canvas.unlock()
     --pause(0.005)
 end
 --quit()

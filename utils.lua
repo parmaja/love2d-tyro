@@ -31,3 +31,10 @@ end
 function extractFilename(filename)
     return string.match(filename, "(.-)([^\\]-([^\\%.]+))$")
 end
+
+function printtable(o)
+    for k, v in pairs(o) do
+        print (k, v)
+    end
+end
+
