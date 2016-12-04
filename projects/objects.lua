@@ -1,11 +1,11 @@
---c1 = circles.new(100, 100, 50)
-c1 = images.new("richard-say.png")
+c1 = circles.new(100, 100, 50)
+--c1 = images.new("richard-say.png")
 
 function c1:prepare()
     self.t = 10
     self.z = 10
---    self.fillmode = true
---    self.color = colors.Pink
+    self.fill = true
+    self.color = colors.Pink
 end
 
 function c1:update()

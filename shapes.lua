@@ -59,7 +59,7 @@ function circles.new(new_x, new_y, new_r)
         x =  new_x, y = new_y,
         r = new_r,
         color = colors.White,
-        fillmode = false
+        fill = false
     }
 
     function self.move(new_x, new_y)
@@ -68,7 +68,7 @@ function circles.new(new_x, new_y, new_r)
 
     function self.draw()
         love.graphics.setColor(self.color)
-        love.graphics.circle(fillmode(self.fillmode), self.x, self.y, self.r)
+        love.graphics.circle(fillmode(self.fill), self.x, self.y, self.r)
     end
 
     --self.x, self.y, self.r = new_x, new_y, new_r
@@ -91,7 +91,7 @@ function rectangles.new(new_x, new_y, new_width, new_height)
         width = new_width,
         height = new_height,
         color = colors.White,
-        fillmode = false
+        fill = false
     }
 
     function self.move(new_x, new_y)
@@ -100,7 +100,7 @@ function rectangles.new(new_x, new_y, new_width, new_height)
 
     function self.draw()
         love.graphics.setColor(self.color)
-        love.graphics.rectangle(fillmode(self.fillmode), self.x, self.y, self.width, self.height)
+        love.graphics.rectangle(fillmode(self.fill), self.x, self.y, self.width, self.height)
     end
 
     --self.x, self.y, self.r = new_x, new_y, new_r

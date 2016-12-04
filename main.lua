@@ -43,7 +43,7 @@ canvas = {
         color = nil,
         backcolor = nil
     },
-    fillmode = false,
+    fill = false,
     last_x = 0,
     last_y = 0,
     width = 0,
@@ -74,9 +74,7 @@ local function resume()
         if not paused then
             if coroutine.status(co) ~= "dead" then
                 --love.graphics.push("all")
-                --love.graphics.setShader(effect)
                 assert(coroutine.resume(co))
-                --love.graphics.setShader()
                 --love.graphics.pop()
             else
                 co = nil
@@ -92,7 +90,7 @@ function love.load()
     canvas.width = canvas.buffer:getWidth()
     canvas.height = canvas.buffer:getHeight()
 
-    --glowShader = love.graphics.newShader(gl_glow)
+    glowShader = love.graphics.newShader(spotlight_glsl)
 
     love.graphics.setCanvas(canvas.buffer)
 
@@ -113,7 +111,6 @@ end
 -------------------------------------------------------
 
 function love.update(dt)
-    --glowShader:send("size", { x, y })
     if not stopped then --if stoped only we stop updating, but drawing keep it
         if canvas.update then
             canvas.update()
@@ -139,7 +136,14 @@ function love.draw()
         love.graphics.setCanvas(canvas.buffer)
         --love.graphics.setBlendMode("alpha")
         resume()
+
         love.graphics.setCanvas()
+
+        love.graphics.setShader(glowShader)
+
+        --glowShader:send("size", { 0.1, 0.1 })
+        glowShader:send("light_pos", {500, 200, 0})
+
 
         love.graphics.setColor(canvas.data.color)
         love.graphics.setBackgroundColor(canvas.data.backcolor)
@@ -166,6 +170,7 @@ function love.draw()
             o.draw()
         end
     end
+    love.graphics.setShader()
 end
 
 local last_keypressed = nil
@@ -180,7 +185,7 @@ end
 
 function fillmode(b)
     if not b then
-        b = canvas.fillmode
+        b = canvas.fill
     end
 
     if b then
@@ -273,11 +278,11 @@ function canvas.defreeze()
     present()
 end
 
-function canvas.freeze(seconds, repeated)
+function canvas.freeze(seconds, once)
     present()
     if seconds then
         freezed = os.clock() + seconds
-        if repeated then
+        if not once then
             freezeTime = seconds
         end
     else
@@ -287,13 +292,23 @@ end
 
 ---------------------------
 
-function canvas.backcolor(color)
+function canvas.backcolor(color, alpha)
+    if alpha then
+        color[4] = alpha
+    elseif #color < 4 then
+        color[4] = 255
+    end
     love.graphics.setBackgroundColor(color)
     canvas.data.backcolor = color
     --present() it will set in love.draw()
 end
 
-function canvas.color(color)
+function canvas.color(color, alpha)
+    if alpha then
+        color[4] = alpha
+    elseif #color < 4 then
+        color[4] = 255
+    end
     love.graphics.setColor(color)
     canvas.data.color = color
     --present() --maybe no need to present()
