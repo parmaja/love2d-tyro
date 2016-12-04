@@ -1,16 +1,16 @@
 x, y = 0, 0
 c = 0
 
-humster = images.new("hamster.png")
+humster = objects.image("hamster.png")
 
-c1 = circles.new(10, 10, 5)
+c1 = objects.circle(10, 10, 5)
 c1.color = colors.Green
 
 function c1:update()
     self.r = self.r + 2
 end
 
-c2 = circles.new(50, 50, 5)
+c2 = objects.circle(50, 50, 5)
 c2.color = colors.Blue
 
 function c2:update()
@@ -18,7 +18,7 @@ function c2:update()
     self.x = self.x + 10
 end
 
-r1 = rectangles.new(50, 50, 100, 100)
+r1 = objects.rectangle(50, 50, 100, 100)
 r1.color = colors.Yellow
 
 function r1:update()

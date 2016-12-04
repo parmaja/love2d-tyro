@@ -13,6 +13,7 @@ object = {
 
 function object:inherite(values)
     local o = setmetatable({}, getmetatable(self))
+
     for k, v in pairs(self) do
         o[k] = v
     end
@@ -32,8 +33,25 @@ function object:clone(values)
     return o
 end
 
+function object:_changed()
+    if self.changed then
+        self:changed()
+    end
+end
+
 function object:move(new_x, new_y)
     self.x, self.y = new_x, new_y
+    self:_changed()
+end
+
+function object:show()
+    self.visible = true
+    self:_changed()
+end
+
+function object:hide()
+    self.visible = false
+    self:_changed()
 end
 
 function object.finish() --TODO finish it and remove it from objects list
@@ -41,13 +59,10 @@ function object.finish() --TODO finish it and remove it from objects list
 end
 
 --------------------------
--- Images
+-- Image
 --------------------------
 
-images = {
-}
-
-function images.new(filename)
+function objects.image(filename)
 
     local self = object:clone()
 
@@ -67,10 +82,7 @@ end
 -- Background
 --------------------------
 
-backgrounds = {
-}
-
-function backgrounds.new(filename)
+function objects.background(filename)
     local self = object:clone()
 
     self.img = love.graphics.newImage(filename)
@@ -100,13 +112,10 @@ shape = object:inherite{
 }
 
 --------------------------
--- Circles
+-- Circle
 --------------------------
 
-circles = {
-}
-
-function circles.new(new_x, new_y, new_r)
+function objects.circle(new_x, new_y, new_r)
     local self = shape:clone{
         r = 0,
     }
@@ -124,13 +133,10 @@ function circles.new(new_x, new_y, new_r)
 end
 
 --------------------------
--- Circles
+-- rectangle
 --------------------------
 
-rectangles = {
-}
-
-function rectangles.new(new_x, new_y, new_width, new_height)
+function objects.rectangle(new_x, new_y, new_width, new_height)
     local self = shape:clone{
         width = new_width,
         height = new_height,
@@ -147,7 +153,38 @@ function rectangles.new(new_x, new_y, new_width, new_height)
     return self
 end
 
+function objects.square(new_x, new_y, new_size)  --x,y is center of rectangle
+    local self = shape:clone{
+        size = new_size,
+    }
+
+    self.x =  new_x
+    self.y = new_y
+
+    function self.draw()
+        love.graphics.setColor(self.color)
+        love.graphics.rectangle(fillmode(self.fill), self.x - self.size / 2, self.y - self.size / 2, self.size, self.size)
+    end
+
+    return self
+end
+
 --todo:
 
-turtles = {
-}
+
+function objects.turtle(new_x, new_y, new_width, new_height)
+    local self = shape:clone{
+        width = new_width,
+        height = new_height,
+    }
+
+    self.x =  new_x
+    self.y = new_y
+
+    function self.draw()
+        love.graphics.setColor(self.color)
+        love.graphics.rectangle(fillmode(self.fill), self.x, self.y, self.width, self.height)
+    end
+
+    return self
+end
