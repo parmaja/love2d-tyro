@@ -9,7 +9,7 @@
 -----------------------------------------
 require "basic.utils"
 require "basic.colors"
-require "basic.shapes"
+require "basic.objects"
 require "basic.shaders"
 
 debug_count = 0
@@ -440,4 +440,3 @@ function restart()
     co = coroutine.create(program)
     coroutine.yield()
 end
-

@@ -1,5 +1,5 @@
 canvas.backcolor(colors.Black)
---canvas.freeze(0.001)
+canvas.freeze(0.001)
 canvas.shading = false
 while true do
 --		canvas.freeze()
