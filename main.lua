@@ -174,8 +174,8 @@ function love.draw()
     end
 
     for k, o in pairs(canvas.objects) do
-        if o.visible then
-            o.draw()
+        if o.visible and o.draw then
+            o:draw()
         end
     end
     if canvas.shading then

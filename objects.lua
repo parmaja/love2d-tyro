@@ -6,13 +6,25 @@ objects = {
 
 object = {
     class = "object", --class name
+    ascent = nil, --parent object/class
     visible = true,
+    rotate = 0,
     x = 0,
     y = 0,
 }
 
+function object:copyfrom(o)
+    if o then
+        for k, v in pairs(o) do
+            self[k] = v
+        end
+    end
+end
+
 function object:inherite(values)
     local o = setmetatable({}, getmetatable(self))
+
+    o.ascent = self
 
     for k, v in pairs(self) do
         o[k] = v
@@ -27,8 +39,8 @@ function object:inherite(values)
     return o
 end
 
-function object:clone(values)
-    o = self:inherite(values)
+function object:clone(...)
+    o = self:inherite(...)
     canvas.add(o)
     return o
 end
@@ -68,11 +80,11 @@ function objects.image(filename)
 
     self.img = love.graphics.newImage(filename)
 
-    function self.draw()
+    function self:draw()
         love.graphics.push("all")
         love.graphics.setColor(colors.White)
         love.graphics.setBlendMode("alpha", "premultiplied")
-        love.graphics.draw(self.img, self.x, self.y)
+        love.graphics.draw(self.img, self.x, self.y, self.rotate)
         love.graphics.pop()
     end
     return self
@@ -90,7 +102,7 @@ function objects.background(filename)
     function self:scroll(dx, dy)
     end
 
-    function self.draw()
+    function self:draw()
         love.graphics.push("all")
         love.graphics.setColor(colors.White)
         love.graphics.setBlendMode("alpha", "premultiplied")
@@ -124,16 +136,16 @@ function objects.circle(new_x, new_y, new_r)
     self.y = new_y
     self.r = new_r
 
-    function self.draw()
+    function self:draw()
         love.graphics.setColor(self.color)
-        love.graphics.circle(fillmode(self.fill), self.x, self.y, self.r)
+        --love.graphics.circle(fillmode(self.fill), self.x, self.y, self.r)
     end
 
     return self
 end
 
 --------------------------
--- rectangle
+-- Rectangle
 --------------------------
 
 function objects.rectangle(new_x, new_y, new_width, new_height)
@@ -145,7 +157,7 @@ function objects.rectangle(new_x, new_y, new_width, new_height)
     self.x =  new_x
     self.y = new_y
 
-    function self.draw()
+    function self:draw()
         love.graphics.setColor(self.color)
         love.graphics.rectangle(fillmode(self.fill), self.x, self.y, self.width, self.height)
     end
@@ -161,7 +173,7 @@ function objects.square(new_x, new_y, new_size)  --x,y is center of rectangle
     self.x =  new_x
     self.y = new_y
 
-    function self.draw()
+    function self:draw()
         love.graphics.setColor(self.color)
         love.graphics.rectangle(fillmode(self.fill), self.x - self.size / 2, self.y - self.size / 2, self.size, self.size)
     end
@@ -181,7 +193,7 @@ function objects.turtle(new_x, new_y, new_width, new_height)
     self.x =  new_x
     self.y = new_y
 
-    function self.draw()
+    function self:draw()
         love.graphics.setColor(self.color)
         love.graphics.rectangle(fillmode(self.fill), self.x, self.y, self.width, self.height)
     end

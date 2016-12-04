@@ -1,6 +1,5 @@
 c1 = objects.square(100, 100, 50)
 --c1 = objects.circle(100, 100, 50)
---c1 = objects.image("richard-say.png")
 
 function c1:prepare()
     self.t = 10
@@ -33,9 +32,9 @@ function c1:update()
     if key() == "s" then
         stop()
     elseif key() == "g" then
-        c1:show()
+        self:show()
     elseif key() == "h" then
-        c1:hide()
+        self:hide()
     end
 --    local c = math.random(2, colors.count)
 --    self.color =  colors[c]
@@ -48,3 +47,14 @@ c2.prepare = c1.prepare
 c2.update = c1.update
 
 c2.color = {0,155,187}
+
+
+richard = objects.image("richard-say.png")
+richard.prepare = c1.prepare
+richard.update = c1.update
+
+c3 = c1:clone()
+c3.x = 150
+c3.y = 500
+c3.size = 100
+c3.color = colors.Red
