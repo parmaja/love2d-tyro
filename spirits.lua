@@ -7,8 +7,6 @@
 --------------------------
 -- Image
 --------------------------
-objects = {
-}
 
 function objects.image(filename)
     local self = visual:clone()
@@ -119,8 +117,9 @@ end
 --todo:
 
 
-function objects.turtle(new_x, new_y, new_width, new_height)
+function objects.turtle(new_x, new_y, new_width, new_height) --TODO
     local self = shape:clone{
+        on = true,
         width = new_width,
         height = new_height,
     }
@@ -128,11 +127,8 @@ function objects.turtle(new_x, new_y, new_width, new_height)
     self.x =  new_x
     self.y = new_y
 
-
-    function self:penDown
-    end
-
-    function self:penUown
+    function self:pen(on)
+        self.on = on
     end
 
     function self:forward(count)

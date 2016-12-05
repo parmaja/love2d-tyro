@@ -12,8 +12,10 @@
 require "basic.utils"
 require "basic.objects"
 require "basic.colors"
-require "basic.spirits"
 require "basic.shaders"
+
+require "basic.spirits"
+require "basic.consoles"
 
 debug_count = 0
 local debugging = false
@@ -443,4 +445,3 @@ function restart()
     co = coroutine.create(program)
     coroutine.yield()
 end
-

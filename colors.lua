@@ -55,5 +55,7 @@ colors.Lime   =	{50, 205, 50}
 
 colors.Silver = {192,192,192}
 colors.Gray   = {128,128,128}
+colors.RoyalBlue = {00, 23, 66}
+colors.Navy = {0, 0, 128}
 
 --TODO more colors

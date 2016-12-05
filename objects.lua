@@ -7,6 +7,12 @@
 --  Base object for other objects, inherite and clone are here, kinda of oop
 -------------------------------------------------------------------------------
 
+classes = {
+}
+
+objects = {
+}
+
 object = {
     class = "object", --class name
     ascent = nil, --parent object/class
@@ -45,7 +51,6 @@ function object:clone(...)
     end
     return o
 end
-
 
 visual = object:clone{
     visible = true,
