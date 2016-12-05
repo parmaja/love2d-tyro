@@ -1,15 +1,18 @@
------------------------------------------
--- License: MIT
--- Author: Zaher Dirkey
------------------------------------------
+-------------------------------------------------------------------------------
+--  This file is part of the "Lua LOVE Basic"
+--
+--   @license   The MIT License (MIT) Included in this distribution
+--   @author    Zaher Dirkey <zaherdirkey at yahoo dot com>
+-------------------------------------------------------------------------------
 --
 -- Do not put this file in your project older
 -- create new main.lua and put require("basic.main")
 -- Have fun
------------------------------------------
+-------------------------------------------------------------------------------
 require "basic.utils"
-require "basic.colors"
 require "basic.objects"
+require "basic.colors"
+require "basic.spirits"
 require "basic.shaders"
 
 debug_count = 0
@@ -35,7 +38,7 @@ if debugging then
     require("mobdebug").start()
 end
 
-canvas = {
+canvas = object:clone{
     shading = false,
     buffer = nil,
     lockbuffer = nil,
@@ -50,11 +53,11 @@ canvas = {
     last_y = 0,
     width = 0,
     height = 0,
-
-    add = function(o)
-        canvas.objects[#canvas.objects + 1] = o
-    end
 }
+
+function canvas.add(o)
+    canvas.objects[#canvas.objects + 1] = o
+end
 
 --todo
 console = {
@@ -440,3 +443,4 @@ function restart()
     co = coroutine.create(program)
     coroutine.yield()
 end
+

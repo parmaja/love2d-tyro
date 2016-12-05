@@ -1,3 +1,10 @@
+-------------------------------------------------------------------------------
+--  This file is part of the "Lua LOVE Basic"
+--
+--   @license   The MIT License (MIT) Included in this distribution
+--   @author    Zaher Dirkey <zaherdirkey at yahoo dot com>
+-------------------------------------------------------------------------------
+
 function write(...)
     local args = {...}
     for i, v in ipairs(args) do
@@ -37,4 +44,3 @@ function printtable(o)
         print (k, v)
     end
 end
-

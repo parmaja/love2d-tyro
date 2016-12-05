@@ -1,3 +1,10 @@
+-------------------------------------------------------------------------------
+--  This file is part of the "Lua LOVE Basic"
+--
+--   @license   The MIT License (MIT) Included in this distribution
+--   @author    Zaher Dirkey <zaherdirkey at yahoo dot com>
+-------------------------------------------------------------------------------
+
 -----------------------------------------------------
 -- Colors
 -----------------------------------------------------
@@ -48,3 +55,5 @@ colors.Lime   =	{50, 205, 50}
 
 colors.Silver = {192,192,192}
 colors.Gray   = {128,128,128}
+
+--TODO more colors

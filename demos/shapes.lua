@@ -7,14 +7,14 @@ c1 = objects.circle(10, 10, 5)
 c1.color = colors.Green
 
 function c1:update()
-    self.r = self.r + 2
+    self.size = self.size + 2
 end
 
 c2 = objects.circle(50, 50, 5)
 c2.color = colors.Blue
 
 function c2:update()
-    self.r = self.r + 2
+    self.size = self.size + 2
     self.x = self.x + 10
 end
 
@@ -26,10 +26,12 @@ function r1:update()
     self.height = self.height + 2
 end
 
+--canvas.freeze(0.01)
+
 for i = 0, 50 do
     x = x + 5
     y = y + 5
-    --canvas.lock()
+    canvas.lock()
     canvas.clear()
     canvas.backcolor(colors.Black)
     canvas.color(colors.Green)
@@ -37,9 +39,9 @@ for i = 0, 50 do
     canvas.color(colors.Red)
     canvas.circle(x, y, 50)
     canvas.text("Hello", x + 150, y)
-    humster:move(x, y)
-    c1:move(x + 2, y)
-    --canvas.unlock()
+    humster:put(x, y)
+    c1:put(x + 2, y)
+    canvas.unlock()
     --pause(0.005)
 end
 --quit()
