@@ -14,6 +14,7 @@ require "basic.objects"
 require "basic.colors"
 require "basic.shaders"
 
+require "basic.music"
 require "basic.spirits"
 require "basic.consoles"
 
@@ -192,6 +193,11 @@ local last_keypressed = nil
 
 function love.keypressed(key, scancode, isrepeat)
     last_keypressed = key
+    if last_keypressed == "p" then
+        music.sound(0.1, 660)
+    elseif last_keypressed == "s" then
+        music.stop()
+    end
 end
 
 function love.keyreleased(key)
@@ -219,8 +225,12 @@ keys = {}
 keys.Space = "space"
 keys.Escape = "escape"
 
-function key()
-    return last_keypressed
+function key(kill)
+    result = last_keypressed
+    if kill then
+        last_keypressed = nil
+    end
+    return result
 end
 
 -----------------------------------------------------

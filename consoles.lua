@@ -59,6 +59,9 @@ function classes.console:add(new_text)
     return line
 end
 
+function classes.console:update(dt)
+end
+
 function classes.console:draw()
     local x = self.window.top
     local y = self.window.left
