@@ -5,11 +5,12 @@ canvas.setpoint(0, 100) --set start point
 --      canvas.line(x,  y + 200) --drawing line to this point
 --end
 
-length = 0.1
-pitch = 440
+local rate = 44100
+local length = 0.1
+local pitch = 440
 local overtime = 1.5
-for i = 0, length * 44100 * overtime - 1 do
-  local sample = math.sin((i * pitch * math.pi * 2) / 44100) * length
+for i = 0, length * rate * overtime - 1 do
+  local sample = math.sin((i * pitch * math.pi * 2) / rate) * length
   canvas.line(i, sample * 100 + 100)
 end
 

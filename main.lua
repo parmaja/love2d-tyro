@@ -194,7 +194,7 @@ local last_keypressed = nil
 function love.keypressed(key, scancode, isrepeat)
     last_keypressed = key
     if last_keypressed == "p" then
-        music.sound(0.1, 660)
+        music.beep()
     elseif last_keypressed == "s" then
         music.stop()
     end
