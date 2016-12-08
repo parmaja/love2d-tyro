@@ -7,12 +7,16 @@
 
 music = {
     loop = false,
-    background, --play in background
+    background, --TODO: play in background
     volume = 50,
-    source = nil, --current source
 }
 
 local composer = {
+    source = nil, --current source playing/cached
+    last = {
+        pitch = nil,
+        length = nil,
+    }
 }
 
 --ref:  http://www.qb64.net/wiki/index.php/PLAY
@@ -65,43 +69,50 @@ local function makeSample(pitch, length) --(seconds, freq)
     local rate = 44100
     local tick = love.sound.newSoundData(length * rate, rate, 16, 1)
     for i = 0, length * rate - 1 do
-      local sample = math.sin((i * pitch) * ((math.pi * 2) / rate)) * 1.5
-      tick:setSample(i, sample)
+           local sample = math.sin((i * pitch) * ((math.pi * 2) / rate)) * 1.5
+          tick:setSample(i, sample)
     end
     return tick
 end
 
-local function sleep(s)
-      local ntime = os.clock() + s
-      repeat until os.clock() > ntime
+local function delay(seconds)
+    local n = os.clock() + seconds
+    while os.clock() <= n do
+    end
 end
 
 function music.sound(length, pitch, wait)
     wait = wait or false
-    music.stop()
-    local sample = makeSample(pitch, length)
-    music.source = love.audio.newSource(sample)
-    music.source:setVolume(music.volume)
-    music.source:setLooping(false)
-    music.start()
+    if composer.source then
+        composer.source:stop()
+    end
+    if not (composer.source and (composer.last.length == length) and (composer.last.pitch == pitch)) then
+        composer.last.length = length
+        composer.last.pitch = pitch
+        local sample = makeSample(pitch, length)
+        composer.source = love.audio.newSource(sample)
+        composer.source:setVolume(music.volume)
+        composer.source:setLooping(false)
+    end
+    composer.source:play()
     if wait then
-        --sleep(length) --just trying
-        while music.source:isPlaying() do
+        --delay(length) --just trying
+        while composer.source:isPlaying() do
             --oh no
         end
     end
 end
 
 function music.start()
-    if music.source then
-        music.source:play()
+    if composer.source then
+        composer.source:play()
     end
 end
 
 function music.stop(all)
-    if music.source then
-        music.source:stop()
-        music.source = nil
+    if composer.source then
+        composer.source:stop()
+        composer.source = nil
     end
 end
 
@@ -114,7 +125,7 @@ function music.play(notes)
 end
 
 function composer.parse(notes)
-    --Vonstants values
+    --Constants values
     local baseNumber = 2 ^ (1/12)
     local baseOctave = 4
     local baseNoteC4 = 261.63
@@ -123,12 +134,12 @@ function composer.parse(notes)
 
     --Current values by default
     local freq = 0
+
     local tempo = 120
     local octave = 4
     local length = 4 --note length
     local subsequent = 0 -- 0 = normal 1 = staccato -1 = legato
 
-    local extraoctave = 0
     local pos = 0
 
     local scores = {
@@ -160,7 +171,7 @@ function composer.parse(notes)
                 error("We dont have it in music:" .. note)
             end
             --calc index using current octave
-            index = (octave - baseOctave + extraoctave) * 12 + index + offset
+            index = (octave - baseOctave) * 12 + index + offset
             f = math.floor(baseNoteC4 * (baseNumber ^ index))
         end
         --ref: https://music.stackexchange.com/questions/24140/how-can-i-find-the-length-in-seconds-of-a-quarter-note-crotchet-if-i-have-a-te
@@ -187,6 +198,10 @@ function composer.parse(notes)
     end
 
     local function reset()
+        local tempo = 120
+        local octave = 4
+        local length = 4 --note length
+        local subsequent = 0 -- 0 = normal 1 = staccato -1 = legato
     end
 
     local function step()
@@ -236,7 +251,7 @@ function composer.parse(notes)
 
     next()
     while pos <= #notes do
-        if check(chr, {" ", "\n", "\t"}) then
+        if check(chr, {" ", "\n", "\r", "\t"}) then
             next()
         elseif chr=="!" then
             reset()
@@ -298,7 +313,7 @@ function composer.parse(notes)
             octave = octave - 1
             next()
         elseif chr == "," then
-            playnote(0, 1)
+            playnote("r", 1, 0, 1)
             next()
         elseif chr == "m" then --backlegcy
             next()
