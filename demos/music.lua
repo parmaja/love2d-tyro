@@ -103,4 +103,4 @@ p8eee8e8e8e8e4p8p16
 ee4p8p16o2ee2
 ]]
 
-composer.parse(WilliamTell)
+music.play(WilliamTell)

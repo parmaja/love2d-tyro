@@ -13,8 +13,12 @@ music = {
     source = nil --current source
 }
 
+local composer = {
+}
+
 --ref: 	https://github.com/miko/Love2d-samples/blob/master/MikoIntroScreen/Intro.lua#L38
 --		http://www.headchant.com/2011/11/01/sound-synthesis-with-love-part-ii-sine-waves/
+--      https://stackoverflow.com/questions/11355353/how-can-i-convert-qbasic-play-commands-to-something-more-contemporary
 --qbasic todo style http://www.schoolfreeware.com/QBasic_Tutorial_25_-_Sound_And_Music_-_QB64.html
 --http://www.qb64.net/wiki/index.php/PLAY
 --ref: http://www.delphipraxis.net/970179-post1.html
@@ -55,10 +59,10 @@ music = {
                              # denotes sharp
 -----------------------------------------------------------------------------]]
 
------------------
---
+-----------------------------------
 -- Example: makeSample(0.1, 440) --
------------------
+-----------------------------------
+
 local function makeSample(length, pitch) --(seconds, freq)
     local rate = 8000 --44100
     local length = length or 0.1
@@ -98,9 +102,8 @@ function music.beep()
 end
 
 function music.play(notes)
+    composer.parse(notes)
 end
-
-composer = {}
 
 function composer.parse(notes)
     --Vonstants values
@@ -115,10 +118,12 @@ function composer.parse(notes)
     local tempo = 120
     local octave = 4
     local length = 4 --note length
+    local subsequent = 0 -- 0 = normal 1 = staccato -1 = legato
     local mode = 0
     local loop = 0
 
-    local extraoctave = 2
+    local extraoctave = 0
+    local pos = 0
 
     local scores = {
         ["c"]   = 0,
@@ -135,9 +140,12 @@ function composer.parse(notes)
         ["b"]   = 11,
     }
 
-    --playnote(char, number[-1,0,+1], number[1..16], number[1..2]) --
-    --playnote("c#", 0, 2, 1)
+    --playnote(char, number[-1,0,+1], number[1..16], number[1..2])
+    --playnote("c#", 1, 0, 0)
+    --playnote("r", 1)
     local function playnote(note, duration, offset, increase)
+        increase = increase or 1
+        offset = offset or 0
         if note == "r" then
             f = 0
         else
@@ -152,9 +160,11 @@ function composer.parse(notes)
         --ref: https://music.stackexchange.com/questions/24140/how-can-i-find-the-length-in-seconds-of-a-quarter-note-crotchet-if-i-have-a-te
         --     http://www.sengpielaudio.com/calculator-bpmtempotime.htm
         --4 seconds for tempo = 60 beat per second, so what if tempo 120 and 2 for duration
-        l = (baseLength / duration) * (baseTempo / tempo) * increase;
-        print("freq", f)
-        print("length", l)
+        l = (baseLength / duration) * (baseTempo / tempo) * (1 + increase);
+        if debugging then
+            print("freq", f)
+            print("length", l)
+        end
         music.sound(l, f)
         while music.source:isPlaying() do
             --oh no
@@ -164,8 +174,6 @@ function composer.parse(notes)
     local i = 1
 
     local chr = ""
-    local p = 0
-
     local function check(chr, t)
         for k, v in pairs(t) do
             if chr == v then
@@ -179,22 +187,22 @@ function composer.parse(notes)
     end
 
     local function step()
-        p = p + 1
-        return (p <= #notes)
+        pos = pos + 1
+        return (pos <= #notes)
     end
 
     local function next()
         if not step() then
             return nil
         else
-            chr = notes:sub(p, p)
+            chr = notes:sub(pos, pos)
             return true
         end
     end
 
     local function scan_number()
         local r = ""
-        while p <= #notes do
+        while pos <= #notes do
             if chr >= "0" and chr <= "9" then
                 r = r .. chr
             else
@@ -207,7 +215,7 @@ function composer.parse(notes)
 
     local function scan(t)
         local r = ""
-        while p <= #notes do
+        while pos <= #notes do
             if check(chr, t) then
                 r = r .. chr
             else
@@ -219,7 +227,7 @@ function composer.parse(notes)
     end
 
     next()
-    while p <= #notes do
+    while pos <= #notes do
         if check(chr, {" ", "\n", "\t"}) then
             next()
         elseif chr=="!" then
@@ -243,10 +251,12 @@ function composer.parse(notes)
                 next()
             end
 
-            local increase = 1
+            local increase = 0
+            local by = 0.5
             if chr == "." then
                 repeat
-                    increase = increase + 0.5 --not sure about next dot
+                    increase = increase + by --not sure about next dot
+                    by = by / 2
                     next()
                 until chr ~= "."
             end
@@ -256,9 +266,9 @@ function composer.parse(notes)
             playnote(note, duration, offset, increase)
 
         elseif chr == "n" then
-            local number = scan_number()
+            local number = scan_number() --TODO
             if number == nil then
-                error("n command need Number")
+                error("[music.play] n command need Number at :" .. tostring(pos))
             end
         elseif chr == "t" then
             next()
@@ -266,7 +276,7 @@ function composer.parse(notes)
         elseif chr == "l" then
             next()
             length = scan_number()
-        elseif chr == "p" then
+        elseif chr == "p" or chr == "r" then
             next()
             local duration = scan_number()
             playnote("r", duration, 0, 1)
@@ -279,19 +289,22 @@ function composer.parse(notes)
         elseif chr == ">" then
             octave = octave - 1
             next()
-        elseif chr == "." then
-            --idk what is this
-            next()
         elseif chr == "m" then --backlegcy
-            next() --ingore next char
+            next()
+            if chr == "n" then
+                subsequent = 0
+            elseif chr == "l" then
+                subsequent = 1
+            elseif chr == "s" then
+                subsequent = -1
+            elseif chr == "f" then --just for compatibility
+            elseif chr == "b" then
+            else
+                error("[music.play] Illegal subcommand for M" .. chr .. " at :" .. tostring(pos))
+            end
             next()
         else
-            error("[music.play] Can not recognize: " .. chr)
+            error("[music.play] Can not recognize: " .. chr .. " at :" .. tostring(pos))
         end
     end
 end
-
-print "test parser"
---composer.parse("a#40b10c50d#e+f-g")
---composer.parse("cc#dd#efgab")
---composer.parse("o4cc#p1dd#efgab")
