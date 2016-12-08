@@ -62,10 +62,10 @@ local composer = {
 -----------------------------------
 
 local function makeSample(pitch, length) --(seconds, freq)
-    local rate = 8000 --44100
+    local rate = 44100
     local tick = love.sound.newSoundData(length * rate, rate, 16, 1)
     for i = 0, length * rate - 1 do
-      local sample = math.sin((i * pitch * math.pi * 2) / rate) * length
+      local sample = math.sin((i * pitch) * ((math.pi * 2) / rate)) * 1.5
       tick:setSample(i, sample)
     end
     return tick
@@ -85,10 +85,10 @@ function music.sound(length, pitch, wait)
     music.source:setLooping(false)
     music.start()
     if wait then
-        sleep(length) --just trying
-        --while music.source:isPlaying() do
+        --sleep(length) --just trying
+        while music.source:isPlaying() do
             --oh no
-        --end
+        end
     end
 end
 
