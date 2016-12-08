@@ -6,25 +6,23 @@
 -------------------------------------------------------------------------------
 
 music = {
-    loop,
-    background, --play in back ground
-    volume = 2,
-
-    source = nil --current source
+    loop = false,
+    background, --play in background
+    volume = 50,
+    source = nil, --current source
 }
 
 local composer = {
 }
 
---ref: 	https://github.com/miko/Love2d-samples/blob/master/MikoIntroScreen/Intro.lua#L38
+--ref:  http://www.qb64.net/wiki/index.php/PLAY
+--		https://github.com/miko/Love2d-samples/blob/master/MikoIntroScreen/Intro.lua#L38
 --		http://www.headchant.com/2011/11/01/sound-synthesis-with-love-part-ii-sine-waves/
 --      https://stackoverflow.com/questions/11355353/how-can-i-convert-qbasic-play-commands-to-something-more-contemporary
---qbasic todo style http://www.schoolfreeware.com/QBasic_Tutorial_25_-_Sound_And_Music_-_QB64.html
---http://www.qb64.net/wiki/index.php/PLAY
---ref: http://www.delphipraxis.net/970179-post1.html
 --ref: http://www.phy.mtu.edu/~suits/notefreqs.html
---ref: http://www.qb64.net/wiki/index.php?title=SOUND
+
 -------------------------------------------------------------------------------
+--ref: http://www.qb64.net/wiki/index.php?title=SOUND
 --[[					The Seven Music Octaves
 
      Note     Frequency      Note     Frequency      Note      Frequency
@@ -63,10 +61,8 @@ local composer = {
 -- Example: makeSample(0.1, 440) --
 -----------------------------------
 
-local function makeSample(length, pitch) --(seconds, freq)
+local function makeSample(pitch, length) --(seconds, freq)
     local rate = 8000 --44100
-    local length = length or 0.1
-    local pitch = pitch or 440
     local tick = love.sound.newSoundData(length * rate, rate, 16, 1)
     for i = 0, length * rate - 1 do
       local sample = math.sin((i * pitch * math.pi * 2) / rate) * length
@@ -75,13 +71,25 @@ local function makeSample(length, pitch) --(seconds, freq)
     return tick
 end
 
-function music.sound(length, pitch)
-    local sample = makeSample(length, pitch)
-      music.stop()
+local function sleep(s)
+      local ntime = os.clock() + s
+      repeat until os.clock() > ntime
+end
+
+function music.sound(length, pitch, wait)
+    wait = wait or false
+    music.stop()
+    local sample = makeSample(pitch, length)
     music.source = love.audio.newSource(sample)
     music.source:setVolume(music.volume)
     music.source:setLooping(false)
     music.start()
+    if wait then
+        sleep(length) --just trying
+        --while music.source:isPlaying() do
+            --oh no
+        --end
+    end
 end
 
 function music.start()
@@ -119,8 +127,6 @@ function composer.parse(notes)
     local octave = 4
     local length = 4 --note length
     local subsequent = 0 -- 0 = normal 1 = staccato -1 = legato
-    local mode = 0
-    local loop = 0
 
     local extraoctave = 0
     local pos = 0
@@ -161,14 +167,11 @@ function composer.parse(notes)
         --     http://www.sengpielaudio.com/calculator-bpmtempotime.htm
         --4 seconds for tempo = 60 beat per second, so what if tempo 120 and 2 for duration
         l = (baseLength / duration) * (baseTempo / tempo) * (1 + increase);
+        print("freq", f)
         if debugging then
-            print("freq", f)
-            print("length", l)
+            --print("length", l)
         end
-        music.sound(l, f)
-        while music.source:isPlaying() do
-            --oh no
-        end
+        music.sound(l, f, true)
     end
 
     local i = 1
@@ -200,7 +203,7 @@ function composer.parse(notes)
         end
     end
 
-    local function scan_number()
+    local function scan_number(max)
         local r = ""
         while pos <= #notes do
             if chr >= "0" and chr <= "9" then
@@ -208,7 +211,12 @@ function composer.parse(notes)
             else
                 break
             end
+
             next()
+
+            if max and #r >= max then
+                break
+            end
         end
         return tonumber(r)
     end
@@ -266,7 +274,7 @@ function composer.parse(notes)
             playnote(note, duration, offset, increase)
 
         elseif chr == "n" then
-            local number = scan_number() --TODO
+            local number = scan_number(2) --TODO
             if number == nil then
                 error("[music.play] n command need Number at :" .. tostring(pos))
             end
@@ -288,6 +296,9 @@ function composer.parse(notes)
             next()
         elseif chr == ">" then
             octave = octave - 1
+            next()
+        elseif chr == "," then
+            playnote(0, 1)
             next()
         elseif chr == "m" then --backlegcy
             next()
