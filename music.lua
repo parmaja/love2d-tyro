@@ -100,49 +100,65 @@ end
 function music.play(notes)
 end
 
-local composer = {}
+composer = {}
 
 function composer.parse(notes)
-    local scores = {
-        c      = 0,
-        ["c#"] = 1,
-        d      = 2,
-        ["d#"] = 3,
-        e      = 4,
-        f      = 5,
-        ["f#"] = 6,
-        g      = 7,
-        ["g#"] = 8,
-        a      = 9,
-        ["a#"] = 10,
-        ["b"]  = 11,
-    }
-
+    --Vonstants values
     local baseNumber = 2 ^ (1/12)
     local baseOctave = 4
     local baseNoteC4 = 261.63
     local baseLength = 4
+    local baseTempo = 60
 
+    --Current values by default
     local freq = 0
     local tempo = 120
     local octave = 4
     local length = 4 --note length
     local mode = 0
     local loop = 0
-    --local offset = 1
 
-    local function playnote(note, offset, len) --playnote("c", 1) --playnote(char, number[-1,0,+1]) --
-        local index = (octave - baseOctave) * 12 + scores[note] + offset
-        f = math.floor(baseNoteC4 * (baseNumber ^ index))
-        l = math.floor(600 * baseLength / (tempo * len));
+    local extraoctave = 2
+
+    local scores = {
+        ["c"]   = 0,
+        ["c#"]  = 1,
+        ["d"]   = 2,
+        ["d#"]  = 3,
+        ["e"]   = 4,
+        ["f"]   = 5,
+        ["f#"]  = 6,
+        ["g"]   = 7,
+        ["g#"]  = 8,
+        ["a"]   = 9,
+        ["a#"]  = 10,
+        ["b"]   = 11,
+    }
+
+    --playnote(char, number[-1,0,+1], number[1..16], number[1..2]) --
+    --playnote("c#", 0, 2, 1)
+    local function playnote(note, duration, offset, increase)
+        if note == "r" then
+            f = 0
+        else
+            local index = scores[note]
+            if not index then
+                error("We dont have it in music:" .. note)
+            end
+            --calc index using current octave
+            index = (octave - baseOctave + extraoctave) * 12 + index + offset
+            f = math.floor(baseNoteC4 * (baseNumber ^ index))
+        end
+        --ref: https://music.stackexchange.com/questions/24140/how-can-i-find-the-length-in-seconds-of-a-quarter-note-crotchet-if-i-have-a-te
+        --     http://www.sengpielaudio.com/calculator-bpmtempotime.htm
+        --4 seconds for tempo = 60 beat per second, so what if tempo 120 and 2 for duration
+        l = (baseLength / duration) * (baseTempo / tempo) * increase;
         print("freq", f)
-        print("octave", f)
         print("length", l)
---    	note =
-        --music.sound(l, f)
-        --while music.source:isPlaying() do
+        music.sound(l, f)
+        while music.source:isPlaying() do
             --oh no
-        --end
+        end
     end
 
     local i = 1
@@ -227,8 +243,18 @@ function composer.parse(notes)
                 next()
             end
 
-            local len = scan_number() or length
-            playnote(note, offset, len)
+            local increase = 1
+            if chr == "." then
+                repeat
+                    increase = increase + 0.5 --not sure about next dot
+                    next()
+                until chr ~= "."
+            end
+
+            local duration = scan_number() or length
+
+            playnote(note, duration, offset, increase)
+
         elseif chr == "n" then
             local number = scan_number()
             if number == nil then
@@ -242,7 +268,8 @@ function composer.parse(notes)
             length = scan_number()
         elseif chr == "p" then
             next()
-            pause = scan_number()
+            local duration = scan_number()
+            playnote("r", duration, 0, 1)
         elseif chr == "o" then
             next()
             octave = scan_number()
@@ -259,7 +286,7 @@ function composer.parse(notes)
             next() --ingore next char
             next()
         else
-            error("[music.play] Can not recognize :" .. tostring(chr))
+            error("[music.play] Can not recognize: " .. chr)
         end
     end
 end
@@ -267,5 +294,4 @@ end
 print "test parser"
 --composer.parse("a#40b10c50d#e+f-g")
 --composer.parse("cc#dd#efgab")
-composer.parse("o3cc#dd#efgab")
---parse("mfl16t155o2mnb4p8msbbmnb4p8msbbb8g#8e8g#8b8g#8b8o3e8o2b8g#8e8g#8")
+--composer.parse("o4cc#p1dd#efgab")
