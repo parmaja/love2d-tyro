@@ -138,7 +138,7 @@ function composer.parse(notes)
     local tempo = 120
     local octave = 4
     local length = 4 --note length
-    local subsequent = 0 -- 0 = normal 1 = staccato -1 = legato
+    local subsequent = 0 -- 0 = legato 1 = normal 2 = staccato
 
     local pos = 0
 
@@ -182,7 +182,19 @@ function composer.parse(notes)
         if debugging then
             --print("length", l)
         end
+
+        local rest = 0   --legato
+        if subsequent == 1 then --normal
+            rest = l * 1 / 8
+            l = l - rest
+        elseif subsequent == 2 then --staccato
+            rest = l * 1 / 4
+            l = l - rest
+        end
         music.sound(l, f, true)
+        if rest > 0 then
+            delay(rest)
+        end
     end
 
     local i = 1
@@ -198,10 +210,10 @@ function composer.parse(notes)
     end
 
     local function reset()
-        local tempo = 120
-        local octave = 4
-        local length = 4 --note length
-        local subsequent = 0 -- 0 = normal 1 = staccato -1 = legato
+        tempo = 120
+        octave = 4
+        length = 4 --note length
+        subsequent = 0
     end
 
     local function step()
@@ -318,11 +330,11 @@ function composer.parse(notes)
         elseif chr == "m" then --backlegcy
             next()
             if chr == "n" then
-                subsequent = 0
-            elseif chr == "l" then
                 subsequent = 1
+            elseif chr == "l" then
+                subsequent = 0
             elseif chr == "s" then
-                subsequent = -1
+                subsequent = 2
             elseif chr == "f" then --just for compatibility
             elseif chr == "b" then
             else
