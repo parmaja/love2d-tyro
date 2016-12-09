@@ -70,15 +70,21 @@ end
 ---------------------------------------------
 -- Example: composer.generate(440, 0.1)    --
 ---------------------------------------------
---(freq, seconds)
+--generate((freq, seconds)
+--generate sample waveform
 
 function composer.generate(pitch, length)
     local rate = 22050 -- or 44100
     local amplitude = 1.5 --not sure, i added it by my hand :P
     local tick = love.sound.newSoundData(length * rate, rate, 16, 1)
-    for i = 0, length * rate - 1 do
-        local sample = math.sin((i * pitch) * ((2 * math.pi) / rate)) * amplitude
-        tick:setSample(i, sample)
+    local sample = 0
+    for index = 0, length * rate - 1 do
+        if composer.waveform then
+            sample = composer.waveform(index, pitch, rate) * amplitude
+        else
+            sample = math.sin((index * pitch) * ((2 * math.pi) / rate)) * amplitude
+        end
+        tick:setSample(index, sample)
     end
     return tick
 end
