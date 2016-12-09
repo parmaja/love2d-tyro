@@ -1,7 +1,7 @@
 -- William Tell --
 --ref: http://www.kkuzba.com/links/qbsrc/WILLTELL.ZIP
 WilliamTell = [[
-mfl16t155s1
+mfl16t155s2
 o2mnb4p8msbbmnb4p8msbbb8g#8
 e8g#8b8g#8b8o3e8o2b8g#8e8g#8
 b8g#8b8o3e8o2mnb4p8msbbmnb4
@@ -103,37 +103,18 @@ p8eee8e8e8e8e4p8p16
 ee4p8p16o2ee2
 ]]
 
-new = [[
->4eepepcep1g<g4>cpp<gpeppapbpa+ap4g>eg4apf2g4fpcd<bp
->cpp<gpeppapbpa+ap4g>eg4apf2g4fpcd<bpp>gf+fd+pep<g+a>cp<a>cd
-pgf+fd+pep>cpccp2p       4p<gf+fd+pep<g+a>cp<a>cd
-pe-ppdpcp2p1p            4pgf+fd+pep<g+a>cp<a>cd
-pgf+fd+pep>cpccp2p       4p<gf+fd+pep<g+a>cp<a>cd
-pe-ppdpcp2p1p            4ccpcpcdpecp<agp2p      4>ccpcde1pp
-4ccpcpcdpecp<agp2p       4>eepepcep1g<g          4>cpp<gpeppapbpa+ap
-4g>eg4apf2g4fpcd<bp      >cpp<gpeppapbpa+ap      4g>eg4apf2g4fpcd<bp
->ecp<gpg+pa>fpf<ap2p     4b>aaagf4ecp<agp2p      4>ecp<gpg+pa>fpf<ap2p
-b>fpf4fed4c<epecp2p      4>ecp<gpg+pa>fpf<ap2p   4b>aaagf4ecp<agp2p
-4>ecp<gpg+pa>fpf<ap2p    4b>fpf4fed4c<epecp2p    4>ccpcpcdpecp<agp2p
-4>ccpcde1pp              4ccpcpcdpecp<agp2p      4>eepepcep1g<g
-4>ecp<gpg+pa>fpf<ap2p    4b>aaagf4ecp<agp2p      4>ecp<gpg+pa>fpf<ap2p
-4b>fpf4fed4c<epecp2p     4>cpp<gpep2aba1a-b-a-   1g)
-]]
-
-
 --music.play(WilliamTell)
 
---music.play(new)
---music.play("msaaa")
---music.play("ms q440q400q400")
-
-print "new Waveform"
+print "New Waveform"
 
 function composer.waveform(index, samples, pitch, rate)
     --https://stackoverflow.com/questions/20037947/fade-out-function-of-audio-between-samplerate-changes
-    --local a = math.exp(-math.log(50) * index / samples) --fadeout
-    local a = math.exp(-math.log(50) * (index + samples / 2) / samples /2) --fadeout
-    return math.sin((index * pitch) * ((2 * math.pi) / rate)) * a
+    local fade = math.exp(-math.log(50) * index / samples / 2) --fadeout
+    sample = math.sin((index * pitch) * ((2 * math.pi) / rate))
+    local a = math.sin((index * pitch * 2) * ((2 * math.pi) / rate))
+    local b = math.sin((index * pitch / 2) * ((2 * math.pi) / rate))
+    sample = (sample - a - b) / 3
+    return sample * fade
 end
 
 music.play(WilliamTell)
