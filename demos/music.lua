@@ -130,6 +130,7 @@ b>fpf4fed4c<epecp2p      4>ecp<gpg+pa>fpf<ap2p   4b>aaagf4ecp<agp2p
 print "new Waveform"
 
 function composer.waveform(index, samples, pitch, rate)
+    --https://stackoverflow.com/questions/20037947/fade-out-function-of-audio-between-samplerate-changes
     --local a = math.exp(-math.log(50) * index / samples) --fadeout
     local a = math.exp(-math.log(50) * (index + samples / 2) / samples /2) --fadeout
     return math.sin((index * pitch) * ((2 * math.pi) / rate)) * a

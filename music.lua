@@ -337,7 +337,7 @@ function composer.parse(notes)
 
             playnote(note, duration, offset, increase)
 
-        elseif chr == "n" then  --note index
+        elseif chr == "n" then  --TODO: note index
             next()
             local number = scan_number(2)
             if number == nil then
@@ -345,9 +345,9 @@ function composer.parse(notes)
             end
             --local index = calcIndex(number)
             --playnote(index, duration)
-        elseif chr == "q" then --frequency
+        elseif chr == "q" then --by frequency
             next()
-            local number = scan_number() --TODO
+            local number = scan_number()
             if number == nil then
                 error("[music.play] F command need a number at :"  .. "at " .. tostring(line) .. ":" .. tostring(pos))
             end
@@ -365,11 +365,15 @@ function composer.parse(notes)
         elseif chr == "o" then
             next()
             octave = scan_number()
+        elseif chr == ">" then
+            next()
+            local by = scan_number(1) or 1
+            octave = octave - by
         elseif chr == "<" then
             next()
             local by = scan_number(1) or 1
             octave = octave + by
-        elseif chr == "s" then --shift octave
+        elseif chr == "s" then --shift octave, special for compatibility with some devices
             next()
             local by = scan_number()
             if by then
@@ -377,10 +381,6 @@ function composer.parse(notes)
             else
                 shift_octave = 0
             end
-        elseif chr == ">" then
-            next()
-            local by = scan_number(1) or 1
-            octave = octave - by
         elseif chr == "," then
             playnote("r", 1, 0, 1)
             next()
