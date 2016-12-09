@@ -297,8 +297,21 @@ function composer.parse(notes)
         return r
     end
 
+    local function scan_eol()
+        while pos <= #notes do
+            if chr ~= "\n" then
+                next()
+                break
+            end
+            next()
+        end
+    end
+
     next()
     while pos <= #notes do
+        if chr = "#" then
+            next()
+            scan_eol()
         if check(chr, {" ", "\t", "\r"}) then
             next()
         elseif chr == "\n" then
