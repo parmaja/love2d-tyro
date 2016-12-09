@@ -8,7 +8,6 @@
 music = {
     loop = false,
     background, --TODO: play in background
-    melody = nil,
     volume = 50,
 }
 
@@ -62,28 +61,29 @@ composer = {
                              # denotes sharp
 -----------------------------------------------------------------------------]]
 
------------------------------------
--- Example: makeSample(0.1, 440) --
------------------------------------
-
-local function makeSample(pitch, length) --(seconds, freq)
-    local rate = 22050 -- or 44100
-    local amplitude = 1.5 --not sure, i added it by my hand :P
-    local tick = love.sound.newSoundData(length * rate, rate, 16, 1)
-    for i = 0, length * rate - 1 do
-           local sample = math.sin((i * pitch) * ((2 * math.pi) / rate)) * amplitude
-          tick:setSample(i, sample)
-    end
-    return tick
-end
-
 local function delay(seconds)
     local n = os.clock() + seconds
     while os.clock() <= n do
     end
 end
 
-function music.sound(length, pitch, wait)
+---------------------------------------------
+-- Example: composer.generate(440, 0.1)    --
+---------------------------------------------
+--(freq, seconds)
+
+function composer.generate(pitch, length)
+    local rate = 22050 -- or 44100
+    local amplitude = 1.5 --not sure, i added it by my hand :P
+    local tick = love.sound.newSoundData(length * rate, rate, 16, 1)
+    for i = 0, length * rate - 1 do
+        local sample = math.sin((i * pitch) * ((2 * math.pi) / rate)) * amplitude
+        tick:setSample(i, sample)
+    end
+    return tick
+end
+
+function music.sound(pitch, length, wait)
     wait = wait or false
     if composer.source then
         composer.source:stop()
@@ -91,7 +91,7 @@ function music.sound(length, pitch, wait)
     if not (composer.source and (composer.last.length == length) and (composer.last.pitch == pitch)) then
         composer.last.length = length
         composer.last.pitch = pitch
-        local sample = makeSample(pitch, length)
+        local sample = composer.generate(pitch, length)
         composer.source = love.audio.newSource(sample)
         composer.source:setVolume(music.volume)
         composer.source:setLooping(false)
@@ -119,20 +119,20 @@ function music.stop(all)
 end
 
 function music.beep()
-    music.sound(0.2, 800)
+    music.sound(800, 0.2)
 end
 
 function music.play(notes)
     composer.parse(notes)
 end
 
-function music.play2(notes)
-	melody = love.thread.newThread("melody.lua")
+function music.play_thread(notes) --todo
+    melody = love.thread.newThread("melody.lua")
     melody:start()
 end
 
 function composer.parse(notes)
-	notes = notes:lower()
+    notes = notes:lower()
     --Constants values
     local baseNumber = 2 ^ (1/12)
     local baseOctave = 4
@@ -169,11 +169,14 @@ function composer.parse(notes)
     --playnote(char, number[-1,0,+1], number[1..16], number[1..2])
     --playnote("c#", 1, 0, 0)
     --playnote("r", 1)
+    --playnote(440, 1) --by number
     local function playnote(note, duration, offset, increase)
-        increase = increase or 1
+        increase = increase or 0
         offset = offset or 0
         if note == "r" then
             f = 0
+        elseif type(note) =="number" then
+            f = note
         else
             local index = scores[note]
             if not index then
@@ -187,20 +190,21 @@ function composer.parse(notes)
         --     http://www.sengpielaudio.com/calculator-bpmtempotime.htm
         --4 seconds for tempo = 60 beat per second, so what if tempo 120 and 2 for duration
         l = (baseLength / duration) * (baseTempo / tempo) * (1 + increase);
-        print("freq", f)
+
         if debugging then
             --print("length", l)
         end
 
         local rest = 0   --legato
         if subsequent == 1 then --normal
-            rest = l * 1 / 8
+            rest = l / 8
             l = l - rest
         elseif subsequent == 2 then --staccato
-            rest = l * 1 / 4
+            rest = l / 4
             l = l - rest
         end
-        music.sound(l, f, true)
+        print("freq, len", f, math.floor(l * 100) .. "ms")
+        music.sound(f, l, true)
         if rest > 0 then
             delay(rest)
         end
@@ -275,7 +279,7 @@ function composer.parse(notes)
         if check(chr, {" ", "\t", "\r"}) then
             next()
         elseif chr == "\n" then
-        	line = line + 1 --line only for error messages
+            line = line + 1 --line only for error messages
             next()
         elseif chr=="!" then
             reset()
@@ -312,11 +316,21 @@ function composer.parse(notes)
 
             playnote(note, duration, offset, increase)
 
-        elseif chr == "n" then
-            local number = scan_number(2) --TODO
+        elseif chr == "n" then  --note index
+            next()
+            local number = scan_number(2)
             if number == nil then
-                error("[music.play] n command need Number at :"  .. "at " .. tostring(line) .. ":" .. tostring(pos))
+                error("[music.play] F command need a umber at :"  .. "at " .. tostring(line) .. ":" .. tostring(pos))
             end
+            --local index = calcIndex(number)
+            --playnote(index, duration)
+        elseif chr == "q" then --frequency
+            next()
+            local number = scan_number() --TODO
+            if number == nil then
+                error("[music.play] F command need a number at :"  .. "at " .. tostring(line) .. ":" .. tostring(pos))
+            end
+            playnote(number, length)
         elseif chr == "t" then
             next()
             tempo = scan_number()
@@ -343,11 +357,11 @@ function composer.parse(notes)
             next()
         elseif chr == "m" then
             next()
-            if chr == "n" then
-                subsequent = 1
-            elseif chr == "l" then
+            if chr == "l" then --legato
                 subsequent = 0
-            elseif chr == "s" then
+            elseif chr == "n" then --normal
+                subsequent = 1
+            elseif chr == "s" then --staccato
                 subsequent = 2
             elseif chr == "f" then --just for compatibility
             elseif chr == "b" then

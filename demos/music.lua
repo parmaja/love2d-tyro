@@ -104,7 +104,7 @@ ee4p8p16o2ee2
 ]]
 
 new = [[
-t200>eepepcep1g<g4>cpp<gpeppapbpa+ap4g>eg4apf2g4fpcd<bp
+>4eepepcep1g<g4>cpp<gpeppapbpa+ap4g>eg4apf2g4fpcd<bp
 >cpp<gpeppapbpa+ap4g>eg4apf2g4fpcd<bpp>gf+fd+pep<g+a>cp<a>cd
 pgf+fd+pep>cpccp2p       4p<gf+fd+pep<g+a>cp<a>cd
 pe-ppdpcp2p1p            4pgf+fd+pep<g+a>cp<a>cd
@@ -121,6 +121,7 @@ b>fpf4fed4c<epecp2p      4>ecp<gpg+pa>fpf<ap2p   4b>aaagf4ecp<agp2p
 ]]
 
 
-music.play(new)
-music.play(WilliamTell)
---music.play2("l16t120 o2mnb4p8msbbmnb4p8msbbb8g#8")
+--music.play(new)
+--music.play(WilliamTell)
+--music.play("msaaa")
+music.play("ms q440q400q400")
