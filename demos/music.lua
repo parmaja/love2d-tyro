@@ -103,5 +103,24 @@ p8eee8e8e8e8e4p8p16
 ee4p8p16o2ee2
 ]]
 
+new = [[
+t200>eepepcep1g<g4>cpp<gpeppapbpa+ap4g>eg4apf2g4fpcd<bp
+>cpp<gpeppapbpa+ap4g>eg4apf2g4fpcd<bpp>gf+fd+pep<g+a>cp<a>cd
+pgf+fd+pep>cpccp2p       4p<gf+fd+pep<g+a>cp<a>cd
+pe-ppdpcp2p1p            4pgf+fd+pep<g+a>cp<a>cd
+pgf+fd+pep>cpccp2p       4p<gf+fd+pep<g+a>cp<a>cd
+pe-ppdpcp2p1p            4ccpcpcdpecp<agp2p      4>ccpcde1pp
+4ccpcpcdpecp<agp2p       4>eepepcep1g<g          4>cpp<gpeppapbpa+ap
+4g>eg4apf2g4fpcd<bp      >cpp<gpeppapbpa+ap      4g>eg4apf2g4fpcd<bp
+>ecp<gpg+pa>fpf<ap2p     4b>aaagf4ecp<agp2p      4>ecp<gpg+pa>fpf<ap2p
+b>fpf4fed4c<epecp2p      4>ecp<gpg+pa>fpf<ap2p   4b>aaagf4ecp<agp2p
+4>ecp<gpg+pa>fpf<ap2p    4b>fpf4fed4c<epecp2p    4>ccpcpcdpecp<agp2p
+4>ccpcde1pp              4ccpcpcdpecp<agp2p      4>eepepcep1g<g
+4>ecp<gpg+pa>fpf<ap2p    4b>aaagf4ecp<agp2p      4>ecp<gpg+pa>fpf<ap2p
+4b>fpf4fed4c<epecp2p     4>cpp<gpep2aba1a-b-a-   1g)
+]]
+
+
+music.play(new)
 music.play(WilliamTell)
---music.play("l16t120 o2mnb4p8msbbmnb4p8msbbb8g#8")
+--music.play2("l16t120 o2mnb4p8msbbmnb4p8msbbb8g#8")

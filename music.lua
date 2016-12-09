@@ -8,10 +8,11 @@
 music = {
     loop = false,
     background, --TODO: play in background
+    melody = nil,
     volume = 50,
 }
 
-local composer = {
+composer = {
     source = nil, --current source playing/cached
     last = {
         pitch = nil,
@@ -125,7 +126,13 @@ function music.play(notes)
     composer.parse(notes)
 end
 
+function music.play2(notes)
+	melody = love.thread.newThread("melody.lua")
+    melody:start()
+end
+
 function composer.parse(notes)
+	notes = notes:lower()
     --Constants values
     local baseNumber = 2 ^ (1/12)
     local baseOctave = 4
@@ -141,6 +148,7 @@ function composer.parse(notes)
     local length = 4 --note length
     local subsequent = 0 -- 0 = legato 1 = normal 2 = staccato
 
+    local line = 1 --line for error messages
     local pos = 0
 
     local scores = {
@@ -169,7 +177,7 @@ function composer.parse(notes)
         else
             local index = scores[note]
             if not index then
-                error("We dont have it in music:" .. note)
+                error("We dont have it in music:" .. note .. "at "  .. "at " .. tostring(line) .. ":" .. tostring(pos))
             end
             --calc index using current octave
             index = (octave - baseOctave) * 12 + index + offset
@@ -264,7 +272,10 @@ function composer.parse(notes)
 
     next()
     while pos <= #notes do
-        if check(chr, {" ", "\n", "\r", "\t"}) then
+        if check(chr, {" ", "\t", "\r"}) then
+            next()
+        elseif chr == "\n" then
+        	line = line + 1 --line only for error messages
             next()
         elseif chr=="!" then
             reset()
@@ -304,7 +315,7 @@ function composer.parse(notes)
         elseif chr == "n" then
             local number = scan_number(2) --TODO
             if number == nil then
-                error("[music.play] n command need Number at :" .. tostring(pos))
+                error("[music.play] n command need Number at :"  .. "at " .. tostring(line) .. ":" .. tostring(pos))
             end
         elseif chr == "t" then
             next()
@@ -314,17 +325,19 @@ function composer.parse(notes)
             length = scan_number()
         elseif chr == "p" or chr == "r" then
             next()
-            local duration = scan_number()
+            local duration = scan_number() or length
             playnote("r", duration, 0, 1)
         elseif chr == "o" then
             next()
             octave = scan_number()
         elseif chr == "<" then
-            octave = octave + 1
             next()
+            local by = scan_number(1) or 1
+            octave = octave + by
         elseif chr == ">" then
-            octave = octave - 1
             next()
+            local by = scan_number(1) or 1
+            octave = octave - by
         elseif chr == "," then
             playnote("r", 1, 0, 1)
             next()
@@ -339,11 +352,11 @@ function composer.parse(notes)
             elseif chr == "f" then --just for compatibility
             elseif chr == "b" then
             else
-                error("[music.play] Illegal subcommand for M" .. chr .. " at :" .. tostring(pos))
+                error("[music.play] Illegal subcommand for M" .. chr .. " at:" .. tostring(pos))
             end
             next()
         else
-            error("[music.play] Can not recognize: " .. chr .. " at :" .. tostring(pos))
+            error("[music.play] Can not recognize: " .. chr .. " at:" .. tostring(line) .. ":" .. tostring(pos))
         end
     end
     composer.source = nil
