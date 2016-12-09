@@ -1,8 +1,10 @@
 -------------------------------------------------------------------------------
+--	Music Macro Language
+--  https://en.wikipedia.org/wiki/Music_Macro_Language
 --  This file is part of the "Lua LOVE Basic"
 --
---   @license   The MIT License (MIT) Included in this distribution
---   @author    Zaher Dirkey <zaherdirkey at yahoo dot com>
+--  @license   The MIT License (MIT) Included in this distribution
+--  @author    Zaher Dirkey <zaherdirkey at yahoo dot com>
 -------------------------------------------------------------------------------
 
 music = {
@@ -329,8 +331,7 @@ function composer.parse(notes)
                 repeat
                     increase = increase + by --not sure about next dot
                     by = by / 2
-                    next()
-                until chr ~= "."
+                until not next() or chr ~= "."
             end
 
             local duration = scan_number() or length
@@ -361,7 +362,15 @@ function composer.parse(notes)
         elseif chr == "p" or chr == "r" then
             next()
             local duration = scan_number() or length
-            playnote("r", duration)
+            local increase = 0
+            local by = 0.5
+            if chr == "." then
+                repeat
+                    increase = increase + by --not sure about next dot
+                    by = by / 2
+                until not next() or chr ~= "."
+            end
+            playnote("r", duration, 0, increase)
         elseif chr == "o" then
             next()
             octave = scan_number()

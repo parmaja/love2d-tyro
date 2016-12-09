@@ -103,6 +103,9 @@ p8eee8e8e8e8e4p8p16
 ee4p8p16o2ee2
 ]]
 
+axlf =[[
+T120L8F#P8A.L9F#L96P96L17F#L8BF#L384P384L8EF#P8>C#.L384<P384L9F#L77P77L17F#L8>DC#<AF#>C#F#L384<P384L17F#L384P384L8EL16EL384P384L8C#G#L4F#.L2P.
+]]
 --music.play(WilliamTell)
 
 print "New Waveform"
@@ -117,4 +120,4 @@ function composer.waveform(index, samples, pitch, rate)
     return sample * fade
 end
 
-music.play(WilliamTell)
+music.play(axlf)
