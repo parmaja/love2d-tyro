@@ -124,12 +124,14 @@ b>fpf4fed4c<epecp2p      4>ecp<gpg+pa>fpf<ap2p   4b>aaagf4ecp<agp2p
 --music.play(new)
 --music.play(WilliamTell)
 --music.play("msaaa")
-music.play("ms q440q400q400")
+--music.play("ms q440q400q400")
 
 print "new Waveform"
 
-function composer.waveform(index, pitch, rate)
-    return math.sin((index * pitch) * ((2 * math.pi) / rate)) + math.sin(index / 2)
-end
+--function composer.waveform(index, pitch, rate)
+--	return math.sin((index * pitch) * ((2 * math.pi) / rate)) + math.sin(index / 2)
+--end
 
-music.play("ms q440q400q400")
+--music.play("ms q440q400q400")
+music.play("o1a")
+music.play("q440")

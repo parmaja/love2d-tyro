@@ -72,11 +72,12 @@ end
 ---------------------------------------------
 --generate((freq, seconds)
 --generate sample waveform
+saved = 1
 
 function composer.generate(pitch, length)
-    local rate = 22050 -- or 44100
-    local amplitude = 1.5 --not sure, i added it by my hand :P
-    local tick = love.sound.newSoundData(length * rate, rate, 16, 1)
+    local rate = 44100 --22050
+    local amplitude = 1 --not sure, i added it by my hand :P
+    local data = love.sound.newSoundData(length * rate, rate, 16, 1)
     local sample = 0
     for index = 0, length * rate - 1 do
         if composer.waveform then
@@ -84,9 +85,14 @@ function composer.generate(pitch, length)
         else
             sample = math.sin((index * pitch) * ((2 * math.pi) / rate)) * amplitude
         end
-        tick:setSample(index, sample)
+        data:setSample(index, sample) --bug in miniedit, put cursor on data and ctrl+f it now show "data"
     end
-    return tick
+    if saved < 5 then
+        s = data:getString()
+        love.filesystem.write("test"..tostring(saved)..".data", s)
+    end
+    saved = saved + 1
+    return data
 end
 
 function music.sound(pitch, length, wait)
