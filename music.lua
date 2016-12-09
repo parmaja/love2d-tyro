@@ -66,10 +66,11 @@ local composer = {
 -----------------------------------
 
 local function makeSample(pitch, length) --(seconds, freq)
-    local rate = 44100
+    local rate = 22050 -- or 44100
+    local amplitude = 1.5 --not sure, i added it by my hand :P
     local tick = love.sound.newSoundData(length * rate, rate, 16, 1)
     for i = 0, length * rate - 1 do
-           local sample = math.sin((i * pitch) * ((math.pi * 2) / rate)) * 1.5
+           local sample = math.sin((i * pitch) * ((2 * math.pi) / rate)) * amplitude
           tick:setSample(i, sample)
     end
     return tick
@@ -327,7 +328,7 @@ function composer.parse(notes)
         elseif chr == "," then
             playnote("r", 1, 0, 1)
             next()
-        elseif chr == "m" then --backlegcy
+        elseif chr == "m" then
             next()
             if chr == "n" then
                 subsequent = 1
@@ -345,4 +346,7 @@ function composer.parse(notes)
             error("[music.play] Can not recognize: " .. chr .. " at :" .. tostring(pos))
         end
     end
+    composer.source = nil
+    composer.last.length = nil
+    composer.last.pitch = nil
 end
