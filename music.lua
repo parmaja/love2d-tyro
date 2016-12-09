@@ -78,14 +78,20 @@ function composer.generate(pitch, length)
     local rate = 44100 --22050
     local amplitude = 1 --not sure, i added it by my hand :P
     local data = love.sound.newSoundData(length * rate, rate, 16, 1)
+    local samples = length * rate
     local sample = 0
-    for index = 0, length * rate - 1 do
-        if composer.waveform then
-            sample = composer.waveform(index, pitch, rate) * amplitude
-        else
-            sample = math.sin((index * pitch) * ((2 * math.pi) / rate)) * amplitude
+    local c = 2 * math.pi * pitch / rate
+
+    if pitch > 0 then
+        for index = 0, samples - 1 do
+            if composer.waveform then
+                sample = composer.waveform(index, samples, pitch, rate) * amplitude
+            else
+                --to keep it simple to understand: sample = math.sin((index * pitch) * ((2 * math.pi) / rate)) * amplitude
+                sample = math.sin(index * c) * amplitude
+            end
+            data:setSample(index, sample) --bug in miniedit, put cursor on data and ctrl+f it now show "data"
         end
-        data:setSample(index, sample) --bug in miniedit, put cursor on data and ctrl+f it now show "data"
     end
     if saved < 5 then
         s = data:getString()
@@ -131,7 +137,7 @@ function music.stop(all)
 end
 
 function music.beep()
-    music.sound(800, 0.2)
+    music.sound(440, 0.2)
 end
 
 function music.play(notes)
@@ -157,6 +163,7 @@ function composer.parse(notes)
 
     local tempo = 120
     local octave = 4
+    local shift_octave = 0
     local length = 4 --note length
     local subsequent = 0 -- 0 = legato 1 = normal 2 = staccato
 
@@ -178,6 +185,8 @@ function composer.parse(notes)
         ["b"]   = 11,
     }
 
+    function frequency(index)
+    end
     --playnote(char, number[-1,0,+1], number[1..16], number[1..2])
     --playnote("c#", 1, 0, 0)
     --playnote("r", 1)
@@ -185,7 +194,7 @@ function composer.parse(notes)
     local function playnote(note, duration, offset, increase)
         increase = increase or 0
         offset = offset or 0
-        if note == "r" then
+        if note == "r" or note == "p" then
             f = 0
         elseif type(note) =="number" then
             f = note
@@ -195,7 +204,7 @@ function composer.parse(notes)
                 error("We dont have it in music:" .. note .. "at "  .. "at " .. tostring(line) .. ":" .. tostring(pos))
             end
             --calc index using current octave
-            index = (octave - baseOctave) * 12 + index + offset
+            index = ((octave + shift_octave)- baseOctave) * 12 + index + offset
             f = math.floor(baseNoteC4 * (baseNumber ^ index))
         end
         --ref: https://music.stackexchange.com/questions/24140/how-can-i-find-the-length-in-seconds-of-a-quarter-note-crotchet-if-i-have-a-te
@@ -258,7 +267,7 @@ function composer.parse(notes)
     local function scan_number(max)
         local r = ""
         while pos <= #notes do
-            if chr >= "0" and chr <= "9" then
+            if (chr >= "0" and chr <= "9") or chr=="-" or chr=="+" then
                 r = r .. chr
             else
                 break
@@ -352,7 +361,7 @@ function composer.parse(notes)
         elseif chr == "p" or chr == "r" then
             next()
             local duration = scan_number() or length
-            playnote("r", duration, 0, 1)
+            playnote("r", duration)
         elseif chr == "o" then
             next()
             octave = scan_number()
@@ -360,6 +369,14 @@ function composer.parse(notes)
             next()
             local by = scan_number(1) or 1
             octave = octave + by
+        elseif chr == "s" then --shift octave
+            next()
+            local by = scan_number()
+            if by then
+                shift_octave = shift_octave + by
+            else
+                shift_octave = 0
+            end
         elseif chr == ">" then
             next()
             local by = scan_number(1) or 1

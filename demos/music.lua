@@ -1,7 +1,7 @@
 -- William Tell --
 --ref: http://www.kkuzba.com/links/qbsrc/WILLTELL.ZIP
 WilliamTell = [[
-mfl16t155
+mfl16t155s1
 o2mnb4p8msbbmnb4p8msbbb8g#8
 e8g#8b8g#8b8o3e8o2b8g#8e8g#8
 b8g#8b8o3e8o2mnb4p8msbbmnb4
@@ -121,17 +121,18 @@ b>fpf4fed4c<epecp2p      4>ecp<gpg+pa>fpf<ap2p   4b>aaagf4ecp<agp2p
 ]]
 
 
---music.play(new)
 --music.play(WilliamTell)
+
+--music.play(new)
 --music.play("msaaa")
 --music.play("ms q440q400q400")
 
 print "new Waveform"
 
---function composer.waveform(index, pitch, rate)
---	return math.sin((index * pitch) * ((2 * math.pi) / rate)) + math.sin(index / 2)
---end
+function composer.waveform(index, samples, pitch, rate)
+    --local a = math.exp(-math.log(50) * index / samples) --fadeout
+    local a = math.exp(-math.log(50) * (index + samples / 2) / samples /2) --fadeout
+    return math.sin((index * pitch) * ((2 * math.pi) / rate)) * a
+end
 
---music.play("ms q440q400q400")
-music.play("o1a")
-music.play("q440")
+music.play(WilliamTell)
