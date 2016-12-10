@@ -299,8 +299,7 @@ function composer.parse(notes)
 
     local function scan_eol()
         while pos <= #notes do
-            if chr ~= "\n" then
-                next()
+            if chr == "\n" then
                 break
             end
             next()
@@ -309,10 +308,10 @@ function composer.parse(notes)
 
     next()
     while pos <= #notes do
-        if chr = "#" then
+        if chr == "#" then
             next()
             scan_eol()
-        if check(chr, {" ", "\t", "\r"}) then
+        elseif check(chr, {" ", "\t", "\r"}) then
             next()
         elseif chr == "\n" then
             line = line + 1 --line only for error messages
@@ -406,6 +405,9 @@ function composer.parse(notes)
         elseif chr == "," then
             playnote("r", 1, 0, 1)
             next()
+        elseif chr == "v" then --ignoring it
+            next()
+            local volume = scan_number()
         elseif chr == "m" then
             next()
             if chr == "l" then --legato
