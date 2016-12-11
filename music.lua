@@ -6,11 +6,12 @@
 --  @license   The MIT License (MIT) Included in this distribution
 --  @author    Zaher Dirkey <zaherdirkey at yahoo dot com>
 -------------------------------------------------------------------------------
+require("basic.melody")
 
 music = {
     loop = false,
     background, --TODO: play in background
-    source = nil --source can be a love sound source  or melody
+    source = nil, --source can be a love sound source  or melody
     volume = 50,
 }
 
@@ -32,7 +33,8 @@ function music.beep()
 end
 
 function music.play(notes)
-    source = melody.play(notes)
+    source = melody
+    melody.play(notes)
 end
 
 local function delay(seconds)
@@ -57,8 +59,8 @@ function generate_source(pitch, length)
 
     if pitch > 0 then
         for index = 0, samples - 1 do
-            if composer.waveform then
-                sample = composer.waveform(index, samples, pitch, rate) * amplitude
+            if melody.waveform then
+                sample = melody.waveform(index, samples, pitch, rate) * amplitude
             else
                 --to keep it simple to understand: sample = math.sin((index * pitch) * ((2 * math.pi) / rate)) * amplitude
                 sample = math.sin(index * c) * amplitude
@@ -82,7 +84,7 @@ function melody.playsound(composer, pitch, length, rest)
     if not (composer.source and (composer.last.length == length) and (composer.last.pitch == pitch)) then
         composer.last.length = length
         composer.last.pitch = pitch
-        local sample = generate_source(self.pitch, length)
+        local sample = generate_source(pitch, length)
         composer.source = love.audio.newSource(sample)
         composer.source:setVolume(music.volume)
         composer.source:setLooping(false)

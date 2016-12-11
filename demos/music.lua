@@ -117,7 +117,7 @@ T120L1O5P1L480>A<P480L960>AL15<AL960>GL120G<P120L107GL34P.L19P19L240>A<P240L107A
 
 print "New Waveform"
 
-function composer.waveform(index, samples, pitch, rate)
+function melody.waveform(index, samples, pitch, rate)
     --https://stackoverflow.com/questions/20037947/fade-out-function-of-audio-between-samplerate-changes
     local fade = math.exp(-math.log(50) * index / samples / 2) --fadeout
     sample = math.sin((index * pitch) * ((2 * math.pi) / rate))
@@ -128,4 +128,4 @@ function composer.waveform(index, samples, pitch, rate)
 end
 
 --music.play(axlf)
-music.play(tocatta)
+music.play(WilliamTell)

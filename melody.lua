@@ -10,15 +10,18 @@
 melody = {
 }
 
-function melody:playnotes(notes_ch1, notes_ch2)
+function melody.play(notes_ch1)
+    if not notes_ch1 or #notes_ch1 == 0 then
+        error("No notes?!")
+    end
     ch1 = {}
-    ch1.prepare = mml_next
+    ch1.prepare = mml_prepare
     ch1.next = mml_next
 
     ch1:prepare(notes_ch1)
     while ch1:next() do
-        print("freq, len", composer.sound.pitch, math.floor(composer.sound.length * 100) .. "ms")
-        melody.playsound(ch1, pitch, length, rest)
+        print("freq, len", ch1.sound.pitch, math.floor(ch1.sound.length * 100) .. "ms")
+        melody.playsound(ch1, ch1.sound.pitch, ch1.sound.length, ch1.sound.rest)
     end
 end
 
@@ -108,8 +111,8 @@ function mml_prepare(self, notes)
     self.line = 1 --line for error messages
     self.pos = 1
 
-    if not (self.pos <= #notes) then
-        self.chr = self.notes:sub(pos, pos)
+    if (self.pos <= #self.notes) then
+        self.chr = self.notes:sub(self.pos, self.pos)
     end
 end
 
@@ -122,6 +125,7 @@ function mml_next(self)
     local function playnote(note, duration, offset, increase)
         increase = increase or 0
         offset = offset or 0
+        local f = 0
         if note == "r" or note == "p" then
             f = 0
         elseif type(note) =="number" then
@@ -129,16 +133,16 @@ function mml_next(self)
         else
             local index = scores[note]
             if not index then
-                error("We dont have it in music:" .. note .. "at "  .. "at " .. tostring(line) .. ":" .. tostring(pos))
+                error("We dont have it in music:" .. note .. "at "  .. "at " .. tostring(line) .. ":" .. tostring(self.pos))
             end
             --calc index using current octave
-            index = ((octave + shift_octave)- baseOctave) * 12 + index + offset
+            index = ((self.octave + self.shift_octave)- baseOctave) * 12 + index + offset
             f = math.floor(baseNoteC4 * (baseNumber ^ index))
         end
         --ref: https://music.stackexchange.com/questions/24140/how-can-i-find-the-length-in-seconds-of-a-quarter-note-crotchet-if-i-have-a-te
         --     http://www.sengpielaudio.com/calculator-bpmtempotime.htm
         --4 seconds for tempo = 60 beat per second, so what if tempo 120 and 2 for duration
-        l = (baseLength / duration) * (baseTempo / tempo) * (1 + increase);
+        l = (baseLength / duration) * (baseTempo / self.tempo) * (1 + increase);
 
         local r = 0   --legato
 
@@ -149,19 +153,16 @@ function mml_next(self)
             rest = l / 4
             l = l - r
         end
-        last.pitch = f
-        last.length = l
-        last.rest = r
-        sound = {pitch = f, length = l, rest = r}
+        self.last.pitch = f
+        self.last.length = l
+        self.last.rest = r
+        self.sound = {pitch = f, length = l, rest = r}
         --now use it to play
     end
 
-    local i = 1
-
-    local chr = ""
-    local function check(chr, t)
+    local function check(c, t)
         for k, v in pairs(t) do
-            if chr == v then
+            if c == v then
                 return true
             end
         end
@@ -177,19 +178,19 @@ function mml_next(self)
 
     local function step()
         self.pos = self.pos + 1
-        if not (self.pos <= #notes) then
+        if not (self.pos <= #self.notes) then
             return nil
         else
-            self.chr = self.notes:sub(pos, pos)
+            self.chr = self.notes:sub(self.pos, self.pos)
             return true
         end
     end
 
     local function scan_number(max)
         local r = ""
-        while self.pos <= #notes do
+        while self.pos <= #self.notes do
             if (self.chr >= "0" and self.chr <= "9") or self.chr == "-" or self.chr=="+" then
-                r = r .. chr
+                r = r .. self.chr
             else
                 break
             end
@@ -206,7 +207,7 @@ function mml_next(self)
     local function scan(t)
         local r = ""
         while self.pos <= #notes do
-            if check(chr, t) then
+            if check(self.chr, t) then
                 r = r .. self.chr
             else
                 break
@@ -225,20 +226,20 @@ function mml_next(self)
         end
     end
 
-    while self.pos <= #notes do
+    while self.pos <= #self.notes do
         if self.chr == "#" then
             step()
             scan_eol()
-        elseif check(chr, {" ", "\t", "\r"}) then
+        elseif check(self.chr, {" ", "\t", "\r"}) then
             step()
-        elseif chr == "\n" then
+        elseif self.chr == "\n" then
             self.line = self.line + 1 --line only for error messages
             step()
         elseif self.chr=="!" then
             reset()
             step()
-        elseif self.chr >= "a" and chr <="g" then
-            local note = chr
+        elseif self.chr >= "a" and self.chr <="g" then
+            local note = self.chr
             step()
 
             if self.chr == "#" then
@@ -261,10 +262,10 @@ function mml_next(self)
                 repeat
                     increase = increase + by --not sure about next dot
                     by = by / 2
-                until not step() or chr ~= "."
+                until not step() or self.chr ~= "."
             end
 
-            local duration = scan_number() or length
+            local duration = scan_number() or self.length
 
             playnote(note, duration, offset, increase)
             return true
@@ -299,9 +300,9 @@ function mml_next(self)
                 repeat
                     increase = increase + by --not sure about next dot
                     by = by / 2
-                until not step() or chr ~= "."
+                until not step() or self.chr ~= "."
             end
-            playnote("r", sduration, 0, increase)
+            playnote("r", duration, 0, increase)
         elseif self.chr == "o" then
             step()
             self.octave = scan_number()
@@ -322,14 +323,14 @@ function mml_next(self)
                 self.shift_octave = 0
             end
         elseif self.chr == "," then
-            self.playnote("r", 1, 0, 1)
+            playnote("r", 1, 0, 1)
             step()
-        elseif chr == "v" then --ignoring it
+        elseif self.chr == "v" then --ignoring it
             step()
-            local self.volume = scan_number()
+            self.volume = scan_number()
         elseif self.chr == "m" then
             step()
-            if chr == "l" then --legato
+            if self.chr == "l" then --legato
                 self.subsequent = 0
             elseif self.chr == "n" then --normal
                 self.subsequent = 1
