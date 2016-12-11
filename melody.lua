@@ -142,7 +142,7 @@ function mml_next(self)
         --ref: https://music.stackexchange.com/questions/24140/how-can-i-find-the-length-in-seconds-of-a-quarter-note-crotchet-if-i-have-a-te
         --     http://www.sengpielaudio.com/calculator-bpmtempotime.htm
         --4 seconds for tempo = 60 beat per second, so what if tempo 120 and 2 for duration
-        l = (baseLength / duration) * (baseTempo / self.tempo) * (1 + increase);
+        local l = (baseLength / duration) * (baseTempo / self.tempo) * (1 + increase);
 
         local r = 0   --legato
 
@@ -266,7 +266,6 @@ function mml_next(self)
             end
 
             local duration = scan_number() or self.length
-
             playnote(note, duration, offset, increase)
             return true
 
@@ -293,7 +292,7 @@ function mml_next(self)
             self.length = scan_number()
         elseif self.chr == "p" or self.chr == "r" then
             step()
-            local duration = scan_number() or length
+            local duration = scan_number() or self.length
             local increase = 0
             local by = 0.5
             if self.chr == "." then
