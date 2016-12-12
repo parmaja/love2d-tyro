@@ -127,6 +127,7 @@ function melody.waveform(index, samples, pitch, rate)
     return sample * fade
 end
 
-music.play(axlf)
+--music.play(axlf)
+music.play("cp1dp1p1efgab>c")
 --music.play("cp1dp1p1efgab>c")
 --music.play("s2o2 mn b4 p8 ms b b mn b4 p8 ms b b b8 g#8")

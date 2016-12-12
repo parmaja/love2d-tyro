@@ -76,7 +76,7 @@ function generate_sample(pitch, length)
     return data
 end
 
-function melody.playsound(composer, pitch, length, rest)
+function melody.playsound(composer, pitch, length, rest, wait)
     if composer.source then
         composer.source:stop()
     end
@@ -91,11 +91,14 @@ function melody.playsound(composer, pitch, length, rest)
         composer.last.rest = rest
     end
     composer.source:play()
-    while composer.source:isPlaying() do
-        --oh no
-    end
 
-    if rest > 0 then
-        delay(rest)
+    if wait then
+        while composer.source:isPlaying() do
+            --oh we need to wait it
+        end
+
+        if rest > 0 then
+            delay(rest)
+        end
     end
 end

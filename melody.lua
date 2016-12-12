@@ -10,19 +10,54 @@
 melody = {
 }
 
-function melody.play(notes_ch1)
-    if not notes_ch1 or #notes_ch1 == 0 then
-        error("No notes?!")
-    end
-    ch1 = {}
-    ch1.prepare = mml_prepare
-    ch1.next = mml_next
+function melody.play(...)
 
-    ch1:prepare(notes_ch1)
-    while ch1:next() do
-        print("freq Hz, len ms, rest ms", ch1.sound.pitch, math.floor(ch1.sound.length * 100), math.floor(ch1.sound.rest * 100))
-        --print(ch1.chr)
-        melody.playsound(ch1, ch1.sound.pitch, ch1.sound.length, ch1.sound.rest)
+    local args = {...}
+    local channels = {}
+    for i, n in ipairs(args) do
+        if not n or #n == 0 then
+            error("No notes?!")
+        end
+        local ch = {
+            note = n,
+            time = 0, --finish at time
+            finished = false,
+        }
+        index = #channels + 1
+        channels[index] = ch
+
+        ch.name = "channel"..tostring(index)
+        ch.prepare = mml_prepare
+        ch.next = mml_next
+
+        ch:prepare(n)
+    end
+
+    local index = 1
+    local count = #channels
+    local busy = false
+    while true do
+        ch = channels[index]
+        if not ch.finished then
+            if ch.source and ch.source:isPlaying() then
+                busy = true
+            elseif ch:next() then
+                print("freq Hz, len ms, rest ms", ch.sound.pitch, math.floor(ch.sound.length * 100), math.floor(ch.sound.rest * 100))
+                melody.playsound(ch, ch.sound.pitch, ch.sound.length, ch.sound.rest)
+                busy = true
+            else
+                ch.finished = true
+            end
+        end
+        index = index + 1
+        if index > count then
+            index = 1
+            if not busy then
+                break
+            else
+                busy = false
+            end
+        end
     end
 end
 
@@ -174,7 +209,7 @@ function mml_next(self)
     local function step()
         self.pos = self.pos + 1
         if (self.pos > #self.notes) then
-        	self.chr = nil
+            self.chr = nil
             return false
         else
             self.chr = self.notes:sub(self.pos, self.pos)
