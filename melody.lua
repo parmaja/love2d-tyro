@@ -20,9 +20,19 @@ function melody.play(notes_ch1)
 
     ch1:prepare(notes_ch1)
     while ch1:next() do
-        print("freq, len", ch1.sound.pitch, math.floor(ch1.sound.length * 100) .. "ms")
+        print("freq Hz, len ms, rest ms", ch1.sound.pitch, math.floor(ch1.sound.length * 100), math.floor(ch1.sound.rest * 100))
+        --print(ch1.chr)
         melody.playsound(ch1, ch1.sound.pitch, ch1.sound.length, ch1.sound.rest)
     end
+end
+
+local function check(c, t)
+    for k, v in pairs(t) do
+        if c == v then
+            return true
+        end
+    end
+    return false
 end
 
 --ref:  http://www.qb64.net/wiki/index.php/PLAY
@@ -95,10 +105,6 @@ saved = 1
 function mml_prepare(self, notes)
     self.notes = notes:lower()
 
-    self.last = {
-        pitch = nil,
-        length = nil,
-    }
     --Current values by default
     self.freq = 0
 
@@ -153,20 +159,9 @@ function mml_next(self)
             rest = l / 4
             l = l - r
         end
-        self.last.pitch = f
-        self.last.length = l
-        self.last.rest = r
         self.sound = {pitch = f, length = l, rest = r}
         --now use it to play
-    end
-
-    local function check(c, t)
-        for k, v in pairs(t) do
-            if c == v then
-                return true
-            end
-        end
-        return false
+        return true
     end
 
     local function reset()
@@ -178,8 +173,9 @@ function mml_next(self)
 
     local function step()
         self.pos = self.pos + 1
-        if not (self.pos <= #self.notes) then
-            return nil
+        if (self.pos > #self.notes) then
+        	self.chr = nil
+            return false
         else
             self.chr = self.notes:sub(self.pos, self.pos)
             return true
@@ -266,8 +262,7 @@ function mml_next(self)
             end
 
             local duration = scan_number() or self.length
-            playnote(note, duration, offset, increase)
-            return true
+            return playnote(note, duration, offset, increase)
 
         elseif self.chr == "n" then  --TODO: note index
             step()
@@ -276,14 +271,14 @@ function mml_next(self)
                 error("[music.play] F command need a umber at :"  .. "at " .. tostring(self.line) .. ":" .. tostring(self.pos))
             end
             --local index = calcIndex(number)
-            --playnote(index, duration)
+            --return playnote(index, duration)
         elseif self.chr == "q" then --by frequency
             step()
             local number = scan_number()
             if number == nil then
                 error("[music.play] F command need a number at :"  .. "at " .. tostring(self.line) .. ":" .. tostring(self.pos))
             end
-            playnote(number, self.length)
+            return playnote(number, self.length)
         elseif self.chr == "t" then
             step()
             self.tempo = scan_number()
@@ -301,18 +296,18 @@ function mml_next(self)
                     by = by / 2
                 until not step() or self.chr ~= "."
             end
-            playnote("r", duration, 0, increase)
+            return playnote("r", duration, 0, increase)
         elseif self.chr == "o" then
             step()
             self.octave = scan_number()
         elseif self.chr == ">" then
             step()
             local by = scan_number(1) or 1
-            self.octave = self.octave - by
+            self.octave = self.octave + by
         elseif self.chr == "<" then
             step()
             local by = scan_number(1) or 1
-            self.octave = self.octave + by
+            self.octave = self.octave - by
         elseif self.chr == "s" then --shift octave, special for compatibility with some devices
             step()
             local by = scan_number()
@@ -322,8 +317,8 @@ function mml_next(self)
                 self.shift_octave = 0
             end
         elseif self.chr == "," then
-            playnote("r", 1, 0, 1)
             step()
+            return playnote("r", 1, 0, 1)
         elseif self.chr == "v" then --ignoring it
             step()
             self.volume = scan_number()
@@ -345,6 +340,4 @@ function mml_next(self)
             error("[music.play] Can not recognize: " .. self.chr .. " at:" .. tostring(self.line) .. ":" .. tostring(self.pos))
         end
     end
-    self.last.length = nil
-    self.last.pitch = nil
 end

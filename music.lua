@@ -49,7 +49,7 @@ end
 --generate((freq, seconds)
 --generate sample waveform
 
-function generate_source(pitch, length)
+function generate_sample(pitch, length)
     local rate = 44100 --22050
     local amplitude = 1 --not sure, i added it by my hand :P
     local data = love.sound.newSoundData(length * rate, rate, 16, 1)
@@ -77,20 +77,21 @@ function generate_source(pitch, length)
 end
 
 function melody.playsound(composer, pitch, length, rest)
-    wait = wait or false
     if composer.source then
         composer.source:stop()
+        print("stoped")
     end
-    if not (composer.source and (composer.last.length == length) and (composer.last.pitch == pitch)) then
-        composer.last.length = length
-        composer.last.pitch = pitch
-        local sample = generate_source(pitch, length)
+    if not (composer.source and composer.last and (composer.last.length == length) and (composer.last.pitch == pitch) and (composer.last.rest == rest)) then
+        local sample = generate_sample(pitch, length)
         composer.source = love.audio.newSource(sample)
         composer.source:setVolume(music.volume)
         composer.source:setLooping(false)
+        composer.last = {}
+        composer.last.pitch = pitch
+        composer.last.length = length
+        composer.last.rest = rest
     end
     composer.source:play()
-    --delay(length) --just trying
     while composer.source:isPlaying() do
         --oh no
     end
