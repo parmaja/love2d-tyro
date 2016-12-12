@@ -29,12 +29,12 @@ function music.stop(all)
 end
 
 function music.beep()
-    music.sound(440, 0.2)
+    melody.playsound(440, 0.2)
 end
 
-function music.play(notes)
+function music.play(...)
     source = melody
-    melody.play(notes)
+    melody.play(...)
 end
 
 local function delay(seconds)
@@ -49,10 +49,10 @@ end
 --generate((freq, seconds)
 --generate sample waveform
 
-function generate_sample(pitch, length)
+function generate_sample(pitch, length, rest)
     local rate = 44100 --22050
     local amplitude = 1 --not sure, i added it by my hand :P
-    local data = love.sound.newSoundData(length * rate, rate, 16, 1)
+    local data = love.sound.newSoundData((length + rest) * rate, rate, 16, 1) --rest keep it empty
     local samples = length * rate
     local sample = 0
     local c = 2 * math.pi * pitch / rate
@@ -77,28 +77,31 @@ function generate_sample(pitch, length)
 end
 
 function melody.playsound(composer, pitch, length, rest, wait)
+
     if composer.source then
-        composer.source:stop()
+        if composer.source:isPlaying() then
+            error("it is playing, please wait")
+        end
+        --composer.source:stop()
     end
     if not (composer.source and composer.last and (composer.last.length == length) and (composer.last.pitch == pitch) and (composer.last.rest == rest)) then
-        local sample = generate_sample(pitch, length)
+        local sample = generate_sample(pitch, length, rest)
         composer.source = love.audio.newSource(sample)
-        --composer.source:setVolume(music.volume)
+        composer.source:setVolume(music.volume)
         composer.source:setLooping(false)
         composer.last = {}
         composer.last.pitch = pitch
         composer.last.length = length
         composer.last.rest = rest
+        composer.source:play()
+    else
+        composer.source:rewind()
+        composer.source:play()
     end
-    composer.source:play()
 
     if wait then
         while composer.source:isPlaying() do
             --oh we need to wait it
-        end
-
-        if rest > 0 then
-            delay(rest)
         end
     end
 end

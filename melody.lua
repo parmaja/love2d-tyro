@@ -13,6 +13,9 @@ melody = {
 function melody.play(...)
 
     local args = {...}
+    if #args == 0 then
+        error("No notes?!")
+    end
     local channels = {}
     for i, n in ipairs(args) do
         if not n or #n == 0 then
@@ -20,7 +23,7 @@ function melody.play(...)
         end
         local ch = {
             note = n,
-            time = 0, --finish at time
+            source = nil,
             finished = false,
         }
         index = #channels + 1
@@ -29,7 +32,6 @@ function melody.play(...)
         ch.name = "channel"..tostring(index)
         ch.prepare = mml_prepare
         ch.next = mml_next
-
         ch:prepare(n)
     end
 
@@ -42,8 +44,8 @@ function melody.play(...)
             if ch.source and ch.source:isPlaying() then
                 busy = true
             elseif ch:next() then
-                print("freq Hz, len ms, rest ms", ch.sound.pitch, math.floor(ch.sound.length * 100), math.floor(ch.sound.rest * 100))
-                melody.playsound(ch, ch.sound.pitch, ch.sound.length, ch.sound.rest)
+                print(ch.name, "freq Hz, len ms, rest ms", ch.sound.pitch, math.floor(ch.sound.length * 100), math.floor(ch.sound.rest * 100))
+                melody.playsound(ch, ch.sound.pitch, ch.sound.length, ch.sound.rest, false)
                 busy = true
             else
                 ch.finished = true
@@ -174,7 +176,7 @@ function mml_next(self)
         else
             local index = scores[note]
             if not index then
-                error("We dont have it in music:" .. note .. "at "  .. "at " .. tostring(line) .. ":" .. tostring(self.pos))
+                error("We dont have it in music:" .. note .. " at "  .. tostring(line) .. ":" .. tostring(self.pos))
             end
             --calc index using current octave
             index = ((self.octave + self.shift_octave)- baseOctave) * 12 + index + offset
@@ -232,7 +234,12 @@ function mml_next(self)
                 break
             end
         end
-        return tonumber(r)
+
+        if #r > 0 then
+            return tonumber(r)
+        else
+            return nil
+        end
     end
 
     local function scan(t)
@@ -269,6 +276,7 @@ function mml_next(self)
         elseif self.chr=="!" then
             reset()
             step()
+
         elseif self.chr >= "a" and self.chr <="g" then
             local note = self.chr
             step()
@@ -287,6 +295,11 @@ function mml_next(self)
                 step()
             end
 
+            local duration = scan_number() or self.length
+            if duration > 64 then
+                error("Length should be less or equal 64: your length is: " .. tostring(duration)  .. " at " .. tostring(self.line) .. ":" .. tostring(self.pos))
+            end
+
             local increase = 0
             local by = 0.5
             if self.chr == "." then
@@ -296,14 +309,13 @@ function mml_next(self)
                 until not step() or self.chr ~= "."
             end
 
-            local duration = scan_number() or self.length
             return playnote(note, duration, offset, increase)
 
         elseif self.chr == "n" then  --TODO: note index
             step()
             local number = scan_number(2)
             if number == nil then
-                error("[music.play] F command need a umber at :"  .. "at " .. tostring(self.line) .. ":" .. tostring(self.pos))
+                error("[music.play] F command need a umber at :"  .. " at " .. tostring(self.line) .. ":" .. tostring(self.pos))
             end
             --local index = calcIndex(number)
             --return playnote(index, duration)
@@ -311,7 +323,7 @@ function mml_next(self)
             step()
             local number = scan_number()
             if number == nil then
-                error("[music.play] F command need a number at :"  .. "at " .. tostring(self.line) .. ":" .. tostring(self.pos))
+                error("[music.play] F command need a number at :"  .. " at " .. tostring(self.line) .. ":" .. tostring(self.pos))
             end
             return playnote(number, self.length)
         elseif self.chr == "t" then
@@ -319,7 +331,11 @@ function mml_next(self)
             self.tempo = scan_number()
         elseif self.chr == "l" then
             step()
-            self.length = scan_number()
+            local l = scan_number()
+            if l > 64 then
+                error("Length should be less or equal 64: your length is:" .. tostring(l) .. " at " .. tostring(self.line) .. ":" .. tostring(self.pos))
+            end
+            self.length = l
         elseif self.chr == "p" or self.chr == "r" then
             step()
             local duration = scan_number() or self.length
@@ -352,6 +368,9 @@ function mml_next(self)
                 self.shift_octave = 0
             end
         elseif self.chr == "," then
+            step()
+            return playnote("r", 1, 0, 1)
+        elseif self.chr == ";" then
             step()
             return playnote("r", 1, 0, 1)
         elseif self.chr == "v" then --ignoring it
