@@ -79,12 +79,11 @@ end
 function melody.playsound(composer, pitch, length, rest)
     if composer.source then
         composer.source:stop()
-        print("stoped")
     end
     if not (composer.source and composer.last and (composer.last.length == length) and (composer.last.pitch == pitch) and (composer.last.rest == rest)) then
         local sample = generate_sample(pitch, length)
         composer.source = love.audio.newSource(sample)
-        composer.source:setVolume(music.volume)
+        --composer.source:setVolume(music.volume)
         composer.source:setLooping(false)
         composer.last = {}
         composer.last.pitch = pitch

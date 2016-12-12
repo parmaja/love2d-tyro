@@ -152,11 +152,11 @@ function mml_next(self)
 
         local r = 0   --legato
 
-        if subsequent == 1 then --normal
+        if self.subsequent == 1 then --normal
             r = l / 8
             l = l - r
-        elseif subsequent == 2 then --staccato
-            rest = l / 4
+        elseif self.subsequent == 2 then --staccato
+            r = l / 4
             l = l - r
         end
         self.sound = {pitch = f, length = l, rest = r}
