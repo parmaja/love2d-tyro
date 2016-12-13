@@ -131,4 +131,6 @@ function melody.playsound(channel, pitch, length, rest, tie, wait)
             --oh we need to wait it
         end
     end
+    --return false if thread terminated
+    return true
 end
