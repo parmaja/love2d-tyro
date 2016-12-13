@@ -158,11 +158,7 @@ function mml_prepare(self, notes)
     self.subsequent = 0 -- 0 = legato 1 = normal 2 = staccato
 
     self.line = 1 --line for error messages
-    if self.notes:sub(1, 4) == "mml@" then
-        self.pos = 5
-    else
-        self.pos = 1
-    end
+    self.pos = 1
 
     if (self.pos <= #self.notes) then
         self.chr = self.notes:sub(self.pos, self.pos)
@@ -212,11 +208,18 @@ function mml_next(self)
         return true
     end
 
+
     local function reset()
         self.tempo = 120
         self.octave = 4
         self.length = 4 --note length
         self.subsequent = 0
+    end
+
+    local function restart()
+        reset()
+        self.line = 1 --line for error messages
+        self.pos = 0
     end
 
     local function step()
@@ -287,7 +290,6 @@ function mml_next(self)
         elseif self.chr=="!" then
             reset()
             step()
-
         elseif self.chr >= "a" and self.chr <="g" then
             local note = self.chr
             step()
@@ -413,6 +415,11 @@ function mml_next(self)
                 self.subsequent = 1
             elseif self.chr == "s" then --staccato
                 self.subsequent = 2
+
+            elseif self.chr=="r" then --repeat it
+                step()
+                local number = scan_number() --todo
+                restart(number)
             elseif self.chr == "f" then --just for compatibility
             elseif self.chr == "b" then
             else

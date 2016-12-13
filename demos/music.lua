@@ -142,8 +142,8 @@ function melody.waveform(index, samples, pitch, rate, tie)
 end
 
 --music.background = true
---music.play(popcorn)
-music.play("ucdefgab>c")
+music.play(popcorn, "cfcfcfmr")
+--music.play("t120cdefgab>cmr")
 --music.play("cp1dp1efgab>c", ">c<bagfep1dp1c")
 --music.play("l2c&c&c")
 --music.play("l8mlo5c&c&cdefgab>c")
