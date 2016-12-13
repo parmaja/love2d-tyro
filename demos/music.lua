@@ -104,11 +104,12 @@ ee4p8p16o2ee2
 ]]
 
 axelf =[[
-t126v100f#8r8a8.f#8f#16b8f#8e8f#8r8>c#8.<f#8f#16>d8c#8<a8f#8>c#8f#8<f#16e8e16c#8g#8f#.r8f#8r8a8.f#8f#16b8f#8e8f#8r8>c#8.<f#8f#16>d8c#8<a8f#8>c#8f#8<f#16e8e16c#8g#8f#.r8
+t120v100f#8r8a8.f#8f#16b8f#8e8f#8r8>c#8.<f#8f#16>d8c#8<a8f#8>c#8f#8<f#16e8e16c#8g#8f#.r8f#8r8a8.f#8f#16b8f#8e8f#8r8>c#8.<f#8f#16>d8c#8<a8f#8>c#8f#8<f#16e8e16c#8g#8f#.r8
 ]]
 
-new = [[
-v127t130l8r1r8<<b>f+4>g4<<b>f+4<b>f+4>g4<<b>f+4f+8g4>g4<f+4.dg4>g4<f+8g8>d+8.d+8.d+8bd+16<b16>d4eee16d16e4ee16d16e4ee16d16e16g8.eabeee16d16e16g8.ee16dg4&g16e16d16e16g4&g16d4e16<b16>e16<b16>e16d16e16g8<b16>e16<b>d16e.<b16>e16<b16>e16d16e16g8<b16>e16<b16>abe16<b16>e16<b16>e16d16e16g8.e16<b16>e16d16e16g8<b16>e16<b16>e16d.<b16>d+8.<b16>d+4&<d+16g2ag4.>g16g16g8g16g8g16<ag4.>g16g16g8g16g8g16<ag4g16g8g16g8g16g8g16ag4.b16bb16bbag8d4>b16bb16b16b16b<ag8edeg8aa+8ag8aa+8aa+8aa+8ag8d+8e2.&ed4g8g8g16g8g16ag4.g16g16g8g16g8g8.g4.g16g16g8g16g8g16ag8eg16g16g16g16g8g16g8g16ag4.bbb16b.ag4b16b16b16b16bb16bb16>d<ba4bbb16b.b>deede16de2.&e16e2a4.g8a4ag2&g8e2a4.g8g8eg8ea4g8eea4.a4.g8ag8>d4<ag8ag2&g8eg8f+8f+8f+2b>dede4edee4.f+8d2&d<e4>e4ed4ed+8d+8d+8e4.d+4ed4.e4e4g4f+8d4e4b2e4<e16g8g16e16c.>d+8d+8ef+8<b>g8f+4.<e16d16e4ee16d16e16g8.ee16d16e16g4&g16abe16<b16>e16<b>d16e16g8<b16>e16<b16>e16d16e16g8<b16>e16<b16>e16d.d+8.<b.>d+32,r1o2e.e.e4<e>e4<g2&g8g8>g4>c.c.c4<c4.<b2&bb>b4<b.b.>b.b.<d4e>e>e<f+16g8.g8>d<g16c.c>c<c16<d.>dad<e>e>e<f+16<g8.>g8>d<g16c.>cg8c16<<b.>b>f+8<b<e>e>e<f+16g8.g8>d<g16<c.>c>c<c16<d.>da4<e>e>e<<>f+16<g8.>g8>g8<g16c.>cg8c<<b16b.b16>b.e2&e<e4g2.g4>>c2.<c4<b2d+2e2.>e4<g2.g4>c2.c4<b2>d+2&d+8<b.>b.<b.>b.d+4<e>e16b16>e16<b16e16b16>e<<e4g4>g16>d16g16d16<g8>g8<g4c4>c16g16>c16<g16c>c<<c4<b4>b16>f+8.<<d+4>d+8>d+8<<e4>e16b16>e16<b16e>e<e4<g4>g16>d16g16d16<g8>g8<<g4>c4>c16g16>c16<g16c>c<<c4c<b1ee>>b4<g8g8>g4<c>cb4<<d.d.>d+8e<e>>g4<<g8g8>>g4<c>c4.<d.<d.>d+8<ee>>e4<<g8g8>>g4<cc>e4<d.d.<bc16g16>c16e16g16>c16e16g16>c16<g16e16c16<g16e16c16<g16bbb2.e>g16b16>e<<e4>e>e<eg8b16>d16g8<g4g8>g8<g8>ce16g16>c<c4cg8c<b>d+16f+16b<d+4d+8>d+8<d+8<e>g16b16>e<e4ebe<g8>b16>d16g8<g4g8>d<g8>ce16g16>c<<c4>c>c<c<<b>>d+16f+16b<d+4d+8>d+8<d+8<e>e>e<f+16g8.g8>d<g16c.>c>c<c16<d.dadee>e<f+16g8.g8>d<g16c.>cg8c<b.b.<b32;
+--https://archeagemmllibrary.com/super-mario-bros/
+mario = [[
+t100>e16e8e8c16e8g4<g4>c8.<g8.e8.a8b8a+16a8g16.>e16g16.a8f16g8e8c16d16<b8.>c8.<g8.e8.a8b8a+16a8g16.>e16g16.a8f16g8e8c16d16<b4&b16>g16f+16f16d+8e8<g+16a16>c8<a16>c16d8.g16f+16f16d+8e8>c8c16c4.<g16f+16f16d+8e8<g+16a16>c8<a16>c16d8.d+8.d8.c2&c8g16f+16f16d+8e8<g+16a16>c8<a16>c16d8.g16f+16f16d+8e8>c8c16c4.<g16f+16f16d+8e8<g+16a16>c8<a16>c16d8.d+8.d8.c2,<d16d8d8d16d8g4<g4>g8.e8.c8.f8g8f+16f8c16.>c16e16.f8d16e8c8<a16b16g8.g8.e8.c8.f8g8f+16f8c16.>c16e16.f8d16e8c8<a16b16g8.c8.g8.>c8<f8.>c16c16c16<f8c8.e8.g16>c4.&c16<g8c8.g8.>c8<f8.>c16c16c16<f8c8g+8.a+8.>c8.<g16g8c8c8.g8.>c8<f8.>c16c16c16<f8c8.g8.g16>c4.&c16<g8c8.g8.>c8<f8.>c16c16c16<f8c8g+8.a+8.>c8.
 ]]
 
 --http://www.bachcentral.com/midiindexcomplete.html
@@ -126,13 +127,13 @@ function melody.waveform(index, samples, pitch, rate, tie)
     sample = math.sin((index * pitch) * ((2 * math.pi) / rate))
     local a = math.sin((index * pitch * 2) * ((2 * math.pi) / rate))
     local b = math.sin((index * pitch / 2) * ((2 * math.pi) / rate))
-    sample = (2 * sample - a - b) / 4
+    sample = (sample - a - b) / 4
     return sample * fade
 end
 
-music.play(WilliamTell)
+--music.play(axelf)
 --music.play("cp1dp1efgab>c", ">c<bagfep1dp1c")
---music.play("l2c&c")
+music.play("l2c&c&c")
 --music.play("l8mlo5c&c&cdefgab>c")
 --music.play("msl4o5c&c&c")
 --music.play("s2o2 mn b4 p8 ms b b mn b4 p8 ms b b b8 g#8")

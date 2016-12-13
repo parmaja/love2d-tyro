@@ -48,9 +48,11 @@ function melody.play(...)
                 busy = true
             elseif ch:next() then
                 print(ch.name, "freq Hz, len ms, rest ms", ch.sound.pitch, math.floor(ch.sound.length * 100), math.floor(ch.sound.rest * 100))
-                ch.expired = os.clock() + ch.sound.length + ch.sound.rest
-                --print("expired",ch.sound.length)
-                --print("expired",ch.expired)
+                if ch.sound.tie then
+                    ch.expired = os.clock() + ch.sound.length
+                else
+                    ch.expired = os.clock() + ch.sound.length + ch.sound.rest
+                end
                 melody.playsound(ch, ch.sound.pitch, ch.sound.length, ch.sound.rest, ch.sound.tie, false)
                 busy = true
             else

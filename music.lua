@@ -49,7 +49,7 @@ end
 --generate((freq, seconds)
 --generate sample waveform
 
-saved = 1
+--saved = 1
 
 function generate_sample(pitch, length, rest, tie)
     local rate = 44100 --22050
@@ -70,11 +70,11 @@ function generate_sample(pitch, length, rest, tie)
             data:setSample(index, sample) --bug in miniedit, put cursor on data and ctrl+f it now show "data"
         end
     end
-    if saved < 5 then
-        s = data:getString()
-        love.filesystem.write("test"..tostring(saved)..".data", s)
-    end
-    saved = saved + 1
+--    if saved < 5 then
+--        s = data:getString()
+--        love.filesystem.write("test"..tostring(saved)..".data", s)
+--    end
+--    saved = saved + 1
     return data
 end
 
@@ -88,17 +88,18 @@ function melody.playsound(composer, pitch, length, rest, tie, wait)
     end
     if not (composer.source and composer.last and (composer.last.length == length) and (composer.last.pitch == pitch) and (composer.last.rest == rest) and (composer.last.tie == tie)) then
         local sample = generate_sample(pitch, length, rest, tie)
-        composer.source = love.audio.newSource(sample)
-        composer.source:setVolume(music.volume)
-        composer.source:setLooping(false)
         composer.last = {}
         composer.last.pitch = pitch
         composer.last.length = length
         composer.last.rest = rest
         composer.last.tie = tie
+        composer.source = love.audio.newSource(sample)
+        composer.source:setLooping(false)
+        composer.source:setVolume(music.volume)
         composer.source:play()
     else
-        composer.source:rewind()
+        composer.source:seek(0)
+        composer.source:setVolume(music.volume)
         composer.source:play()
     end
 
