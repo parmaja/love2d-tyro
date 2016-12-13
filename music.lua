@@ -73,7 +73,7 @@ end
 --saved = 1
 
 function generate_sample(pitch, length, rest, tie)
-    local rate = 22050 --44100 --22050
+    local rate = 44100 --22050
     local amplitude = 1 --not sure, i added it by my hand :P
     local data = love.sound.newSoundData((length + rest) * rate, rate, 16, 1) --rest keep it empty
     local samples = length * rate

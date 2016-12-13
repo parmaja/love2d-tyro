@@ -4,6 +4,7 @@ WilliamTell = [[
 mfl16t155s2
 o2mnb4p8msbbmnb4p8msbbb8g#8
 e8g#8b8g#8b8o3e8o2b8g#8e8g#8
+mr
 b8g#8b8o3e8o2mnb4p8msbbmnb4
 p8msbbmnb4p8msbbmnb4p8msbb
 b8bbb8b8b8bbb8b8b8bb
@@ -109,7 +110,7 @@ mr
 ]]
 
 --https://archeagemmllibrary.com/super-mario-bros/
-mario = [[s+1
+mario = [[
 t100>e16e8e8c16e8g4<g4>c8.<g8.e8.a8b8a+16a8g16.>e16g16.a8f16g8e8c16d16<b8.>c8.<g8.e8.a8b8a+16a8g16.>e16g16.a8f16g8e8c16d16<b4&b16
 ]]
 
@@ -129,7 +130,7 @@ T150L8O7D#C#D#<A#F#A#L4D#L8>D#C#D#<A#F#A#L4D#L8>D#FF#FF#D#FD#FC#D#C#D#<BL4>D#L8D
 
 --music.play(axlf)
 
-function melody.waveform_piano(index, samples, pitch, rate, tie)
+function melody.waveform(index, samples, pitch, rate, tie)
     --https://stackoverflow.com/questions/20037947/fade-out-function-of-audio-between-samplerate-changes
     local fade = 1
     if not tie then
@@ -142,17 +143,15 @@ function melody.waveform_piano(index, samples, pitch, rate, tie)
     return sample * fade
 end
 
-function melody.waveform(index, samples, pitch, rate, tie)
-    --https://stackoverflow.com/questions/20037947/fade-out-function-of-audio-between-samplerate-changes
+function melody.waveform_2(index, samples, pitch, rate, tie)
     sample = math.sin((index * pitch) * ((2 * math.pi) / rate))
-    local a = math.sin((index * pitch / 2) * ((2 * math.pi) / rate))
-    local b = math.sin((index * pitch / 3) * ((math.pi) / rate)) / 2
-    sample = (sample - a - b) / 3
+    local a = math.sin((index * pitch / 1.5) * ((2 * math.pi) / rate)) / 1.5
+    sample = (sample - a) / 2
     return sample
 end
 
 --music.background = true
-music.play(axelf)
+music.play(WilliamTell)
 --music.play("t120cdefgab>cmr")
 --music.play("cp1dp1efgab>c", ">c<bagfep1dp1c")
 --music.play("l2c&c&c")

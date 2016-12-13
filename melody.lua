@@ -44,8 +44,8 @@ function melody.play(...)
     while true do
         ch = channels[index]
         if not ch.finished then
-            --if ch.source and ch.source:isPlaying() then
-            if ch.expired and (ch.expired > os.clock()) then
+            if ch.source and ch.source:isPlaying() then
+            --if ch.expired and (ch.expired > os.clock()) then
                 busy = true
             elseif ch:next() then
                 print(ch.name, "freq Hz, len ms, rest ms", ch.sound.pitch, math.floor(ch.sound.length * 100), math.floor(ch.sound.rest * 100))
@@ -149,8 +149,6 @@ function mml_prepare(self, notes)
     self.notes = notes:lower()
 
     --Current values by default
-    self.freq = 0
-
     self.tempo = 120
     self.octave = 4
     self.shift_octave = 0
@@ -212,8 +210,9 @@ function mml_next(self)
     local function reset()
         self.tempo = 120
         self.octave = 4
+        self.shift_octave = 0
         self.length = 4 --note length
-        self.subsequent = 0
+        self.subsequent = 0 -- 0 = legato 1 = normal 2 = staccato
     end
 
     local function restart()
@@ -415,11 +414,12 @@ function mml_next(self)
                 self.subsequent = 1
             elseif self.chr == "s" then --staccato
                 self.subsequent = 2
-
             elseif self.chr=="r" then --repeat it
                 step()
                 local number = scan_number() --todo
                 restart(number)
+            elseif self.chr=="x" then --exit
+                return false
             elseif self.chr == "f" then --just for compatibility
             elseif self.chr == "b" then
             else
