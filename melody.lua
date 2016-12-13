@@ -152,6 +152,7 @@ function mml_prepare(self, notes)
     self.tempo = 120
     self.octave = 4
     self.shift_octave = 0
+    self.waveform = 0
     self.length = 4 --note length
     self.subsequent = 0 -- 0 = legato 1 = normal 2 = staccato
 
@@ -211,6 +212,7 @@ function mml_next(self)
         self.tempo = 120
         self.octave = 4
         self.shift_octave = 0
+        self.waveform = 0
         self.length = 4 --note length
         self.subsequent = 0 -- 0 = legato 1 = normal 2 = staccato
     end
@@ -324,6 +326,7 @@ function mml_next(self)
 
             local tie = false
             if self.chr == "&" then  --trying to use it, but i think i cant
+                step()
                 tie = true
             end
 
@@ -375,7 +378,12 @@ function mml_next(self)
                     by = by / 2
                 until not step() or self.chr ~= "."
             end
-            return playnote("r", duration, 0, increase)
+            local tie = false
+            if self.chr == "&" then  --trying to use it, but i think i cant
+                step()
+                tie = true
+            end
+            return playnote("r", duration, 0, increase, tie)
         elseif self.chr == "o" then
             step()
             self.octave = scan_number()
@@ -395,9 +403,9 @@ function mml_next(self)
             else
                 self.shift_octave = 0
             end
-        elseif self.chr == "&" then --ignore it, can not support it
+        elseif self.chr == "w" then --waveform number
             step()
-            --return playnote("r", 1, 0, 1)
+            self.waveform = scan_number() --todo
         elseif self.chr == "," then
             step()
             error("command ',' not supported, it used to split song to multiple channels, use play(note1, note2) ")

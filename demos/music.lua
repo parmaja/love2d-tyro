@@ -135,6 +135,10 @@ t65 l16 >ed+ed+ec-dc<a8rceab8reg+bb+8re>ed+ed+ec-dc<a8rceab8rdb+ba8rb>cde8.<g>fe
 furelise2 = [[
 t65 l16 r2l16<<a>ear8&r16<e>eg+r8&r16<a>ear2r<a>ear8&r16<e>eg+r8&r16<a>ear8&r16cgb+r8&r16<g>gbr8&r16<a>ear8&r16<e>e>eere>eerd+er8d+er2r<<<a>ear8&r16<e>eg+r8&r16<a>ear2r<a>ear8&r16<e>eg+r8&r16<a8
 ]]
+
+bee = [[
+t200o6l16ed#dc#dc#co5bo6co5ba#ag#gf#fed#dc#dc#co4bo5co4ba#ag#gf#fed#dc#dc#co3bo4ed#dc#dc#co3bV100o4ed#dc#cfed#ed#dc#cc#dd#ed#dc#cfed#ed#dc#cc#dd#ed#dc#dc#co3bo4cc#dd#efed#ed#dc#dc#co3bo4cc#dd#ef#gg#ag#gf#fa#ag#ag#gf#ff#gg#ag#gf#fa#ag#ag#gf#ff#gg#ag#gf#gf#feff#gg#aa#ag#ag#gf#gf#feff#gg#aa#ag#a8r8a4a#2
+]]
 --http://www.bachcentral.com/midiindexcomplete.html
 --http://pasyuk.chat.ru/index_e.htm
 --http://www.netmftoolbox.com/tools/midi_to_mml.php
@@ -166,6 +170,7 @@ function melody.waveform_2(index, samples, pitch, rate, tie)
 end
 
 --music.background = true
+--music.play(bee)
 music.play(furelise1, furelise2)
 --music.play(tocatta, tocatta1, tocatta2)
 --music.play("t120cdefgab>cmr")
