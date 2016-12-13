@@ -49,7 +49,9 @@ end
 --generate((freq, seconds)
 --generate sample waveform
 
-function generate_sample(pitch, length, rest)
+saved = 1
+
+function generate_sample(pitch, length, rest, tie)
     local rate = 44100 --22050
     local amplitude = 1 --not sure, i added it by my hand :P
     local data = love.sound.newSoundData((length + rest) * rate, rate, 16, 1) --rest keep it empty
@@ -60,7 +62,7 @@ function generate_sample(pitch, length, rest)
     if pitch > 0 then
         for index = 0, samples - 1 do
             if melody.waveform then
-                sample = melody.waveform(index, samples, pitch, rate) * amplitude
+                sample = melody.waveform(index, samples, pitch, rate, tie) * amplitude
             else
                 --to keep it simple to understand: sample = math.sin((index * pitch) * ((2 * math.pi) / rate)) * amplitude
                 sample = math.sin(index * c) * amplitude
@@ -68,15 +70,15 @@ function generate_sample(pitch, length, rest)
             data:setSample(index, sample) --bug in miniedit, put cursor on data and ctrl+f it now show "data"
         end
     end
---[[    if saved < 5 then
+    if saved < 5 then
         s = data:getString()
         love.filesystem.write("test"..tostring(saved)..".data", s)
     end
-    saved = saved + 1]]
+    saved = saved + 1
     return data
 end
 
-function melody.playsound(composer, pitch, length, rest, wait)
+function melody.playsound(composer, pitch, length, rest, tie, wait)
 
     if composer.source then
         if composer.source:isPlaying() then
@@ -84,8 +86,8 @@ function melody.playsound(composer, pitch, length, rest, wait)
         end
         --composer.source:stop()
     end
-    if not (composer.source and composer.last and (composer.last.length == length) and (composer.last.pitch == pitch) and (composer.last.rest == rest)) then
-        local sample = generate_sample(pitch, length, rest)
+    if not (composer.source and composer.last and (composer.last.length == length) and (composer.last.pitch == pitch) and (composer.last.rest == rest) and (composer.last.tie == tie)) then
+        local sample = generate_sample(pitch, length, rest, tie)
         composer.source = love.audio.newSource(sample)
         composer.source:setVolume(music.volume)
         composer.source:setLooping(false)
@@ -93,6 +95,7 @@ function melody.playsound(composer, pitch, length, rest, wait)
         composer.last.pitch = pitch
         composer.last.length = length
         composer.last.rest = rest
+        composer.last.tie = tie
         composer.source:play()
     else
         composer.source:rewind()

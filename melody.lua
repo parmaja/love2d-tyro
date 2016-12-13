@@ -46,7 +46,7 @@ function melody.play(...)
                 busy = true
             elseif ch:next() then
                 print(ch.name, "freq Hz, len ms, rest ms", ch.sound.pitch, math.floor(ch.sound.length * 100), math.floor(ch.sound.rest * 100))
-                melody.playsound(ch, ch.sound.pitch, ch.sound.length, ch.sound.rest, false)
+                melody.playsound(ch, ch.sound.pitch, ch.sound.length, ch.sound.rest, ch.sound.tie, false)
                 busy = true
             else
                 ch.finished = true
@@ -139,8 +139,6 @@ local baseNoteC4 = 261.63
 local baseLength = 4
 local baseTempo  = 60
 
-saved = 1
-
 function mml_prepare(self, notes)
     self.notes = notes:lower()
 
@@ -171,7 +169,7 @@ function mml_next(self)
     --playnote("c#", 1, 0, 0)
     --playnote("r", 1)
     --playnote(440, 1) --by number
-    local function playnote(note, duration, offset, increase)
+    local function playnote(note, duration, offset, increase, tie)
         increase = increase or 0
         offset = offset or 0
         local f = 0
@@ -194,15 +192,16 @@ function mml_next(self)
         local l = (baseLength / duration) * (baseTempo / self.tempo) * (1 + increase);
 
         local r = 0   --legato
-
-        if self.subsequent == 1 then --normal
-            r = l / 8
-            l = l - r
-        elseif self.subsequent == 2 then --staccato
-            r = l / 4
-            l = l - r
+        if not tie then
+            if self.subsequent == 1 then --normal
+                r = l / 8
+                l = l - r
+            elseif self.subsequent == 2 then --staccato
+                r = l / 4
+                l = l - r
+            end
         end
-        self.sound = {pitch = f, length = l, rest = r}
+        self.sound = {pitch = f, length = l, rest = r, ["tie"] = tie}
         --now use it to play
         return true
     end
@@ -315,7 +314,12 @@ function mml_next(self)
                 until not step() or self.chr ~= "."
             end
 
-            return playnote(note, duration, offset, increase)
+            local tie = false
+            if self.chr == "&" then  --trying to use it, but i think i cant
+                tie = true
+            end
+
+            return playnote(note, duration, offset, increase, tie)
 
         elseif self.chr == "n" then  --TODO: note index
             step()
