@@ -109,7 +109,12 @@ t120v100f#8r8a8.f#8f#16b8f#8e8f#8r8>c#8.<f#8f#16>d8c#8<a8f#8>c#8f#8<f#16e8e16c#8
 
 --https://archeagemmllibrary.com/super-mario-bros/
 mario = [[
-t100>e16e8e8c16e8g4<g4>c8.<g8.e8.a8b8a+16a8g16.>e16g16.a8f16g8e8c16d16<b8.>c8.<g8.e8.a8b8a+16a8g16.>e16g16.a8f16g8e8c16d16<b4&b16>g16f+16f16d+8e8<g+16a16>c8<a16>c16d8.g16f+16f16d+8e8>c8c16c4.<g16f+16f16d+8e8<g+16a16>c8<a16>c16d8.d+8.d8.c2&c8g16f+16f16d+8e8<g+16a16>c8<a16>c16d8.g16f+16f16d+8e8>c8c16c4.<g16f+16f16d+8e8<g+16a16>c8<a16>c16d8.d+8.d8.c2,<d16d8d8d16d8g4<g4>g8.e8.c8.f8g8f+16f8c16.>c16e16.f8d16e8c8<a16b16g8.g8.e8.c8.f8g8f+16f8c16.>c16e16.f8d16e8c8<a16b16g8.c8.g8.>c8<f8.>c16c16c16<f8c8.e8.g16>c4.&c16<g8c8.g8.>c8<f8.>c16c16c16<f8c8g+8.a+8.>c8.<g16g8c8c8.g8.>c8<f8.>c16c16c16<f8c8.g8.g16>c4.&c16<g8c8.g8.>c8<f8.>c16c16c16<f8c8g+8.a+8.>c8.
+t100>e16e8e8c16e8g4<g4>c8.<g8.e8.a8b8a+16a8g16.>e16g16.a8f16g8e8c16d16<b8.>c8.<g8.e8.a8b8a+16a8g16.>e16g16.a8f16g8e8c16d16<b4&b16
+]]
+
+--https://archeagemmllibrary.com/j-s-bach-toccata-and-fugue-full/
+tocatta = [[
+t56V127l32>aga8.r16gfedc+16.d4r8r16r<aga8.l16refc+d4r4l32<aga8.r16gfedl16.c+d8r1rg8>c+8e2<a1,o4l1rrrr2r8<e2.&e8g4e4f+2,o5l32aga8.r16gfedc+16.d4r8r16r<aga8.l16refc+d4r4l32<aga8.r16gfe>dl16.c+d8r4rd2c+1d1
 ]]
 
 --http://www.bachcentral.com/midiindexcomplete.html
@@ -131,9 +136,9 @@ function melody.waveform(index, samples, pitch, rate, tie)
     return sample * fade
 end
 
---music.play(axelf)
---music.play("cp1dp1efgab>c", ">c<bagfep1dp1c")
-music.play("l2c&c&c")
+--music.play(tocatta)
+music.play("cp1dp1efgab>c", ">c<bagfep1dp1c")
+--music.play("l2c&c&c")
 --music.play("l8mlo5c&c&cdefgab>c")
 --music.play("msl4o5c&c&c")
 --music.play("s2o2 mn b4 p8 ms b b mn b4 p8 ms b b b8 g#8")

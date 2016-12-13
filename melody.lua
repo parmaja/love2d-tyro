@@ -266,7 +266,7 @@ function mml_next(self)
     end
 
     local function scan_eol()
-        while self.pos <= #notes do
+        while self.pos <= #self.notes do
             if self.chr == "\n" then
                 break
             end
@@ -350,7 +350,17 @@ function mml_next(self)
             if l > 96 then
                 error("Length should be less or equal 96: your length is:" .. tostring(l) .. " at " .. tostring(self.line) .. ":" .. tostring(self.pos))
             end
-            self.length = l
+            local increase = 0
+            local by = 0.5
+            if self.chr == "." then
+                repeat
+                    increase = increase + by --not sure about next dot
+                    by = by / 2
+                until not step() or self.chr ~= "."
+            end
+
+            self.length = l + increase
+
         elseif self.chr == "p" or self.chr == "r" then
             step()
             local duration = scan_number() or self.length
