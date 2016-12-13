@@ -136,9 +136,11 @@ furelise2 = [[
 t65 l16 r2l16<<a>ear8&r16<e>eg+r8&r16<a>ear2r<a>ear8&r16<e>eg+r8&r16<a>ear8&r16cgb+r8&r16<g>gbr8&r16<a>ear8&r16<e>e>eere>eerd+er8d+er2r<<<a>ear8&r16<e>eg+r8&r16<a>ear2r<a>ear8&r16<e>eg+r8&r16<a8
 ]]
 
-bee = [[
-t200o6l16ed#dc#dc#co5bo6co5ba#ag#gf#fed#dc#dc#co4bo5co4ba#ag#gf#fed#dc#dc#co3bo4ed#dc#dc#co3bV100o4ed#dc#cfed#ed#dc#cc#dd#ed#dc#cfed#ed#dc#cc#dd#ed#dc#dc#co3bo4cc#dd#efed#ed#dc#dc#co3bo4cc#dd#ef#gg#ag#gf#fa#ag#ag#gf#ff#gg#ag#gf#fa#ag#ag#gf#ff#gg#ag#gf#gf#feff#gg#aa#ag#ag#gf#gf#feff#gg#aa#ag#a8r8a4a#2
+--https://mabinogifish.blogspot.com/2013/06/flight-of-bumble-bee.html
+BumbleBee = [[
+t170l32aaaaaaaaaaaaaaaaaaaaaar3v9l16o6ed+dc+dc+cc-c<ba+ag+gf+f24<<g+48>>ed+dc+dc+cc-c<ba+ag+gf+fed+dc+dc+cc-ed+dc+dc+cc-ed+dc+cfed+ed+dc+cc+dd+ed+dc+cfed+ed+dc+cc+dd+ed+dc+dc+cc-cc+dd+efed+ed+dc+dc+cc-cc+dd+ef+gg+ag+gf+fa+ag+ag+gf+ff+gg+ag+gf+fa+ag+ag+gf+ff+gg+ag+gf+gf+feff+gg+aa+ag+ag+gf+gf+feff+gg+aa+ag+<daaaaaaaa+g+a+g+a+g+a+g+aaaaaaaaa+g+a+g+a+g+a+g+>aa+ag+aa+ag+aa+ag+aa+ag+aa+b>cc+c<ba+aa+b>cc+c<ba+n42dddddddd+c+d+c+d+c+d+c+ddddddddd+c+d+c+d+c+d+c+>dd+dc+dd+dc+dd+dc+dd+dc+dd+eff+fed+dd+eff+fed+<d64>dc+c<ba+>d+dc+24<d64>dc+c<b32.d+64a+b>cc+32.<d64>dc+c<b32.c64b+ba+a32.<a+64>a+b>cc+32.<<a64>>cc+dd+32.>ed+dc+dc+cc-c<ba+ag+gf+fefed+efed+efed+efed+efed+efed+efed+efed+e<d+dc+dc+cc-c<ba+ag+gf+fefed+efed+efed+efed+efed+efed+efed+efed+eff+gg+aa+ba+aa+aa+g+a+g+a<a>b<a>b+<an50a>>efed+fd+fd+e<e>e64f+24<e>e64g24<e>d64g+24<e>c64ar8.<eff+gg+aa+b>cc+dd+eff+gg+aa+b>cc+dd+ef+gg+a8r4.l48<<a>cea8r4.<a8
 ]]
+
 --http://www.bachcentral.com/midiindexcomplete.html
 --http://pasyuk.chat.ru/index_e.htm
 --http://www.netmftoolbox.com/tools/midi_to_mml.php
@@ -149,7 +151,7 @@ function melody.waveform(index, samples, pitch, rate, tie)
     --https://stackoverflow.com/questions/20037947/fade-out-function-of-audio-between-samplerate-changes
     local fade = 1
     if not tie then
-        fade = math.exp(-math.log(50) * index / samples / 2) --fadeout
+        fade = math.exp(-math.log(50) * index / samples / 3) --fadeout
     end
     sample = math.sin((index * pitch) * ((2 * math.pi) / rate))
     local a = math.sin((index * pitch * 2) * ((2 * math.pi) / rate))
@@ -170,7 +172,6 @@ function melody.waveform_2(index, samples, pitch, rate, tie)
 end
 
 --music.background = true
---music.play(bee)
 music.play(furelise1, furelise2)
 --music.play(tocatta, tocatta1, tocatta2)
 --music.play("t120cdefgab>cmr")
