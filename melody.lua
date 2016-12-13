@@ -44,8 +44,8 @@ function melody.play(...)
     while true do
         ch = channels[index]
         if not ch.finished then
-            if ch.source and ch.source:isPlaying() then
-            --if ch.expired and (ch.expired > os.clock()) then
+            --if ch.source and ch.source:isPlaying() then
+            if ch.expired and (ch.expired > os.clock()) then
                 busy = true
             elseif ch:next() then
                 print(ch.name, "freq Hz, len ms, rest ms", ch.sound.pitch, math.floor(ch.sound.length * 100), math.floor(ch.sound.rest * 100))
@@ -215,12 +215,6 @@ function mml_next(self)
         self.subsequent = 0 -- 0 = legato 1 = normal 2 = staccato
     end
 
-    local function restart()
-        reset()
-        self.line = 1 --line for error messages
-        self.pos = 0
-    end
-
     local function step()
         self.pos = self.pos + 1
         if (self.pos > #self.notes) then
@@ -230,6 +224,13 @@ function mml_next(self)
             self.chr = self.notes:sub(self.pos, self.pos)
             return true
         end
+    end
+
+    local function restart()
+        reset()
+        self.line = 1 --line for error messages
+        self.pos = 0 --zero because we do step()
+        step()
     end
 
     local function scan_number(max)
@@ -409,23 +410,29 @@ function mml_next(self)
         elseif self.chr == "m" then
             step()
             if self.chr == "l" then --legato
+                step()
                 self.subsequent = 0
             elseif self.chr == "n" then --normal
+                step()
                 self.subsequent = 1
             elseif self.chr == "s" then --staccato
+                step()
                 self.subsequent = 2
             elseif self.chr=="r" then --repeat it
                 step()
                 local number = scan_number() --todo
                 restart(number)
             elseif self.chr=="x" then --exit
+                step()
                 return false
             elseif self.chr == "f" then --just for compatibility
+                step()
             elseif self.chr == "b" then
+                step()
             else
+                step()
                 error("[music.play] Illegal subcommand for M" .. self.chr .. " at:" .. tostring(self.pos))
             end
-            step()
         else
             error("[music.play] Can not recognize: " .. self.chr .. " at:" .. tostring(self.line) .. ":" .. tostring(self.pos))
         end

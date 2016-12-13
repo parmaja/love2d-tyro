@@ -120,7 +120,7 @@ function melody.playsound(channel, pitch, length, rest, tie, wait)
         channel.source:setVolume(channel.volume)
         channel.source:play()
     else
-        channel.source:seek(0)
+        channel.source:rewind() --better than seek(0)
         channel.source:setVolume(channel.volume)
         channel.source:play()
     end

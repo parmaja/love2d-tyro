@@ -4,7 +4,6 @@ WilliamTell = [[
 mfl16t155s2
 o2mnb4p8msbbmnb4p8msbbb8g#8
 e8g#8b8g#8b8o3e8o2b8g#8e8g#8
-mr
 b8g#8b8o3e8o2mnb4p8msbbmnb4
 p8msbbmnb4p8msbbmnb4p8msbb
 b8bbb8b8b8bbb8b8b8bb
@@ -111,7 +110,7 @@ mr
 
 --https://archeagemmllibrary.com/super-mario-bros/
 mario = [[
-t100>e16e8e8c16e8g4<g4>c8.<g8.e8.a8b8a+16a8g16.>e16g16.a8f16g8e8c16d16<b8.>c8.<g8.e8.a8b8a+16a8g16.>e16g16.a8f16g8e8c16d16<b4&b16
+t100>e16e8e8c16e8g4<g4>c8.<g8.e8.a8b8a+16a8g16.>e16g16.a8f16g8e8c16d16<b8.>c8.<g8.e8.a8b8a+16a8g16.>e16g16.a8f16g8e8c16d16<b4
 ]]
 
 --https://archeagemmllibrary.com/j-s-bach-toccata-and-fugue-full/
@@ -130,7 +129,7 @@ T150L8O7D#C#D#<A#F#A#L4D#L8>D#C#D#<A#F#A#L4D#L8>D#FF#FF#D#FD#FC#D#C#D#<BL4>D#L8D
 
 --music.play(axlf)
 
-function melody.waveform(index, samples, pitch, rate, tie)
+function melody.waveform_1(index, samples, pitch, rate, tie)
     --https://stackoverflow.com/questions/20037947/fade-out-function-of-audio-between-samplerate-changes
     local fade = 1
     if not tie then
@@ -143,15 +142,19 @@ function melody.waveform(index, samples, pitch, rate, tie)
     return sample * fade
 end
 
-function melody.waveform_2(index, samples, pitch, rate, tie)
+function melody.waveform(index, samples, pitch, rate, tie)
+    local fade = 1
+    if not tie then
+        fade = math.exp(-math.log(50) * index / samples / 2) --fadeout
+    end
     sample = math.sin((index * pitch) * ((2 * math.pi) / rate))
     local a = math.sin((index * pitch / 1.5) * ((2 * math.pi) / rate)) / 1.5
     sample = (sample - a) / 2
-    return sample
+    return sample * fade
 end
 
 --music.background = true
-music.play(WilliamTell)
+music.play(axelf)
 --music.play("t120cdefgab>cmr")
 --music.play("cp1dp1efgab>c", ">c<bagfep1dp1c")
 --music.play("l2c&c&c")
