@@ -57,6 +57,7 @@ function music.play(...)
         print(thread_body)
 
         music.thread = love.thread.newThread(thread_body)
+        --music.pipe = love.thread.getChannel("melody")
         music.thread:start()
     else
         melody.play(...)

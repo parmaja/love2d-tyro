@@ -48,7 +48,7 @@ function melody.play(...)
             if ch.expired and (ch.expired > os.clock()) then
                 busy = true
             elseif ch:next() then
-                print(ch.name, "freq Hz, len ms, rest ms", ch.sound.pitch, math.floor(ch.sound.length * 100), math.floor(ch.sound.rest * 100))
+                print(ch.name, "n, freq Hz, len ms, rest ms", ch.pos, ch.sound.pitch, math.floor(ch.sound.length * 100), math.floor(ch.sound.rest * 100))
                 if ch.sound.tie then
                     ch.expired = os.clock() + ch.sound.length
                 else
@@ -398,9 +398,9 @@ function mml_next(self)
         elseif self.chr == "&" then --ignore it, can not support it
             step()
             --return playnote("r", 1, 0, 1)
-        elseif self.chr == "," then --ignore it, can not support it
+        elseif self.chr == "," then
             step()
-            --return playnote("r", 1, 0, 1)
+            error("command ',' not supported, it used to split song to multiple channels, use play(note1, note2) ")
         elseif self.chr == ";" then --ignore it, can not support it
             step()
             --return playnote("r", 1, 0, 1)
