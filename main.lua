@@ -96,6 +96,11 @@ local function resume()
     end
 end
 
+function love.threaderror(thread, errorstr)
+  print("Thread Error: ".. errorstr)
+  --thread:getError() will return the same error string now.
+end
+
 function love.load()
     canvas.buffer = love.graphics.newCanvas()
     canvas.lockbuffer = love.graphics.newCanvas()

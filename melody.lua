@@ -25,6 +25,7 @@ function melody.play(...)
             error("No notes?!")
         end
         local ch = {
+            volume = 100,
             source = nil,
             finished = false,
         }

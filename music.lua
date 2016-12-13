@@ -33,18 +33,39 @@ function music.beep()
 end
 
 function music.play(...)
-    source = melody
-    melody.play(...)
-end
+    if music.background then
+        local args = {...}
+        if #args == 0 then
+            error("No notes?!")
+        end
 
-local function delay(seconds)
-    local n = os.clock() + seconds
-    while os.clock() <= n do
+        local thread_body = [[require("basic.music")
+            require("love.sound")
+            require("love.audio")
+            melody.play([[
+        ]]
+
+
+        for i, n in ipairs(args) do
+            if i > 1 then
+                thread_body = thread_body .. ", [["
+            end
+            thread_body = thread_body .. n .. "]]"
+        end
+        thread_body = thread_body .. ')'
+
+        print(thread_body)
+
+        music.thread = love.thread.newThread(thread_body)
+        music.thread:start()
+    else
+        melody.play(...)
     end
+    source = melody --temporary, i will make object for it
 end
 
 ---------------------------------------------
--- Example: composer:generate(440, 0.1)    --
+-- Example: channel:generate(440, 0.1)    --
 ---------------------------------------------
 --generate((freq, seconds)
 --generate sample waveform
@@ -52,7 +73,7 @@ end
 --saved = 1
 
 function generate_sample(pitch, length, rest, tie)
-    local rate = 44100 --22050
+    local rate = 22050 --44100 --22050
     local amplitude = 1 --not sure, i added it by my hand :P
     local data = love.sound.newSoundData((length + rest) * rate, rate, 16, 1) --rest keep it empty
     local samples = length * rate
@@ -78,33 +99,34 @@ function generate_sample(pitch, length, rest, tie)
     return data
 end
 
-function melody.playsound(composer, pitch, length, rest, tie, wait)
+function melody.playsound(channel, pitch, length, rest, tie, wait)
 
-    if composer.source then
---        if composer.source:isPlaying() then
+    if channel.source then
+--        if channel.source:isPlaying() then
 --            error("it is playing, please wait")
 --        end
-        composer.source:stop()
+        channel.source:stop()
     end
-    if not (composer.source and composer.last and (composer.last.length == length) and (composer.last.pitch == pitch) and (composer.last.rest == rest) and (composer.last.tie == tie)) then
+
+    if not (channel.source and channel.last and (channel.last.length == length) and (channel.last.pitch == pitch) and (channel.last.rest == rest) and (channel.last.tie == tie)) then
         local sample = generate_sample(pitch, length, rest, tie)
-        composer.last = {}
-        composer.last.pitch = pitch
-        composer.last.length = length
-        composer.last.rest = rest
-        composer.last.tie = tie
-        composer.source = love.audio.newSource(sample)
-        composer.source:setLooping(false)
-        composer.source:setVolume(music.volume)
-        composer.source:play()
+        channel.last = {}
+        channel.last.pitch = pitch
+        channel.last.length = length
+        channel.last.rest = rest
+        channel.last.tie = tie
+        channel.source = love.audio.newSource(sample)
+        channel.source:setLooping(false)
+        channel.source:setVolume(channel.volume)
+        channel.source:play()
     else
-        composer.source:seek(0)
-        composer.source:setVolume(music.volume)
-        composer.source:play()
+        channel.source:seek(0)
+        channel.source:setVolume(channel.volume)
+        channel.source:play()
     end
 
     if wait then
-        while composer.source:isPlaying() do
+        while channel.source:isPlaying() do
             --oh we need to wait it
         end
     end

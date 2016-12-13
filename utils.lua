@@ -39,8 +39,14 @@ function extractFilename(filename)
     return string.match(filename, "(.-)([^\\]-([^\\%.]+))$")
 end
 
-function printtable(o)
+function table.print(o)
     for k, v in pairs(o) do
         print (k, v)
+    end
+end
+
+local function delay(seconds)
+    local n = os.clock() + seconds
+    while os.clock() <= n do
     end
 end

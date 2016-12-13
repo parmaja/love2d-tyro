@@ -117,6 +117,11 @@ tocatta = [[
 t56V127l32>aga8.r16gfedc+16.d4r8r16r<aga8.l16refc+d4r4l32<aga8.r16gfedl16.c+d8r1rg8>c+8e2<a1,o4l1rrrr2r8<e2.&e8g4e4f+2,o5l32aga8.r16gfedc+16.d4r8r16r<aga8.l16refc+d4r4l32<aga8.r16gfe>dl16.c+d8r4rd2c+1d1
 ]]
 
+--https://archeagemmllibrary.com/popcorn-3/
+popcorn = [[S-1
+T150L8O7D#C#D#<A#F#A#L4D#L8>D#C#D#<A#F#A#L4D#L8>D#FF#FF#D#FD#FC#D#C#D#<BL4>D#L8D#C#D#<A#F#A#L4D#L8>D#C#D#<A#F#A#L4D#L8>D#FF#FF#D#FD#FC#D#C#D#FL4F#L8A#G#A#F#C#F#L4<A#L8>A#G#A#F#C#F#L4<A#L8>A#>CC#CC#<A#>C<A#>C<G#A#G#A#F#L4A#L8A#G#A#F#C#F#L4<A#L8>A#G#A#F#C#F#L4<A#L8>A#>CC#CC#<A#>C<A#>C<G#A#G#F#G#L4A#L8D#C#D#<A#L16F#L8A#L3D#L8>D#C#D#<A#L16F#L8A#L3D#L8>D#FF#L16FL8F#F#L16D#L8FL16D#L8FFL16C#L8D#L16C#L8D#D#L16<BL4>D#L8D#C#D#<A#L16F#L8A#L3D#L8>D#C#D#<A#L16F#L8A#L3D#L8>D#FF#L16FL8F#F#L16D#L8FL16D#L8FFL16C#L8D#L16C#L8D#D#L16FL4F#
+]]
+
 --http://www.bachcentral.com/midiindexcomplete.html
 --http://pasyuk.chat.ru/index_e.htm
 --http://www.netmftoolbox.com/tools/midi_to_mml.php
@@ -136,8 +141,10 @@ function melody.waveform(index, samples, pitch, rate, tie)
     return sample * fade
 end
 
---music.play(tocatta)
-music.play("cp1dp1efgab>c", ">c<bagfep1dp1c")
+--music.background = true
+--music.play(popcorn)
+music.play("ucdefgab>c")
+--music.play("cp1dp1efgab>c", ">c<bagfep1dp1c")
 --music.play("l2c&c&c")
 --music.play("l8mlo5c&c&cdefgab>c")
 --music.play("msl4o5c&c&c")
