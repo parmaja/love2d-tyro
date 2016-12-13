@@ -6,7 +6,9 @@
 --  @license   The MIT License (MIT) Included in this distribution
 --  @author    Zaher Dirkey <zaherdirkey at yahoo dot com>
 -------------------------------------------------------------------------------
-
+--  Look at this site, it have many of songs
+--	https://archeagemmllibrary.com/
+-------------------------------------------------------------------------------
 melody = {
 }
 
@@ -22,7 +24,6 @@ function melody.play(...)
             error("No notes?!")
         end
         local ch = {
-            note = n,
             source = nil,
             finished = false,
         }
@@ -49,6 +50,7 @@ function melody.play(...)
                 busy = true
             else
                 ch.finished = true
+                ch.source = nil
             end
         end
         index = index + 1
@@ -76,8 +78,8 @@ end
 --		https://github.com/miko/Love2d-samples/blob/master/MikoIntroScreen/Intro.lua#L38
 --		http://www.headchant.com/2011/11/01/sound-synthesis-with-love-part-ii-sine-waves/
 --      https://stackoverflow.com/questions/11355353/how-can-i-convert-qbasic-play-commands-to-something-more-contemporary
---ref: http://www.phy.mtu.edu/~suits/notefreqs.html
-
+--ref:  http://www.phy.mtu.edu/~suits/notefreqs.html
+-- 		http://wiki.mabinogiworld.com/view/User:LexisMikaya/MML_101_Guide
 -------------------------------------------------------------------------------
 --ref: http://www.qb64.net/wiki/index.php?title=SOUND
 --[[					The Seven Music Octaves
@@ -135,7 +137,7 @@ local baseNumber = 2 ^ (1/12)
 local baseOctave = 4
 local baseNoteC4 = 261.63
 local baseLength = 4
-local baseTempo = 60
+local baseTempo  = 60
 
 saved = 1
 
@@ -152,7 +154,11 @@ function mml_prepare(self, notes)
     self.subsequent = 0 -- 0 = legato 1 = normal 2 = staccato
 
     self.line = 1 --line for error messages
-    self.pos = 1
+    if self.notes:sub(1, 4) == "mml@" then
+        self.pos = 5
+    else
+        self.pos = 1
+    end
 
     if (self.pos <= #self.notes) then
         self.chr = self.notes:sub(self.pos, self.pos)
@@ -296,8 +302,8 @@ function mml_next(self)
             end
 
             local duration = scan_number() or self.length
-            if duration > 64 then
-                error("Length should be less or equal 64: your length is: " .. tostring(duration)  .. " at " .. tostring(self.line) .. ":" .. tostring(self.pos))
+            if duration > 96 then
+                error("Length should be less or equal 96: your length is: " .. tostring(duration)  .. " at " .. tostring(self.line) .. ":" .. tostring(self.pos))
             end
 
             local increase = 0
@@ -332,8 +338,8 @@ function mml_next(self)
         elseif self.chr == "l" then
             step()
             local l = scan_number()
-            if l > 64 then
-                error("Length should be less or equal 64: your length is:" .. tostring(l) .. " at " .. tostring(self.line) .. ":" .. tostring(self.pos))
+            if l > 96 then
+                error("Length should be less or equal 96: your length is:" .. tostring(l) .. " at " .. tostring(self.line) .. ":" .. tostring(self.pos))
             end
             self.length = l
         elseif self.chr == "p" or self.chr == "r" then
@@ -367,12 +373,15 @@ function mml_next(self)
             else
                 self.shift_octave = 0
             end
-        elseif self.chr == "," then
+        elseif self.chr == "&" then --ignore it, can not support it
             step()
-            return playnote("r", 1, 0, 1)
-        elseif self.chr == ";" then
+            --return playnote("r", 1, 0, 1)
+        elseif self.chr == "," then --ignore it, can not support it
             step()
-            return playnote("r", 1, 0, 1)
+            --return playnote("r", 1, 0, 1)
+        elseif self.chr == ";" then --ignore it, can not support it
+            step()
+            --return playnote("r", 1, 0, 1)
         elseif self.chr == "v" then --ignoring it
             step()
             self.volume = scan_number()

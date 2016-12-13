@@ -107,7 +107,7 @@ function love.load()
     love.graphics.setCanvas(canvas.buffer)
 
     canvas.color(colors.White)
-    canvas.backcolor(colors.Black)
+    canvas.backcolor(colors.OceanBlue)
 
     love.graphics.setLineWidth(1)
     --love.graphics.setLine(1, "smooth")

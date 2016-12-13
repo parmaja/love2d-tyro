@@ -9,6 +9,8 @@
 -- Colors
 -----------------------------------------------------
 
+--ref: http://colors.findthedata.com/compare/306-384/Navy-Blue-vs-Royal-Blue
+
 colors = {
     count = 0 --deprecated, on lua 5.2 we can use #colors, but LOVE still at 5.1
 }
@@ -56,6 +58,7 @@ colors.Lime   =	{50, 205, 50}
 colors.Silver = {192,192,192}
 colors.Gray   = {128,128,128}
 colors.RoyalBlue = {00, 23, 66}
+colors.OceanBlue = {0, 119, 190}
 colors.Navy = {0, 0, 128}
 
 --TODO more colors
