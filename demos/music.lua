@@ -130,9 +130,9 @@ function melody.waveform(index, samples, pitch, rate, tie)
     return sample * fade
 end
 
---music.play(new)
+music.play(WilliamTell)
 --music.play("cp1dp1efgab>c", ">c<bagfep1dp1c")
---music.play("msc&c")
+--music.play("l2c&c")
 --music.play("l8mlo5c&c&cdefgab>c")
-music.play("mll4o5c&c&c")
+--music.play("msl4o5c&c&c")
 --music.play("s2o2 mn b4 p8 ms b b mn b4 p8 ms b b b8 g#8")

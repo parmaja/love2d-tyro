@@ -9,6 +9,7 @@
 --  Look at this site, it have many of songs
 --	https://archeagemmllibrary.com/
 -------------------------------------------------------------------------------
+
 melody = {
 }
 
@@ -42,10 +43,14 @@ function melody.play(...)
     while true do
         ch = channels[index]
         if not ch.finished then
-            if ch.source and ch.source:isPlaying() then
+            --if ch.source and ch.source:isPlaying() then
+            if ch.expired and (ch.expired > os.clock()) then
                 busy = true
             elseif ch:next() then
                 print(ch.name, "freq Hz, len ms, rest ms", ch.sound.pitch, math.floor(ch.sound.length * 100), math.floor(ch.sound.rest * 100))
+                ch.expired = os.clock() + ch.sound.length + ch.sound.rest
+                --print("expired",ch.sound.length)
+                --print("expired",ch.expired)
                 melody.playsound(ch, ch.sound.pitch, ch.sound.length, ch.sound.rest, ch.sound.tie, false)
                 busy = true
             else
@@ -74,8 +79,6 @@ local function check(c, t)
     return false
 end
 
---ref:  http://www.qb64.net/wiki/index.php/PLAY
---		https://github.com/miko/Love2d-samples/blob/master/MikoIntroScreen/Intro.lua#L38
 --		http://www.headchant.com/2011/11/01/sound-synthesis-with-love-part-ii-sine-waves/
 --      https://stackoverflow.com/questions/11355353/how-can-i-convert-qbasic-play-commands-to-something-more-contemporary
 --ref:  http://www.phy.mtu.edu/~suits/notefreqs.html

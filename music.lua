@@ -81,10 +81,10 @@ end
 function melody.playsound(composer, pitch, length, rest, tie, wait)
 
     if composer.source then
-        if composer.source:isPlaying() then
-            error("it is playing, please wait")
-        end
-        --composer.source:stop()
+--        if composer.source:isPlaying() then
+--            error("it is playing, please wait")
+--        end
+        composer.source:stop()
     end
     if not (composer.source and composer.last and (composer.last.length == length) and (composer.last.pitch == pitch) and (composer.last.rest == rest) and (composer.last.tie == tie)) then
         local sample = generate_sample(pitch, length, rest, tie)
