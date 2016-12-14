@@ -14,11 +14,32 @@ melody = {
     waveforms = {}
 }
 
+waveforms_mt = {
+    items = {}
+}
+
+waveforms_mt.__index =
+    function(self, key)
+        if type(key) == "number" then
+            return waveforms_mt.items[key]
+        end
+    end
+
+waveforms_mt.__newindex =
+    function(self, key, value)
+        local count = #waveforms_mt.items + 1
+        waveforms_mt.items[count] = value
+        rawset(self, key, value)
+    end
+
+setmetatable(melody.waveforms, waveforms_mt)
+
 function melody.addWaveform(name, waveform)
     if type(waveform) ~= "function" then
         error("waveform should fucntion")
     end
-    melody.waveforms[#melody.waveforms + 1] = { name = name, waveform = waveform }
+    --melody.waveforms[#melody.waveforms + 1] = { name = name, waveform = waveform }
+    melody.waveforms[name] = waveform
 end
 
 function melody.play(...)
@@ -162,7 +183,7 @@ function mml_prepare(self, notes)
     self.tempo = 120
     self.octave = 4
     self.shift_octave = 0
-    self.waveform = melody.waveforms[music.waveform].waveform --first and default waveform
+    self.waveform = melody.waveforms[music.waveform] --first and default waveform
     self.length = 4 --note length
     self.subsequent = 0 -- 0 = legato 1 = normal 2 = staccato
 
@@ -222,7 +243,7 @@ function mml_next(self)
         self.tempo = 120
         self.octave = 4
         self.shift_octave = 0
-        self.waveform = melody.waveforms[music.waveform].waveform --first and default waveform
+        self.waveform = melody.waveforms[music.waveform] --first and default waveform
         self.length = 4 --note length
         self.subsequent = 0 -- 0 = legato 1 = normal 2 = staccato
     end
@@ -285,6 +306,7 @@ function mml_next(self)
         local r = ""
         while self.pos <= #self.notes do
             if self.chr == chr then
+                step()
                 break
             end
             r = r .. self.chr
@@ -437,14 +459,16 @@ function mml_next(self)
         elseif self.chr == "w" then --set a waveform
             step()
             if self.chr == "[" then
-                wf = scan_to("]") --by name
-                self.waveform = melody.waveforms[wf].waveform
+                step()
+                local wf = scan_to("]") --by name
+                self.waveform = melody.waveforms[wf]
             else
                 local wf = scan_number()
-                if wf > #melody.waveforms then
+                local f = melody.waveforms[wf]
+                if not f then
                     error("No waveform indexed for :"..tostring(wf))
                 end
-                self.waveform = melody.waveforms[wf].waveform
+                self.waveform = f
             end
         elseif self.chr == "m" then
             step()

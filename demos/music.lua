@@ -137,7 +137,7 @@ T150L8O7D#C#D#<A#F#A#L4D#L8>D#C#D#<A#F#A#L4D#L8>D#FF#FF#D#FD#FC#D#C#D#<BL4>D#L8D
 ]]
 
 --https://archeagemmllibrary.com/beethoven-fur-elise-2/
-furelise1 = [[w2
+furelise1 = [[w[piano]
 t65 l16 >ed+ed+ec-dc<a8rceab8reg+bb+8re>ed+ed+ec-dc<a8rceab8rdb+ba8rb>cde8.<g>fed8.<f>edc8.<e>dc<br8r>er8r>er8<d+er8d+ed+ed+ec-dc<a8rceab8reg+bb+8re>ed+ed+ec-dc<a8rceab8rdb+ba8
 ]]
 furelise2 = [[w2

@@ -20,7 +20,7 @@ canvas.color(colors.Red)
 
 canvas.color(colors.Black)
 canvas.setpoint(0, center.y) --set start point
-wf = melody.waveforms[2].waveform
+wf = melody.waveforms[2]
 
 for index = 0, samples - 1 do
     sample = wf(index, samples, pitch, rate, tie) * amplitude
