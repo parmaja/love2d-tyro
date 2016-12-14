@@ -11,7 +11,15 @@
 -------------------------------------------------------------------------------
 
 melody = {
+    waveforms = {}
 }
+
+function melody.addWaveform(waveform)
+    if type(waveform) ~= "function" then
+        error("waveform should fucntion")
+    end
+    melody.waveforms[#melody.waveforms + 1] = waveform
+end
 
 function melody.play(...)
 
@@ -154,7 +162,7 @@ function mml_prepare(self, notes)
     self.tempo = 120
     self.octave = 4
     self.shift_octave = 0
-    self.waveform = 0
+    self.waveform = melody.waveforms[1] --first and default waveform
     self.length = 4 --note length
     self.subsequent = 0 -- 0 = legato 1 = normal 2 = staccato
 
@@ -214,7 +222,7 @@ function mml_next(self)
         self.tempo = 120
         self.octave = 4
         self.shift_octave = 0
-        self.waveform = 0
+        self.waveform = melody.waveforms[1] --first and default waveform
         self.length = 4 --note length
         self.subsequent = 0 -- 0 = legato 1 = normal 2 = staccato
     end
@@ -405,9 +413,6 @@ function mml_next(self)
             else
                 self.shift_octave = 0
             end
-        elseif self.chr == "w" then --waveform number
-            step()
-            self.waveform = scan_number() --todo
         elseif self.chr == "," then
             step()
             error("command ',' not supported, it used to split song to multiple channels, use play(note1, note2) ")
@@ -417,6 +422,13 @@ function mml_next(self)
         elseif self.chr == "v" then --ignoring it
             step()
             self.volume = scan_number()
+        elseif self.chr == "w" then --set a waveform
+            step()
+            local wf = scan_number()
+            if wf > #melody.waveforms then
+                error("No waveform indexed for :"..tostring(wf))
+            end
+            self.waveform = melody.waveforms[wf]
         elseif self.chr == "m" then
             step()
             if self.chr == "l" then --legato
@@ -448,3 +460,23 @@ function mml_next(self)
         end
     end
 end
+
+function waveform_normal(index, samples, pitch, rate, tie)
+    return math.sin((index * pitch) * ((2 * math.pi) / rate))
+end
+
+function waveform_piano(index, samples, pitch, rate, tie)
+    --https://stackoverflow.com/questions/20037947/fade-out-function-of-audio-between-samplerate-changes
+    local fade = 1
+    if not tie then
+        fade = math.exp(-math.log(50) * index / samples / 3) --fadeout
+    end
+    sample = math.sin((index * pitch) * ((2 * math.pi) / rate))
+    local a = math.sin((index * pitch * 2) * ((2 * math.pi) / rate))
+    local b = math.sin((index * pitch / 2) * ((2 * math.pi) / rate))
+    sample = (sample - a - b) / 3
+    return sample * fade
+end
+
+melody.addWaveform(waveform_normal)
+melody.addWaveform(waveform_piano)

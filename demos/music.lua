@@ -130,10 +130,10 @@ T150L8O7D#C#D#<A#F#A#L4D#L8>D#C#D#<A#F#A#L4D#L8>D#FF#FF#D#FD#FC#D#C#D#<BL4>D#L8D
 
 --https://archeagemmllibrary.com/beethoven-fur-elise-2/
 furelise1 = [[
-t65 l16 >ed+ed+ec-dc<a8rceab8reg+bb+8re>ed+ed+ec-dc<a8rceab8rdb+ba8rb>cde8.<g>fed8.<f>edc8.<e>dc<br8r>er8r>er8<d+er8d+ed+ed+ec-dc<a8rceab8reg+bb+8re>ed+ed+ec-dc<a8rceab8rdb+ba8
+w2 t65 l16 >ed+ed+ec-dc<a8rceab8reg+bb+8re>ed+ed+ec-dc<a8rceab8rdb+ba8rb>cde8.<g>fed8.<f>edc8.<e>dc<br8r>er8r>er8<d+er8d+ed+ed+ec-dc<a8rceab8reg+bb+8re>ed+ed+ec-dc<a8rceab8rdb+ba8
 ]]
 furelise2 = [[
-t65 l16 r2l16<<a>ear8&r16<e>eg+r8&r16<a>ear2r<a>ear8&r16<e>eg+r8&r16<a>ear8&r16cgb+r8&r16<g>gbr8&r16<a>ear8&r16<e>e>eere>eerd+er8d+er2r<<<a>ear8&r16<e>eg+r8&r16<a>ear2r<a>ear8&r16<e>eg+r8&r16<a8
+w2 t65 l16 r2l16<<a>ear8&r16<e>eg+r8&r16<a>ear2r<a>ear8&r16<e>eg+r8&r16<a>ear8&r16cgb+r8&r16<g>gbr8&r16<a>ear8&r16<e>e>eere>eerd+er8d+er2r<<<a>ear8&r16<e>eg+r8&r16<a>ear2r<a>ear8&r16<e>eg+r8&r16<a8
 ]]
 
 --https://mabinogifish.blogspot.com/2013/06/flight-of-bumble-bee.html
@@ -147,34 +147,10 @@ t170l32aaaaaaaaaaaaaaaaaaaaaar3v9l16o6ed+dc+dc+cc-c<ba+ag+gf+f24<<g+48>>ed+dc+dc
 
 --music.play(axlf)
 
-function melody.waveform(index, samples, pitch, rate, tie)
-    --https://stackoverflow.com/questions/20037947/fade-out-function-of-audio-between-samplerate-changes
-    local fade = 1
-    if not tie then
-        fade = math.exp(-math.log(50) * index / samples / 3) --fadeout
-    end
-    sample = math.sin((index * pitch) * ((2 * math.pi) / rate))
-    local a = math.sin((index * pitch * 2) * ((2 * math.pi) / rate))
-    local b = math.sin((index * pitch / 2) * ((2 * math.pi) / rate))
-    sample = (sample - a - b) / 3
-    return sample * fade
-end
-
-function melody.waveform_2(index, samples, pitch, rate, tie)
-    local fade = 1
-    if not tie then
-        fade = math.exp(-math.log(50) * index / samples / 2) --fadeout
-    end
-    sample = math.sin((index * pitch) * ((2 * math.pi) / rate))
-    local a = math.sin((index * pitch / 1.5) * ((2 * math.pi) / rate)) / 1.5
-    sample = (sample - a) / 2
-    return sample * fade
-end
-
 music.background = true
 music.play(furelise1, furelise2)
 --music.play(tocatta, tocatta1, tocatta2)
---music.play("t120cdefgab>cmr")
+--music.play("t120cdefgab>c mr")
 --music.play("cp1dp1efgab>c", ">c<bagfep1dp1c")
 --music.play("l2c&c&c")
 --music.play("l8mlo5c&c&cdefgab>c")
@@ -185,8 +161,14 @@ canvas.text("Press s to stop", 10, 10)
 
 while true do
     canvas.refresh()
-    if key() == "s" then
-        print("trying to stop")
+    if key() == "q" then
         music.stop()
+        quit()
+    end
+    if key() == "s" and music.busy() then
+        music.stop()
+    end
+    if key() == "p" and not music.busy() then
+        music.play(furelise1, furelise2)
     end
 end

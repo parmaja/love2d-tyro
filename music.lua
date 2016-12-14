@@ -11,6 +11,7 @@ require("basic.melody")
 -- source is an interface
 -- source:play()
 -- source:stop()
+-- source:busy()
 -------------------------------------------------
 music = {
     loop = false,
@@ -30,6 +31,17 @@ function music.stop()
         music.source:stop()
         music.source = nil
     end
+end
+
+function music.busy()
+    if music.source then
+        if music.source:busy() then
+            return true
+        else
+            music.source = nil --bad
+        end
+    end
+      return false
 end
 
 function music.beep()
@@ -68,8 +80,16 @@ function music.play(...)
             events = love.thread.getChannel("melody"),
         }
 
-        function music.source.stop()
+        function music.source:stop()
             music.source.events:push("stop")
+            music.source.thread:wait()
+        end
+
+        function music.source:busy()
+            if music.source.thread:isRunning() then
+                return true
+            end
+            return false
         end
 
         music.source.thread:start()
@@ -78,42 +98,36 @@ function music.play(...)
     end
 end
 
----------------------------------------------
--- Example: channel:generate(440, 0.1)    --
----------------------------------------------
---generate((freq, seconds)
---generate sample waveform
+function melody.playsound(channel, pitch, length, rest, tie, wait)
 
 --saved = 1
 
-function generate_sample(pitch, length, rest, tie)
-    local rate = 44100 --22050
-    local amplitude = 1 --not sure, i added it by my hand :P
-    local data = love.sound.newSoundData((length + rest) * rate, rate, 16, 1) --rest keep it empty
-    local samples = length * rate
-    local sample = 0
-    local c = 2 * math.pi * pitch / rate
+    local function generate_sample()
+        local rate = 44100 --22050
+        local amplitude = 1 --not sure, i added it by my hand :P
+        local data = love.sound.newSoundData((length + rest) * rate, rate, 16, 1) --rest keep it empty
+        local samples = length * rate
+        local sample = 0
+        local c = 2 * math.pi * pitch / rate
 
-    if pitch > 0 then
-        for index = 0, samples - 1 do
-            if melody.waveform then
-                sample = melody.waveform(index, samples, pitch, rate, tie) * amplitude
-            else
-                --to keep it simple to understand: sample = math.sin((index * pitch) * ((2 * math.pi) / rate)) * amplitude
-                sample = math.sin(index * c) * amplitude
+        if pitch > 0 then
+            for index = 0, samples - 1 do
+                if channel.waveform then
+                    sample = channel.waveform(index, samples, pitch, rate, tie) * amplitude
+                else
+                    --to keep it simple to understand: sample = math.sin((index * pitch) * ((2 * math.pi) / rate)) * amplitude
+                    sample = math.sin(index * c) * amplitude
+                end
+                data:setSample(index, sample) --bug in miniedit, put cursor on data and ctrl+f it now show "data"
             end
-            data:setSample(index, sample) --bug in miniedit, put cursor on data and ctrl+f it now show "data"
         end
+    --    if saved < 5 then
+    --        s = data:getString()
+    --        love.filesystem.write("test"..tostring(saved)..".data", s)
+    --    end
+    --    saved = saved + 1
+        return data
     end
---    if saved < 5 then
---        s = data:getString()
---        love.filesystem.write("test"..tostring(saved)..".data", s)
---    end
---    saved = saved + 1
-    return data
-end
-
-function melody.playsound(channel, pitch, length, rest, tie, wait)
 
     if channel.source then
 --        if channel.source:isPlaying() then
