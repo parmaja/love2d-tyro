@@ -478,5 +478,12 @@ function waveform_piano(index, samples, pitch, rate, tie)
     return sample * fade
 end
 
+function waveform_ramp(index, samples, pitch, rate, tie)
+    wl = pitch * 2 * math.pi / rate
+    sample = (index % wl) * wl
+    return sample
+end
+
 melody.addWaveform(waveform_normal)
 melody.addWaveform(waveform_piano)
+melody.addWaveform(waveform_ramp)

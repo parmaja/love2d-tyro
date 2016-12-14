@@ -5,8 +5,9 @@ center = {
 }
 canvas.line(0, center.y, canvas.width, center.y)
 
+local tie = false
 local height = 100
-local rate = 44100
+local rate = 22050
 local length = 0.1
 local pitch = 440
 local amplitude = 1
@@ -17,12 +18,10 @@ canvas.line(0, center.y + height / 2, canvas.width, center.y + height / 2)
 canvas.color(colors.Red)
 --canvas.line(0, (2 * math.pi) / rate, canvas.width, (2 * math.pi) / rate)
 
-canvas.color(colors.Green)
-canvas.setpoint(0, 100) --set start point
+canvas.color(colors.Black)
+canvas.setpoint(0, center.y) --set start point
+wf = melody.waveforms[3]
 for index = 0, samples - 1 do
-    local sample = math.sin((index * pitch) * ((2 * math.pi) / rate))
-    --local sample = math.sin(index)
-    local a = math.sin((index * pitch * 2) * ((2 * math.pi) / rate))
-    sample = (sample - a) / 2
-    canvas.line(index, sample* (height / 2) + center.y)
+    sample = wf(index, samples, pitch, rate, tie)
+    canvas.line(index, sample * (height / 2) + center.y)
 end
