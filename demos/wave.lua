@@ -10,7 +10,7 @@ local height = 100
 local rate = 22050
 local length = 0.1
 local pitch = 440
-local amplitude = 1
+local amplitude = 50
 local samples = length * rate
 
 canvas.line(0, center.y - height / 2, canvas.width, center.y - height / 2)
@@ -20,8 +20,10 @@ canvas.color(colors.Red)
 
 canvas.color(colors.Black)
 canvas.setpoint(0, center.y) --set start point
-wf = melody.waveforms[3]
+wf = melody.waveforms[2].waveform
+
 for index = 0, samples - 1 do
-    sample = wf(index, samples, pitch, rate, tie)
-    canvas.line(index, sample * (height / 2) + center.y)
+    sample = wf(index, samples, pitch, rate, tie) * amplitude
+    print(sample)
+    canvas.line(index, center.y + sample)
 end

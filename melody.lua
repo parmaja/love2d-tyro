@@ -14,11 +14,11 @@ melody = {
     waveforms = {}
 }
 
-function melody.addWaveform(waveform)
+function melody.addWaveform(name, waveform)
     if type(waveform) ~= "function" then
         error("waveform should fucntion")
     end
-    melody.waveforms[#melody.waveforms + 1] = waveform
+    melody.waveforms[#melody.waveforms + 1] = { name = name, waveform = waveform }
 end
 
 function melody.play(...)
@@ -162,7 +162,7 @@ function mml_prepare(self, notes)
     self.tempo = 120
     self.octave = 4
     self.shift_octave = 0
-    self.waveform = melody.waveforms[1] --first and default waveform
+    self.waveform = melody.waveforms[music.waveform].waveform --first and default waveform
     self.length = 4 --note length
     self.subsequent = 0 -- 0 = legato 1 = normal 2 = staccato
 
@@ -222,7 +222,7 @@ function mml_next(self)
         self.tempo = 120
         self.octave = 4
         self.shift_octave = 0
-        self.waveform = melody.waveforms[1] --first and default waveform
+        self.waveform = melody.waveforms[music.waveform].waveform --first and default waveform
         self.length = 4 --note length
         self.subsequent = 0 -- 0 = legato 1 = normal 2 = staccato
     end
@@ -276,6 +276,18 @@ function mml_next(self)
             else
                 break
             end
+            step()
+        end
+        return r
+    end
+
+    local function scan_to(chr)
+        local r = ""
+        while self.pos <= #self.notes do
+            if self.chr == chr then
+                break
+            end
+            r = r .. self.chr
             step()
         end
         return r
@@ -424,11 +436,16 @@ function mml_next(self)
             self.volume = scan_number()
         elseif self.chr == "w" then --set a waveform
             step()
-            local wf = scan_number()
-            if wf > #melody.waveforms then
-                error("No waveform indexed for :"..tostring(wf))
+            if self.chr == "[" then
+                wf = scan_to("]") --by name
+                self.waveform = melody.waveforms[wf].waveform
+            else
+                local wf = scan_number()
+                if wf > #melody.waveforms then
+                    error("No waveform indexed for :"..tostring(wf))
+                end
+                self.waveform = melody.waveforms[wf].waveform
             end
-            self.waveform = melody.waveforms[wf]
         elseif self.chr == "m" then
             step()
             if self.chr == "l" then --legato
@@ -471,19 +488,50 @@ function waveform_piano(index, samples, pitch, rate, tie)
     if not tie then
         fade = math.exp(-math.log(50) * index / samples / 3) --fadeout
     end
-    sample = math.sin((index * pitch) * ((2 * math.pi) / rate))
-    local a = math.sin((index * pitch * 2) * ((2 * math.pi) / rate))
-    local b = math.sin((index * pitch / 2) * ((2 * math.pi) / rate))
+    sample  = math.sin(index * (2 * math.pi) * pitch / rate)
+    local a = math.sin(index * (2 * math.pi) * pitch * 2 / rate)
+    local b = math.sin(index * (2 * math.pi) * pitch / 2 / rate)
     sample = (sample - a - b) / 3
     return sample * fade
 end
 
 function waveform_ramp(index, samples, pitch, rate, tie)
-    wl = pitch * 2 * math.pi / rate
-    sample = (index % wl) * wl
+    wl = rate / pitch
+    sample = (index % wl) / wl
     return sample
 end
 
-melody.addWaveform(waveform_normal)
-melody.addWaveform(waveform_piano)
-melody.addWaveform(waveform_ramp)
+function waveform_triangle(index, samples, pitch, rate, tie)
+    wl = rate / pitch
+    i = math.floor(index % wl)
+    if i < (wl) then
+        sample = (i * 2) / wl
+    else
+        sample = ((wl - i) * 2) / wl
+    end
+    return sample
+end
+
+function waveform_square(index, samples, pitch, rate, tie)
+    wl = rate / pitch
+    i = math.floor(index % wl)
+    if i < (wl / 2) then
+        sample = 1
+    else
+        sample = -1
+    end
+    return sample
+end
+
+function waveform_random(index, samples, pitch, rate, tie)
+    wl = rate / pitch
+       sample = (math.random(wl * 2) - wl) / wl
+    return sample
+end
+
+melody.addWaveform("normal", waveform_normal)
+melody.addWaveform("piano", waveform_piano)
+melody.addWaveform("ramp", waveform_ramp)
+melody.addWaveform("triangle", waveform_triangle)
+melody.addWaveform("square", waveform_square)
+melody.addWaveform("random", waveform_random)

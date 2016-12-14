@@ -18,6 +18,7 @@ music = {
     background, --TODO: play in background
     source = nil, --source can be a love sound source or melody or anything else
     volume = 50,
+    waveform = 2 --default waveform, piano
 }
 
 function music.start()
