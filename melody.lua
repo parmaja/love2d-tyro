@@ -54,7 +54,10 @@ function melody.play(...)
                 else
                     ch.expired = os.clock() + ch.sound.length + ch.sound.rest
                 end
-                busy = melody.playsound(ch, ch.sound.pitch, ch.sound.length, ch.sound.rest, ch.sound.tie, false)
+                if not melody.playsound(ch, ch.sound.pitch, ch.sound.length, ch.sound.rest, ch.sound.tie, false) then
+                    break
+                end
+                busy = true
             else
                 ch.finished = true
                 ch.source = nil

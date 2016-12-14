@@ -171,7 +171,7 @@ function melody.waveform_2(index, samples, pitch, rate, tie)
     return sample * fade
 end
 
---music.background = true
+music.background = true
 music.play(furelise1, furelise2)
 --music.play(tocatta, tocatta1, tocatta2)
 --music.play("t120cdefgab>cmr")
@@ -180,3 +180,13 @@ music.play(furelise1, furelise2)
 --music.play("l8mlo5c&c&cdefgab>c")
 --music.play("msl4o5c&c&c")
 --music.play("s2o2 mn b4 p8 ms b b mn b4 p8 ms b b b8 g#8")
+
+canvas.text("Press s to stop", 10, 10)
+
+while true do
+    canvas.refresh()
+    if key() == "s" then
+        print("trying to stop")
+        music.stop()
+    end
+end

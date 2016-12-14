@@ -7,11 +7,15 @@
 --  @author    Zaher Dirkey <zaherdirkey at yahoo dot com>
 -------------------------------------------------------------------------------
 require("basic.melody")
-
+-------------------------------------------------
+-- source is an interface
+-- source:play()
+-- source:stop()
+-------------------------------------------------
 music = {
     loop = false,
     background, --TODO: play in background
-    source = nil, --source can be a love sound source  or melody
+    source = nil, --source can be a love sound source or melody or anything else
     volume = 50,
 }
 
@@ -21,7 +25,7 @@ function music.start()
     end
 end
 
-function music.stop(all)
+function music.stop()
     if music.source then
         music.source:stop()
         music.source = nil
@@ -33,6 +37,9 @@ function music.beep()
 end
 
 function music.play(...)
+    music.source = {
+    }
+
     if music.background then
         local args = {...}
         if #args == 0 then
@@ -42,6 +49,7 @@ function music.play(...)
         local thread_body = [[require("basic.music")
             require("love.sound")
             require("love.audio")
+            melody_events = love.thread.getChannel("melody")
             melody.play([[
         ]]
 
@@ -54,15 +62,20 @@ function music.play(...)
         end
         thread_body = thread_body .. ')'
 
-        print(thread_body)
 
-        music.thread = love.thread.newThread(thread_body)
-        --music.pipe = love.thread.getChannel("melody")
-        music.thread:start()
+        music.source = {
+            thread = love.thread.newThread(thread_body),
+            events = love.thread.getChannel("melody"),
+        }
+
+        function music.source.stop()
+            music.source.events:push("stop")
+        end
+
+        music.source.thread:start()
     else
         melody.play(...)
     end
-    source = melody --temporary, i will make object for it
 end
 
 ---------------------------------------------
@@ -131,6 +144,16 @@ function melody.playsound(channel, pitch, length, rest, tie, wait)
             --oh we need to wait it
         end
     end
-    --return false if thread terminated
-    return true
+    --melody_events
+    if melody_events and (melody_events:getCount() > 0) then
+        --return false if thread terminated
+        local cmd = string.lower(melody_events:pop())
+        if cmd == "stop" then
+            return false
+        else
+            return true
+        end
+    else
+        return true
+    end
 end
