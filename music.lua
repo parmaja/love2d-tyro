@@ -49,6 +49,9 @@ function music.beep()
 end
 
 function music.play(...)
+    if music.busy() then
+        error("Music is busy!")
+    end
     music.source = {
     }
 

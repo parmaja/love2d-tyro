@@ -137,7 +137,7 @@ w2 t65 l16 r2l16<<a>ear8&r16<e>eg+r8&r16<a>ear2r<a>ear8&r16<e>eg+r8&r16<a>ear8&r
 ]]
 
 --https://mabinogifish.blogspot.com/2013/06/flight-of-bumble-bee.html
-BumbleBee = [[
+BumbleBee = [[w2
 t170l32aaaaaaaaaaaaaaaaaaaaaar3v9l16o6ed+dc+dc+cc-c<ba+ag+gf+f24<<g+48>>ed+dc+dc+cc-c<ba+ag+gf+fed+dc+dc+cc-ed+dc+dc+cc-ed+dc+cfed+ed+dc+cc+dd+ed+dc+cfed+ed+dc+cc+dd+ed+dc+dc+cc-cc+dd+efed+ed+dc+dc+cc-cc+dd+ef+gg+ag+gf+fa+ag+ag+gf+ff+gg+ag+gf+fa+ag+ag+gf+ff+gg+ag+gf+gf+feff+gg+aa+ag+ag+gf+gf+feff+gg+aa+ag+<daaaaaaaa+g+a+g+a+g+a+g+aaaaaaaaa+g+a+g+a+g+a+g+>aa+ag+aa+ag+aa+ag+aa+ag+aa+b>cc+c<ba+aa+b>cc+c<ba+n42dddddddd+c+d+c+d+c+d+c+ddddddddd+c+d+c+d+c+d+c+>dd+dc+dd+dc+dd+dc+dd+dc+dd+eff+fed+dd+eff+fed+<d64>dc+c<ba+>d+dc+24<d64>dc+c<b32.d+64a+b>cc+32.<d64>dc+c<b32.c64b+ba+a32.<a+64>a+b>cc+32.<<a64>>cc+dd+32.>ed+dc+dc+cc-c<ba+ag+gf+fefed+efed+efed+efed+efed+efed+efed+efed+e<d+dc+dc+cc-c<ba+ag+gf+fefed+efed+efed+efed+efed+efed+efed+efed+eff+gg+aa+ba+aa+aa+g+a+g+a<a>b<a>b+<an50a>>efed+fd+fd+e<e>e64f+24<e>e64g24<e>d64g+24<e>c64ar8.<eff+gg+aa+b>cc+dd+eff+gg+aa+b>cc+dd+ef+gg+a8r4.l48<<a>cea8r4.<a8
 ]]
 
@@ -148,7 +148,8 @@ t170l32aaaaaaaaaaaaaaaaaaaaaar3v9l16o6ed+dc+dc+cc-c<ba+ag+gf+f24<<g+48>>ed+dc+dc
 --music.play(axlf)
 
 music.background = true
-music.play(furelise1, furelise2)
+--music.play(furelise1, furelise2)
+music.play(BumbleBee)
 --music.play(tocatta, tocatta1, tocatta2)
 --music.play("t120cdefgab>c mr")
 --music.play("cp1dp1efgab>c", ">c<bagfep1dp1c")
