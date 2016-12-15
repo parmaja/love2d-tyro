@@ -122,25 +122,26 @@ t100>e16e8e8c16e8g4<g4>c8.<g8.e8.a8b8a+16a8g16.>e16g16.a8f16g8e8c16d16<b8.>c8.<g
 ]]
 
 --https://archeagemmllibrary.com/j-s-bach-toccata-and-fugue-full/
-tocatta = [[
+tocatta = {[[
 t56V127l32>aga8.r16gfedc+16.d4r8r16r<aga8.l16refc+d4r4l32<aga8.r16gfedl16.c+d8r1rg8>c+8e2<a1
-]]
-tocatta1 = [[
+]],
+[[
 t56V127l32o4l1rrrr2r8<e2.&e8g4e4f+2
-]]
-tocatta2 = [[
+]],
+[[
 t56V127l32o5l32aga8.r16gfedc+16.d4r8r16r<aga8.l16refc+d4r4l32<aga8.r16gfe>dl16.c+d8r4rd2c+1d1
 ]]
+}
 --https://archeagemmllibrary.com/popcorn-3/
 popcorn = [[w2 S-1
 T150L8O7D#C#D#<A#F#A#L4D#L8>D#C#D#<A#F#A#L4D#L8>D#FF#FF#D#FD#FC#D#C#D#<BL4>D#L8D#C#D#<A#F#A#L4D#L8>D#C#D#<A#F#A#L4D#L8>D#FF#FF#D#FD#FC#D#C#D#FL4F#L8A#G#A#F#C#F#L4<A#L8>A#G#A#F#C#F#L4<A#L8>A#>CC#CC#<A#>C<A#>C<G#A#G#A#F#L4A#L8A#G#A#F#C#F#L4<A#L8>A#G#A#F#C#F#L4<A#L8>A#>CC#CC#<A#>C<A#>C<G#A#G#F#G#L4A#L8D#C#D#<A#L16F#L8A#L3D#L8>D#C#D#<A#L16F#L8A#L3D#L8>D#FF#L16FL8F#F#L16D#L8FL16D#L8FFL16C#L8D#L16C#L8D#D#L16<BL4>D#L8D#C#D#<A#L16F#L8A#L3D#L8>D#C#D#<A#L16F#L8A#L3D#L8>D#FF#L16FL8F#F#L16D#L8FL16D#L8FFL16C#L8D#L16C#L8D#D#L16FL4F#
 ]]
 
 --https://archeagemmllibrary.com/beethoven-fur-elise-2/
-furelise1 = [[w[piano]
+furelise1 = [[
 t65 l16 >ed+ed+ec-dc<a8rceab8reg+bb+8re>ed+ed+ec-dc<a8rceab8rdb+ba8rb>cde8.<g>fed8.<f>edc8.<e>dc<br8r>er8r>er8<d+er8d+ed+ed+ec-dc<a8rceab8reg+bb+8re>ed+ed+ec-dc<a8rceab8rdb+ba8
 ]]
-furelise2 = [[w2
+furelise2 = [[
 t65 l16 r2l16<<a>ear8&r16<e>eg+r8&r16<a>ear2r<a>ear8&r16<e>eg+r8&r16<a>ear8&r16cgb+r8&r16<g>gbr8&r16<a>ear8&r16<e>e>eere>eerd+er8d+er2r<<<a>ear8&r16<e>eg+r8&r16<a>ear2r<a>ear8&r16<e>eg+r8&r16<a8
 ]]
 
@@ -156,9 +157,10 @@ t170l32aaaaaaaaaaaaaaaaaaaaaar3v9l16o6ed+dc+dc+cc-c<ba+ag+gf+f24<<g+48>>ed+dc+dc
 --music.play(axlf)
 
 music.background = true
---music.play(furelise1, furelise2)
---music.play(grendizer1, grendizer2)
+music.waveform = "organ"
 music.play(furelise1, furelise2)
+--music.play(grendizer1, grendizer2)
+--music.play(tocatta)
 --music.play(tocatta, tocatta1, tocatta2)
 --music.play("t120cdefgab>c mr")
 --music.play("cp1dp1efgab>c", ">c<bagfep1dp1c")

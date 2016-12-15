@@ -18,7 +18,6 @@ require "basic.music"
 require "basic.spirits"
 require "basic.consoles"
 
-debug_count = 0
 local debugging = false
 local stopped = false --stop updating objects
 
@@ -51,6 +50,7 @@ canvas = object:clone{
         color = nil,
         backcolor = nil
     },
+    mode = 0, -- 0 = normal top left, 1 = bottom left, 2 = center bottom left
     fill = false,
     last_x = 0,
     last_y = 0,
@@ -160,6 +160,13 @@ function love.draw()
 
     if program then
         love.graphics.setCanvas(canvas.buffer)
+        if canvas.mode == 1 then
+            love.graphics.translate(0, love.graphics.getHeight())
+            love.graphics.scale(1, -1) --bug in love2D or i dont know how to slove it
+        elseif canvas.mode == 2 then
+            love.graphics.translate(math.floor(love.graphics.getWidth() / 2), math.floor(love.graphics.getHeight() / 2))
+            love.graphics.scale(1, -1)
+        end
         resume()
         love.graphics.setCanvas()
 

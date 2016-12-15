@@ -53,22 +53,27 @@ function music.play(...)
     if music.busy() then
         error("Music is busy!")
     end
-    music.source = {
-    }
+
+    local args
+
+    if type(...) == "table" then
+        args = ...
+    else
+        args = {...}
+    end
 
     if music.background then
-        local args = {...}
-        if #args == 0 then
-            error("No notes?!")
-        end
+
+        music.source = {
+        }
 
         local thread_body = [[require("basic.music")
             require("love.sound")
-            require("love.audio")
-            melody_events = love.thread.getChannel("melody")
+            require("love.audio")]]..
+            'music.waveform = "' .. music.waveform .. '"' ..
+            [[melody_events = love.thread.getChannel("melody")
             melody.play([[
         ]]
-
 
         for i, n in ipairs(args) do
             if i > 1 then
@@ -98,7 +103,7 @@ function music.play(...)
 
         music.source.thread:start()
     else
-        melody.play(...)
+        melody.play(args)
     end
 end
 

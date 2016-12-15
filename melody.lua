@@ -553,8 +553,18 @@ function waveform_random(index, samples, pitch, rate, tie)
     return sample
 end
 
+function waveform_organ(index, samples, pitch, rate, tie)
+    sample  = math.sin(index * (2 * math.pi) * pitch / rate)
+    if math.abs(sample) > 0.5 then
+        sample = math.sin(index * (2 * math.pi) * pitch / 2 / rate) / 2
+        sample = (sample + math.sin(index * (2 * math.pi) * pitch * 2 / rate)) / 2
+    end
+    return sample
+end
+
 melody.addWaveform("normal", waveform_normal)
 melody.addWaveform("piano", waveform_piano)
+melody.addWaveform("organ", waveform_organ)
 melody.addWaveform("ramp", waveform_ramp)
 melody.addWaveform("triangle", waveform_triangle)
 melody.addWaveform("square", waveform_square)
