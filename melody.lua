@@ -556,8 +556,8 @@ end
 function waveform_organ(index, samples, pitch, rate, tie)
     sample  = math.sin(index * (2 * math.pi) * pitch / rate)
     if math.abs(sample) > 0.5 then
-        sample = math.sin(index * (2 * math.pi) * pitch / 2 / rate) / 2
-        sample = (sample + math.sin(index * (2 * math.pi) * pitch * 2 / rate)) / 2
+        a = math.sin(index * (2 * math.pi) * pitch / 3 / rate) / 2
+        sample = (sample + a) / 2
     end
     return sample
 end
