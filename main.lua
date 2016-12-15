@@ -34,6 +34,9 @@ if #arg > 1 then
         end
     end
     program = assert(loadfile(program_file))
+else
+    program_file = "demo.lua"
+	program = assert(loadfile(program_file))
 end
 
 if debugging then
