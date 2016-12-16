@@ -23,21 +23,22 @@ local stopped = false --stop updating objects
 
 graphics = love.graphics
 
-if #arg > 1 then
-    for i = 2, #arg do
-        local s = arg[i]
-        if s == "-debug" then
-            debugging = true
-        elseif s:sub(1, 1) ~= "-" then
-            program_file = s
-            break
+if not program_file then
+    if #arg > 1 then
+        for i = 2, #arg do
+            local s = arg[i]
+            if s == "-debug" then
+                debugging = true
+            elseif s:sub(1, 1) ~= "-" then
+                program_file = s
+                break
+            end
         end
+    else
+        program_file = "demo.lua"
     end
-    program = assert(loadfile(program_file))
-else
-    program_file = "demo.lua"
-	program = assert(loadfile(program_file))
 end
+program = assert(loadfile(program_file))
 
 if debugging then
     require("mobdebug").start()
@@ -114,8 +115,8 @@ function love.load()
 
     love.graphics.setCanvas(canvas.buffer)
 
-    canvas.color(colors.White)
-    canvas.backcolor(colors.OceanBlue)
+    canvas.color(colors.Black)
+    canvas.backcolor(colors.WildBlueYonder)
 
     love.graphics.setLineWidth(1)
     --love.graphics.setLine(1, "smooth")

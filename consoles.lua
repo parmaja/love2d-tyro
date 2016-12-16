@@ -5,7 +5,7 @@
 --   @author    Zaher Dirkey <zaherdirkey at yahoo dot com>
 -------------------------------------------------------------------------------
 
-classes.console = visual:inherite{
+local console = visual:inherite{
     window = {
         top = 10,
         left = 10,
@@ -28,17 +28,24 @@ classes.console = visual:inherite{
 
 }
 
-classes.line = object:inherite{
+-------------------------------------------------------------------------------
+-- Line
+-------------------------------------------------------------------------------
+
+local line = object:inherite{
     state = 0,
     att = nil, --attribute
     text = '',
 }
 
-function classes.line:scan() --TODO
-
+function line:scan() --TODO
 end
 
-function classes.console:loadfont(fontname)
+-------------------------------------------------------------------------------
+-- Console
+-------------------------------------------------------------------------------
+
+function console:loadfont(fontname)
     self.font = love.graphics.newImageFont("love_font.png",
     " abcdefghijklmnopqrstuvwxyz" ..
     "ABCDEFGHIJKLMNOPQRSTUVWXYZ0" ..
@@ -53,16 +60,16 @@ function classes.console:loadfont(fontname)
     print ("font height", self.lineHeight)
 end
 
-function classes.console:add(new_text)
-    local line = classes.line:clone{ text = new_text}
+function console:add(new_text)
+    local line = line:clone{ text = new_text}
     self.lines[#self.lines + 1] = line
     return line
 end
 
-function classes.console:update(dt)
+function console:update(dt)
 end
 
-function classes.console:draw()
+function console:draw()
     local x = self.window.top
     local y = self.window.left
 
@@ -79,7 +86,7 @@ function classes.console:draw()
 end
 
 function objects.console()
-    local self = classes.console:clone()
+    local self = console:clone()
     --self.font = love.graphics.newFont("love_font.png", 16)
 
     self:loadfont("love_font.png")
@@ -91,3 +98,15 @@ function objects.console()
     self.cursor.row = 2
     return self
 end
+
+-------------------------------------------------------------------------------
+-- Cursor
+-------------------------------------------------------------------------------
+
+
+-------------------------------------------------------------------------------
+--
+-------------------------------------------------------------------------------
+
+classes.line = line
+classes.console = console

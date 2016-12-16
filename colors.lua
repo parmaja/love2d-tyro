@@ -59,6 +59,7 @@ colors.Silver = {192,192,192}
 colors.Gray   = {128,128,128}
 colors.RoyalBlue = {00, 23, 66}
 colors.OceanBlue = {0, 119, 190}
+colors.OceanBlue = {0, 119, 190}
 colors.Navy = {0, 0, 128}
-
+colors.WildBlueYonder = {162, 173, 208}
 --TODO more colors

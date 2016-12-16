@@ -57,6 +57,8 @@ visual = object:clone{
     rotate = 0,
     x = 0,
     y = 0,
+    strides = 0,
+    stride = 0  --current stride, perhaps not number, used for animation
 }
 
 function visual:init()

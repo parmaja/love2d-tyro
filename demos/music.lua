@@ -174,9 +174,10 @@ t170l32aaaaaaaaaaaaaaaaaaaaaar3v9l16o6ed+dc+dc+cc-c<ba+ag+gf+f24<<g+48>>ed+dc+dc
 music.background = true
 --music.waveform = "organ"
 music.waveform = "piano"
-music.play(furelise1, furelise2)
+--music.play(furelise1, furelise2)
 --music.play(grendizer1, grendizer2)
 --music.play(tocatta)
+music.play(WilliamTell)
 
 canvas.text("Press s to stop", 10, 10)
 
