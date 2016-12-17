@@ -10,9 +10,11 @@ local console = visual:inherite{
         top = 10,
         left = 10,
         width = 500,
-        hight = 500,
+        height = 500,
     },
-
+    client = {},
+    --color = colors.WildBlueYonder
+    margin = 5,
     lines = {},
     col = 1,
     row = 1,
@@ -57,7 +59,6 @@ function console:loadfont(fontname)
     --self.font:setLineHeight(10)
 
     self.charWidth  = self.font:getWidth("H")
-    print(self.charWidth)
     self.charHeight = self.font:getHeight("W")
     self.lineHeight = self.charHeight + self.lineSpacing
 
@@ -65,9 +66,6 @@ function console:loadfont(fontname)
     self.cursor.height = self.charHeight
 
     self.font:setLineHeight(self.lineHeight)
-
-
-    print ("font height", self.lineHeight)
 end
 
 function console:add(new_text)
@@ -81,21 +79,40 @@ function console:update(dt)
 end
 
 function console:draw()
-    local x = self.window.top
-    local y = self.window.left
+    love.graphics.push("all")
+    love.graphics.setColor(colors.Black)
+    love.graphics.rectangle("line", self.window.top, self.window.left, self.window.width, self.window.height)
+
+    self.client.top = self.window.top + self.margin --we need inflat rect
+    self.client.left = self.window.left + self.margin
+    self.client.width = self.window.width + self.margin * 2
+    self.client.height = self.window.height + self.margin * 2
+
+    love.graphics.setScissor(unpack(self.client))
+    local x = self.client.top
+    local y = self.client.left
 
     love.graphics.setFont(self.font)
     love.graphics.setColor(change_alpha(colors.Red, 255))
 
     local h = self.lineHeight
+    local max_h = self.client.top + self.client.height
 
     for i = 1, #self.lines do
     --for line in self.lines do
         local line = self.lines[i]
         love.graphics.print(line.text, x, y)
         y = y + h
+        if y > max_h then
+            break
+        end
     end
+    self.cursor.top = 10
+    self.cursor.left = 10
+
     self.cursor:draw()
+    love.graphics.setScissor()
+    love.graphics.pop()
 end
 
 function objects.console()
@@ -117,7 +134,7 @@ end
 -------------------------------------------------------------------------------
 
 function console.cursor:getPosition()
-    return 10, 10, self.width, self.height
+    return self.top, self.left, self.width, self.height
 end
 
 function console.cursor:update(dt)
@@ -127,7 +144,13 @@ function console.cursor:update(dt)
     if self._timed > blinktime then
         self._timed = b
     end
-    self.show = math.floor(b / blinktime * 255)
+    if b > blinktime / 2 then
+        b = b - blinktime / 2
+        self.show = math.floor((1 - b / (blinktime / 2)) * 255)
+    else
+        b = b - blinktime / 2
+        self.show = math.floor(b / (blinktime / 2) * 255)
+    end
 end
 
 function console.cursor:draw()

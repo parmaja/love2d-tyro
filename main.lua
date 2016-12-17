@@ -65,6 +65,15 @@ function canvas.add(o)
     canvas.objects[#canvas.objects + 1] = o
 end
 
+function canvas.remove(o)
+    for i = 1, #canvas.objects do
+        if canvas.objects[i] == o then
+            table.remove(canvas.objects, i)
+            break
+        end
+    end
+end
+
 --todo
 console = {
 }
@@ -331,24 +340,14 @@ end
 ---------------------------
 
 function canvas.backcolor(color, alpha)
-    if alpha then
-        color[4] = alpha
-    elseif #color < 4 then
-        color[4] = 255
-    end
-    love.graphics.setBackgroundColor(color)
-    canvas.data.backcolor = color
-    --present() it will set in love.draw()
+    canvas.data.backcolor = change_alpha(color, alpha)
+    love.graphics.setBackgroundColor(canvas.data.backcolor)
+    --present() no need, it will set in love.draw()
 end
 
 function canvas.color(color, alpha)
-    if alpha then
-        color[4] = alpha
-    elseif #color < 4 then
-        color[4] = 255
-    end
-    love.graphics.setColor(color)
-    canvas.data.color = color
+    canvas.data.color = change_alpha(color, alpha)
+    love.graphics.setColor(canvas.data.color)
     --present() --maybe no need to present()
 end
 
