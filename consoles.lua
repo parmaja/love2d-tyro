@@ -20,6 +20,10 @@ local console = visual:inherite{
     cursor = {
         col = 0,
         row = 0,
+        _timed = 0,
+        width = 10, -- in pixels
+        height = 10,
+        show = 0,
     },
     charWidth  = 8,
     charHeight = 8,
@@ -49,14 +53,20 @@ function console:loadfont(fontname)
     self.font = love.graphics.newImageFont("love_font.png",
     " abcdefghijklmnopqrstuvwxyz" ..
     "ABCDEFGHIJKLMNOPQRSTUVWXYZ0" ..
-    "123456789.,!?-+/():;%&`'*#=[]\"")
+    "123456789.,!?-+/():;%&`'*#=[]\"", 1)
     --self.font:setLineHeight(10)
 
-    self.charWidth  = self.font:getWidth("_")
-    self.charHeight = self.font:getHeight("|")
+    self.charWidth  = self.font:getWidth("H")
+    print(self.charWidth)
+    self.charHeight = self.font:getHeight("W")
     self.lineHeight = self.charHeight + self.lineSpacing
 
+    self.cursor.width = self.charWidth
+    self.cursor.height = self.charHeight
+
     self.font:setLineHeight(self.lineHeight)
+
+
     print ("font height", self.lineHeight)
 end
 
@@ -67,6 +77,7 @@ function console:add(new_text)
 end
 
 function console:update(dt)
+    self.cursor:update(dt)
 end
 
 function console:draw()
@@ -74,15 +85,17 @@ function console:draw()
     local y = self.window.left
 
     love.graphics.setFont(self.font)
+    love.graphics.setColor(change_alpha(colors.Red, 255))
 
-    local h = self.font:getLineHeight()
+    local h = self.lineHeight
 
     for i = 1, #self.lines do
     --for line in self.lines do
-        line = self.lines[i]
+        local line = self.lines[i]
         love.graphics.print(line.text, x, y)
         y = y + h
     end
+    self.cursor:draw()
 end
 
 function objects.console()
@@ -103,6 +116,29 @@ end
 -- Cursor
 -------------------------------------------------------------------------------
 
+function console.cursor:getPosition()
+    return 10, 10, self.width, self.height
+end
+
+function console.cursor:update(dt)
+    self._timed = self._timed + dt
+    local blinktime = 1
+    local b = self._timed % blinktime
+    if self._timed > blinktime then
+        self._timed = b
+    end
+    self.show = math.floor(b / blinktime * 255)
+end
+
+function console.cursor:draw()
+    if self.show > 0 then
+        x, y, w, h = self:getPosition()
+        local c = { love.graphics.getColor() }
+        love.graphics.setColor(change_alpha(colors.White, self.show))
+        love.graphics.rectangle("fill", x, y, w, h)
+        love.graphics.setColor(c)
+    end
+end
 
 -------------------------------------------------------------------------------
 --

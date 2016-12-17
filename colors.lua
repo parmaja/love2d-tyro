@@ -28,9 +28,11 @@ colors_mt.__index =
 
 colors_mt.__newindex =
     function(self, key, value)
-        self.count = #colors_mt.items + 1
-        colors_mt.items[self.count] = value
-        rawset(self, key, value)
+        if type(value) == "table" then --considered a color
+            self.count = #colors_mt.items + 1
+            colors_mt.items[self.count] = value
+            rawset(self, key, value)
+        end
     end
 
 colors_mt.__len =  --need >lua5.2
@@ -63,3 +65,8 @@ colors.OceanBlue = {0, 119, 190}
 colors.Navy = {0, 0, 128}
 colors.WildBlueYonder = {162, 173, 208}
 --TODO more colors
+
+function change_alpha(color, alpha)
+    local c = {color[1], color[2], color[3], alpha}
+    return c
+end

@@ -19,7 +19,6 @@ require "basic.spirits"
 require "basic.consoles"
 
 local debugging = false
-local stopped = false --stop updating objects
 
 graphics = love.graphics
 
@@ -75,7 +74,9 @@ console = {
 
 --ref: https://gist.github.com/BlackBulletIV/4218802
 
-local paused = nil --a time to finish, and resume program coroutine
+local delay_end = nil --a time to finish, and resume program coroutine
+local paused = false --stop updating objects
+
 local freezed = nil --a time to finish, and refresh canvas
 local freezeTime = nil --time period to freeze
 
@@ -83,11 +84,12 @@ local co = nil
 
 local function resume()
     if co then
-        if paused and (paused < os.clock()) then
-            paused = nil
+        if delay_end and (delay_end < os.clock()) then
+            delay_end = nil
+            paused = false
         end
 
-        if not paused then
+        if not delay_end then
             if coroutine.status(co) ~= "dead" then
                 --love.graphics.push("all")
                 assert(coroutine.resume(co))
@@ -134,7 +136,7 @@ end
 function love.update(dt)
     if not stopped then --if stoped only we stop updating, but drawing keep it
         if canvas.update then
-            canvas.update()
+            canvas.update(dt)
         end
 
         for k, o in pairs(canvas.objects) do
@@ -143,7 +145,7 @@ function love.update(dt)
                 o.prepared = true
             end
             if o.update then
-                o.update(o)
+                o:update(dt)
             end
         end
     end
@@ -249,7 +251,7 @@ end
 -----------------------------------------------------
 
 function canvas.reset()
-    paused = nil
+    delay_end = nil
     freezed = nil
     freezeTime = nil
     canvas.lockCount = 0
@@ -432,12 +434,13 @@ function sleep(seconds)
 end
 
 function delay(seconds) --TODO
-
+    delay_end = os.clock() + seconds
+    present()
 end
 
---Do not call co.resume for a while
 function pause(seconds)
-    paused = os.clock() + seconds
+    delay_end = os.clock() + seconds
+    paused = true
     present()
 end
 
@@ -447,7 +450,6 @@ function quit()
 end
 
 --End the routine but dont exit
-
 function stop()
     canvas.reset()
     freezed = nil
