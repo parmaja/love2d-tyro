@@ -7,19 +7,20 @@
 
 local console = visual:inherite{
     window = {
-        top = 10,
-        left = 10,
+        top = 0,
+        left = 0,
         width = 500,
         height = 500,
     },
     client = {},
     --color = colors.WildBlueYonder
-    margin = 5,
+    margin = 10,
     lines = {},
     col = 1,
     row = 1,
     line = nil, --current line text should be just pointer to lines[index].line
     cursor = {
+        visible = true,
         col = 0,
         row = 0,
         _timed = 0,
@@ -51,13 +52,16 @@ end
 -- Console
 -------------------------------------------------------------------------------
 
-function console:loadfont(fontname)
+function console:load()
+    --self.font = love.graphics.newFont(14)
+    self.font = love.graphics.newFont("VeraMono.ttf", 14)
+    --[[
     self.font = love.graphics.newImageFont("love_font.png",
     " abcdefghijklmnopqrstuvwxyz" ..
     "ABCDEFGHIJKLMNOPQRSTUVWXYZ0" ..
     "123456789.,!?-+/():;%&`'*#=[]\"", 1)
     --self.font:setLineHeight(10)
-
+    ]]
     self.charWidth  = self.font:getWidth("H")
     self.charHeight = self.font:getHeight("W")
     self.lineHeight = self.charHeight + self.lineSpacing
@@ -75,6 +79,7 @@ function console:add(new_text)
 end
 
 function console:update(dt)
+    self.cursor.console = self
     self.cursor:update(dt)
 end
 
@@ -93,7 +98,7 @@ function console:draw()
     local y = self.client.left
 
     love.graphics.setFont(self.font)
-    love.graphics.setColor(change_alpha(colors.Red, 255))
+    love.graphics.setColor(change_alpha(colors.Black, 255))
 
     local h = self.lineHeight
     local max_h = self.client.top + self.client.height
@@ -107,8 +112,8 @@ function console:draw()
             break
         end
     end
-    self.cursor.top = 10
-    self.cursor.left = 10
+    self.cursor.top = self.client.top
+    self.cursor.left = self.client.left
 
     self.cursor:draw()
     love.graphics.setScissor()
@@ -117,15 +122,12 @@ end
 
 function objects.console()
     local self = console:clone()
-    --self.font = love.graphics.newFont("love_font.png", 16)
-
-    self:loadfont("love_font.png")
-
-
+    self:load()
+    self.margin = self.charHeight
     self:add('Hello World')
     self:add('Every where')
-    self.cursor.col = 5
     self.cursor.row = 2
+    self.cursor.col = 5
     return self
 end
 
@@ -133,33 +135,39 @@ end
 -- Cursor
 -------------------------------------------------------------------------------
 
-function console.cursor:getPosition()
-    return self.top, self.left, self.width, self.height
+function console.cursor:position()
+    self.top = self.console.client.top + (self.row - 1) * self.console.charHeight
+    print(self.top)
+    self.left = self.console.client.left + (self.col - 1) * self.console.charWidth
+    return self.top, self.left, self.console.charWidth, self.console.charHeight
 end
 
 function console.cursor:update(dt)
-    self._timed = self._timed + dt
-    local blinktime = 1
-    local b = self._timed % blinktime
-    if self._timed > blinktime then
-        self._timed = b
-    end
-    if b > blinktime / 2 then
-        b = b - blinktime / 2
-        self.show = math.floor((1 - b / (blinktime / 2)) * 255)
-    else
-        b = b - blinktime / 2
-        self.show = math.floor(b / (blinktime / 2) * 255)
+    if self.visible then
+        self._timed = self._timed + dt
+        local blinktime = 1
+        local b = self._timed % blinktime
+        if self._timed > blinktime then
+            self._timed = b
+        end
+        if b > blinktime / 2 then
+            b = b - blinktime / 2
+        else
+            b = blinktime / 2 - b
+        end
+        self.show = math.floor((b / (blinktime / 2)) * 255)
     end
 end
 
 function console.cursor:draw()
-    if self.show > 0 then
-        x, y, w, h = self:getPosition()
-        local c = { love.graphics.getColor() }
-        love.graphics.setColor(change_alpha(colors.White, self.show))
-        love.graphics.rectangle("fill", x, y, w, h)
-        love.graphics.setColor(c)
+    if self.visible then
+        if self.show > 0 then
+            local x, y, w, h = self:position()
+            local c = { love.graphics.getColor() }
+            love.graphics.setColor(change_alpha(colors.White, self.show))
+            love.graphics.rectangle("fill", x, y, w, h)
+            love.graphics.setColor(c)
+        end
     end
 end
 
