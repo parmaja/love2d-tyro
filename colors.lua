@@ -1,8 +1,8 @@
 -------------------------------------------------------------------------------
 --  This file is part of the "Lua LOVE Basic"
 --
---   @license   The MIT License (MIT) Included in this distribution
---   @author    Zaher Dirkey <zaherdirkey at yahoo dot com>
+--  @license   The MIT License (MIT) Included in this distribution
+--  @author    Zaher Dirkey <zaherdirkey at yahoo dot com>
 -------------------------------------------------------------------------------
 
 -----------------------------------------------------
@@ -64,6 +64,8 @@ colors.OceanBlue = {0, 119, 190}
 colors.OceanBlue = {0, 119, 190}
 colors.Navy = {0, 0, 128}
 colors.WildBlueYonder = {162, 173, 208}
+colors.LaurelGreen = {169, 186, 157}
+colors.CamouflageGreen = {120, 134, 107}
 --TODO more colors
 
 function change_alpha(color, alpha)

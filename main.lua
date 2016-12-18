@@ -1,8 +1,8 @@
 -------------------------------------------------------------------------------
 --  This file is part of the "Lua LOVE Basic"
 --
---   @license   The MIT License (MIT) Included in this distribution
---   @author    Zaher Dirkey <zaherdirkey at yahoo dot com>
+--  @license   The MIT License (MIT) Included in this distribution
+--  @author    Zaher Dirkey <zaherdirkey at yahoo dot com>
 -------------------------------------------------------------------------------
 --
 -- Do not put this file in your project older
@@ -34,7 +34,7 @@ if not program_file then
             end
         end
     else
-        program_file = "demo.lua"
+        program_file = "intro.lua"
     end
 end
 program = assert(loadfile(program_file))
@@ -48,7 +48,10 @@ canvas = object:clone{
     buffer = nil,
     lockbuffer = nil,
     lockCount = 0,
-    objects = {},
+    hooks = {    --object that hooks to draw, keyboards
+	    draws = {}, --update and draw
+    	keys = {}, --key
+    },
     data = {
         color = nil,
         backcolor = nil
@@ -62,13 +65,13 @@ canvas = object:clone{
 }
 
 function canvas.add(o)
-    canvas.objects[#canvas.objects + 1] = o
+    canvas.hooks.draws[#canvas.hooks.draws + 1] = o
 end
 
 function canvas.remove(o)
-    for i = 1, #canvas.objects do
-        if canvas.objects[i] == o then
-            table.remove(canvas.objects, i)
+    for i = 1, #canvas.hooks.draws do
+        if canvas.hooks.draws[i] == o then
+            table.remove(canvas.hooks.draws, i)
             break
         end
     end
@@ -127,7 +130,7 @@ function love.load()
     love.graphics.setCanvas(canvas.buffer)
 
     canvas.color(colors.Black)
-    canvas.backcolor(colors.WildBlueYonder)
+    canvas.backcolor(colors.LaurelGreen) -- WildBlueYonder   CamouflageGreen
 
     love.graphics.setLineWidth(1)
     --love.graphics.setLine(1, "smooth")
@@ -148,7 +151,7 @@ function love.update(dt)
             canvas.update(dt)
         end
 
-        for k, o in pairs(canvas.objects) do
+        for k, o in pairs(canvas.hooks.draws) do
             if o.prepare and not o.prepared then
                 o:prepare()
                 o.prepared = true
@@ -206,7 +209,7 @@ function love.draw()
         canvas.draw()
     end
 
-    for k, o in pairs(canvas.objects) do
+    for k, o in pairs(canvas.hooks.draws) do
         if o.visible and o.draw then
             o:draw()
         end
@@ -218,11 +221,29 @@ end
 
 local last_keypressed = nil
 
+function love.textinput(chr)
+    for k, o in pairs(canvas.hooks.keys) do
+        if o.keypress then
+            o:keypress(chr)
+        end
+    end
+end
+
 function love.keypressed(key, scancode, isrepeat)
+    for k, o in pairs(canvas.hooks.keys) do
+        if o.keydown then
+            o:keydown(key, scancode, isrepeat)
+        end
+    end
     last_keypressed = key
 end
 
 function love.keyreleased(key)
+    for k, o in pairs(canvas.hooks.keys) do
+        if o.keyup then
+            o:keyup(key, scancode, isrepeat)
+        end
+    end
     last_keypressed = nil
 end
 
@@ -267,7 +288,8 @@ function canvas.reset()
 end
 
 function canvas.restart()
-    canvas.objects = {}
+    canvas.hooks.draws = {}
+    canvas.hooks.keys = {} --not sure
     canvas.reset()
 end
 
