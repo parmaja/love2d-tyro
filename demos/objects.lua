@@ -1,3 +1,6 @@
+canvas.color(colors.White)
+console = objects.console()
+
 c1 = objects.square(100, 100, 50)
 --c1 = objects.circle(100, 100, 50)
 

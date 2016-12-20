@@ -7,8 +7,44 @@
 --  Base object for other objects, inherite and clone are here, kinda of oop
 -------------------------------------------------------------------------------
 
+-----------------------------------------------------
+-- Classes
+-----------------------------------------------------
+
 classes = {
+    count = 0 --deprecated, on lua 5.2 we can use #colors, but LOVE still at 5.1
 }
+
+classes_mt = {
+    items = {}
+}
+
+classes_mt.__index =
+    function(self, key)
+        if type(key) == "number" then
+            return classes_mt.items[key]
+        end
+    end
+
+classes_mt.__newindex =
+    function(self, key, value)
+        if type(value) == "table" then
+            self.count = #classes_mt.items + 1
+            classes_mt.items[self.count] = value
+            rawset(self, key, value)
+        end
+    end
+
+classes_mt.__len =  --need >lua5.2
+    function(self)
+        return #classes_mt.items
+    end
+
+setmetatable(classes, classes_mt)
+
+-----------------------------------------------------
+-- Objects
+-----------------------------------------------------
 
 objects = {
 }
@@ -62,7 +98,7 @@ visual = object:clone{
 }
 
 function visual:init()
-    canvas.add(self)
+    canvas.add(self) --move it outside
 end
 
 function visual:_changed()

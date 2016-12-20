@@ -7,13 +7,13 @@
 
 local console = visual:inherite{
     window = {
-        top = 0,
-        left = 0,
+        top = 10,
+        left = 10,
         width = 500,
-        height = 500,
+        height = 100,
     },
     client = {},
-    margin = 10,
+    margin = 5,
     lines = {},
     col = 1,
     row = 1,
@@ -23,15 +23,15 @@ local console = visual:inherite{
         col = 0,
         row = 0,
         _timed = 0,
-        width = 10, -- in pixels
-        height = 10,
+        width = 0, -- in pixels
+        height = 0,
         show = 0,
     },
     charWidth  = 8,
     charHeight = 8,
     lineHeight = 8,
     lineSpacing = 0,
-
+    highlighter = nil, --todo
 }
 
 -------------------------------------------------------------------------------
@@ -81,52 +81,57 @@ function console:update(dt)
 end
 
 function console:keypress(chr)
-	self:add_char(chr)
+    self:add_char(chr)
+    return true
 end
 
 function console:keydown(key, scancode, isrepeat)
-	if key == "left" then
-    	self.cursor.col = self.cursor.col - 1
+    if key == "left" then
+        self.cursor.col = self.cursor.col - 1
     elseif key == "right" then
-    	self.cursor.col = self.cursor.col + 1
-	elseif key == "up" then
-    	self.cursor.row = self.cursor.row - 1
+        self.cursor.col = self.cursor.col + 1
+    elseif key == "up" then
+        self.cursor.row = self.cursor.row - 1
     elseif key == "down" then
-    	self.cursor.row = self.cursor.row + 1
-	elseif key == "backspace" then
-    	if self.cursor.col > 1 then
-			local line = self.lines[self.cursor.row]
-		    line.text = line.text:sub(1, self.cursor.col - 2) .. line.text:sub(self.cursor.col)
-		    self.cursor.col = self.cursor.col - 1
+        self.cursor.row = self.cursor.row + 1
+    elseif key == "backspace" then
+        if self.cursor.col > 1 then
+            local line = self.lines[self.cursor.row]
+            line.text = line.text:sub(1, self.cursor.col - 2) .. line.text:sub(self.cursor.col)
+            self.cursor.col = self.cursor.col - 1
         end
+        return true
     elseif key == "delete" then
-		local line = self.lines[self.cursor.row]
-		line.text = line.text:sub(1, self.cursor.col - 1) .. line.text:sub(self.cursor.col + 1)
+        local line = self.lines[self.cursor.row]
+        line.text = line.text:sub(1, self.cursor.col - 1) .. line.text:sub(self.cursor.col + 1)
+        return true
     end
 end
 
 function console:add_char(chr)
-	local line = self.lines[self.cursor.row]
+    local line = self.lines[self.cursor.row]
     line.text = line.text:sub(1, self.cursor.col - 1) .. chr .. line.text:sub(self.cursor.col)
     self.cursor.col = self.cursor.col + 1
 end
 
 function console:draw()
     love.graphics.push("all")
-    love.graphics.setColor(colors.Black)
-    love.graphics.rectangle("line", self.window.top, self.window.left, self.window.width, self.window.height)
+    love.graphics.setColor(colors.CamouflageGreen)
+    love.graphics.rectangle("fill", self.window.left, self.window.top, self.window.width, self.window.height)
 
     self.client.top = self.window.top + self.margin --we need inflat rect
     self.client.left = self.window.left + self.margin
-    self.client.width = self.window.width + self.margin * 2
-    self.client.height = self.window.height + self.margin * 2
+    self.client.width = self.window.width - self.margin * 2
+    self.client.height = self.window.height - self.margin * 2
 
-    love.graphics.setScissor(unpack(self.client))
---    love.graphics.setBackgroundColor(colors.CamouflageGreen)
---    love.graphics.clear()
+    local x = self.client.left
+    local y = self.client.top
 
-    local x = self.client.top
-    local y = self.client.left
+    love.graphics.setScissor(x, y, self.client.width, self.client.height)
+
+    love.graphics.setBackgroundColor(colors.CamouflageGreen)
+    love.graphics.clear(colors.CamouflageGreen)
+
 
     love.graphics.setFont(self.font)
     love.graphics.setColor(colors.White)
@@ -135,7 +140,6 @@ function console:draw()
     local max_h = self.client.top + self.client.height
 
     for i = 1, #self.lines do
-    --for line in self.lines do
         local line = self.lines[i]
         love.graphics.print(line.text, x, y)
         y = y + h
@@ -143,8 +147,6 @@ function console:draw()
             break
         end
     end
-    self.cursor.top = self.client.top
-    self.cursor.left = self.client.left
 
     self.cursor:draw()
     love.graphics.setScissor()
@@ -154,9 +156,13 @@ end
 function objects.console()
     local self = console:clone()
     self:load()
-    self.margin = self.charHeight
+    --self.margin = self.charHeight
     self:add('Hello World')
-    self:add('Every where')
+    self:add('Or goodbye')
+    self:add('With this few hours')
+    self:add('Nothing or nothing else')
+    self:add('I dont care')
+    self:add('to for this nightmare')
     self.cursor.row = 2
     self.cursor.col = 5
     return self

@@ -49,8 +49,8 @@ canvas = object:clone{
     lockbuffer = nil,
     lockCount = 0,
     hooks = {    --object that hooks to draw, keyboards
-	    draws = {}, --update and draw
-    	keys = {}, --key
+        draws = {}, --update and draw
+        keys = {}, --key
     },
     data = {
         color = nil,
