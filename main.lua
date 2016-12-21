@@ -119,6 +119,11 @@ function love.threaderror(thread, errorstr)
   --thread:getError() will return the same error string now.
 end
 
+function trace(event, line)
+  local s = debug.getinfo(2).currentline
+  print(s .. ":" .. tostring(event))
+end
+
 function love.load()
     canvas.buffer = love.graphics.newCanvas()
     canvas.lockbuffer = love.graphics.newCanvas()
@@ -140,6 +145,7 @@ function love.load()
     if program then
         love.window.setTitle(program_file)
         co = coroutine.create(program)
+        debug.sethook(co, trace, "l")
     end
 end
 
