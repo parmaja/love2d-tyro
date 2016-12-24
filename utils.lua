@@ -8,7 +8,7 @@
 math.randomseed(os.time())
 
 function io.writeln(...)
-    write(...)
+    io.write(...)
     io.write("\n")
 end
 

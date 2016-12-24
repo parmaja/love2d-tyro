@@ -4,4 +4,9 @@
 --  @license   The MIT License (MIT) Included in this distribution
 --  @author    Zaher Dirkey <zaherdirkey at yahoo dot com>
 -------------------------------------------------------------------------------
-require("basic.main")
+--USAGE:
+--In Windows, Put "basic" folder in the same folder of lua.exe
+--Or add to the environments LUA_PATH=!\?.lua;!\?\init.lua;d:\home\lua\lib\?.lua
+--In linux add it in ~/.profile or ~/.bashrc
+-------------------------------------------------------------------------------
+require("basic.utils")
