@@ -5,19 +5,14 @@
 --   @author    Zaher Dirkey <zaherdirkey at yahoo dot com>
 -------------------------------------------------------------------------------
 
-function write(...)
-    local args = {...}
-    for i, v in ipairs(args) do
-        io.write(v)
-    end
-end
+math.randomseed(os.time())
 
-function writeln(...)
+function io.writeln(...)
     write(...)
     io.write("\n")
 end
 
-function input(s)
+function io.input(s)
     if s then
         write(s)
     end
@@ -31,11 +26,7 @@ function input(s)
     end
 end
 
-function int(x)
-    return math.floor(x)
-end
-
-function extractFilename(filename)
+function ExtractFileName(filename)
     return string.match(filename, "(.-)([^\\]-([^\\%.]+))$")
 end
 

@@ -93,7 +93,7 @@ colors_mt.__len =  --need >lua5.2
     end
 
 setmetatable(colors, colors_mt)
-
+--Rainbow colors
 colors.Black  = {0, 0 , 0}
 colors.Brown  = {165, 42, 42}
 colors.Red    = {255, 0, 0}
@@ -104,7 +104,7 @@ colors.Blue   = {0, 0, 255}
 colors.Indigo = {75, 0, 130}
 colors.Violet = {148, 0, 211}
 colors.White  = {255,255,255}
-
+---------------------
 colors.Maroon = {128, 0, 0}
 colors.Pink   = {255,84,167}
 colors.Lime   = {50, 205, 50}
@@ -113,11 +113,11 @@ colors.Silver = {192,192,192}
 colors.Gray   = {128,128,128}
 colors.RoyalBlue = {00, 23, 66}
 colors.OceanBlue = {0, 119, 190}
-colors.OceanBlue = {0, 119, 190}
 colors.Navy = {0, 0, 128}
 colors.WildBlueYonder = {162, 173, 208}
 colors.LaurelGreen = {169, 186, 157}
 colors.CamouflageGreen = {120, 134, 107}
+
 --TODO more colors
 
 function change_alpha(color, alpha)
