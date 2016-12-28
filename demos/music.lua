@@ -165,6 +165,31 @@ BumbleBee = [[
 t170l32aaaaaaaaaaaaaaaaaaaaaar3v9l16o6ed+dc+dc+cc-c<ba+ag+gf+f24<<g+48>>ed+dc+dc+cc-c<ba+ag+gf+fed+dc+dc+cc-ed+dc+dc+cc-ed+dc+cfed+ed+dc+cc+dd+ed+dc+cfed+ed+dc+cc+dd+ed+dc+dc+cc-cc+dd+efed+ed+dc+dc+cc-cc+dd+ef+gg+ag+gf+fa+ag+ag+gf+ff+gg+ag+gf+fa+ag+ag+gf+ff+gg+ag+gf+gf+feff+gg+aa+ag+ag+gf+gf+feff+gg+aa+ag+<daaaaaaaa+g+a+g+a+g+a+g+aaaaaaaaa+g+a+g+a+g+a+g+>aa+ag+aa+ag+aa+ag+aa+ag+aa+b>cc+c<ba+aa+b>cc+c<ba+n42dddddddd+c+d+c+d+c+d+c+ddddddddd+c+d+c+d+c+d+c+>dd+dc+dd+dc+dd+dc+dd+dc+dd+eff+fed+dd+eff+fed+<d64>dc+c<ba+>d+dc+24<d64>dc+c<b32.d+64a+b>cc+32.<d64>dc+c<b32.c64b+ba+a32.<a+64>a+b>cc+32.<<a64>>cc+dd+32.>ed+dc+dc+cc-c<ba+ag+gf+fefed+efed+efed+efed+efed+efed+efed+efed+e<d+dc+dc+cc-c<ba+ag+gf+fefed+efed+efed+efed+efed+efed+efed+efed+eff+gg+aa+ba+aa+aa+g+a+g+a<a>b<a>b+<an50a>>efed+fd+fd+e<e>e64f+24<e>e64g24<e>d64g+24<e>c64ar8.<eff+gg+aa+b>cc+dd+eff+gg+aa+b>cc+dd+ef+gg+a8r4.l48<<a>cea8r4.<a8
 ]]
 
+--Romeo and Juliet Theme - Rank 9
+--http://mabination.com/threads/65148-3-song-requests-Romeo-and-Juliet
+RomeoAndJuliet = {
+[[
+t105v15o1av10>>ccv15n17v10ccv15n19v10ddv15n12v10ccv15n21v10ccv15n 17v10
+ccv15n19v10ddv15n12v10ccv15n14v10ffv15n21v10eev15n16v10eev15n14v10f+f+
+v15n17v10ccv15n19v10ddv15n21v10eev15n21v10eev15<<a8>e8v10>ccv15<<f8>c8
+v10>ccv15<<g8>d8v10>ddv15<<c8v10>g8>ccv15<<a8>e8v10>ccv15<<f8>c8v10>cc
+v15<<g8>d8v10>ddv15<<c8v10>g8>ccv15<<d8>a8v10>ffv15<<a8>e8v10>eev15<<e
+8>b8v10>ggv15<<d8>a8v10>f+f+v15<<f8>c8v10>ccv15<<g8>d8v10>ddv13<<a8>e8
+>ee<<a8>e8>e2
+]]
+,
+[[v15o2av10>eev15<f>v10ffv15<gv10bbv15c>v10eev15<av10>eev15<f>v10ffv15<g
+v10bbv15c>v10eev15<d>v10aav15<a>v10ccv15<ev10bbv15d>v10ddv15<fv10aav15
+gv10bbv15a>v10ccv15<a>v10ccv15<av10>eev15<f>v10ffv15<g>v10ggv15<c>v10e
+ev15<av10>eev15<f>v10ffv15<g>v10ggv15<c>v10e2v15<d>v10aav15<a>v10aav15
+<e>v10eev15<d>v10ddv15<f>v10ffv15<g>v10ggv13<a>aa<a>a2]]
+,
+[[v13<a2.b+bag2fe2.a2.b+bab8>c8d<g8.f16fe2a>dec2<abaga2.gfed2r8e8c2.v14<
+ba2v10o5a2.b+bag2fe2.a2.b+bab8>c8d<g8.f16fe2a>d.e8c2<abaga2.gfed2r8v12
+e8v8c1]]
+
+}
+
 --http://www.bachcentral.com/midiindexcomplete.html
 --http://pasyuk.chat.ru/index_e.htm
 --http://www.netmftoolbox.com/tools/midi_to_mml.php
@@ -177,7 +202,7 @@ music.waveform = "piano"
 --music.play(furelise1, furelise2)
 --music.play(grendizer1, grendizer2)
 --music.play(tocatta)
-music.play(WilliamTell)
+music.play(RomeoAndJuliet)
 
 canvas.text("Press s to stop", 10, 10)
 

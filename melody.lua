@@ -196,7 +196,6 @@ function mml_prepare(self, notes)
 end
 
 function mml_next(self)
-
     --playnote(char, number[-1,0,+1], number[1..16], number[1..2])
     --playnote("c#", 1, 0, 0)
     --playnote("r", 1)
@@ -208,7 +207,8 @@ function mml_next(self)
         if note == "r" or note == "p" then
             f = 0
         elseif type(note) =="number" then
-            f = note
+            index = note
+            f = math.floor(baseNoteC4 * (baseNumber ^ index))
         else
             local index = scores[note]
             if not index then
@@ -380,10 +380,9 @@ function mml_next(self)
             step()
             local number = scan_number(2)
             if number == nil then
-                error("[music.play] F command need a umber at :"  .. " at " .. tostring(self.line) .. ":" .. tostring(self.pos))
+                error("[music.play] n command need a number at :"  .. " at " .. tostring(self.line) .. ":" .. tostring(self.pos))
             end
-            --local index = calcIndex(number)
-            --return playnote(index, duration)
+            return playnote(number, duration)
         elseif self.chr == "q" then --by frequency
             step()
             local number = scan_number()

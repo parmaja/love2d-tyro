@@ -6,7 +6,10 @@
 -------------------------------------------------------------------------------
 --USAGE:
 --In Windows, Put "basic" folder in the same folder of lua.exe
---Or add to the environments LUA_PATH=!\?.lua;!\?\init.lua;d:\home\lua\lib\?.lua
+--Or add to the environments, change the path to where basic folder exists
+--
+--    LUA_PATH=!\?.lua;!\?\init.lua;d:\home\lua\lib\?.lua;d:\home\lua\lib\?\init.lua
 --In linux add it in ~/.profile or ~/.bashrc
+--	  export LUA_PATH="/home/user/lab/lua/lib/?.lua;/home/user/lab/lua/lib/?/init.lua"
 -------------------------------------------------------------------------------
 require("basic.utils")
