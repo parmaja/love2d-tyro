@@ -168,28 +168,28 @@ t170l32aaaaaaaaaaaaaaaaaaaaaar3v9l16o6ed+dc+dc+cc-c<ba+ag+gf+f24<<g+48>>ed+dc+dc
 --Romeo and Juliet Theme - Rank 9
 --http://mabination.com/threads/65148-3-song-requests-Romeo-and-Juliet
 RomeoAndJuliet = {
-[[
-t105v15o1av10>>ccv15n17v10ccv15n19v10ddv15n12v10ccv15n21v10ccv15n 17v10
-ccv15n19v10ddv15n12v10ccv15n14v10ffv15n21v10eev15n16v10eev15n14v10f+f+
-v15n17v10ccv15n19v10ddv15n21v10eev15n21v10eev15<<a8>e8v10>ccv15<<f8>c8
-v10>ccv15<<g8>d8v10>ddv15<<c8v10>g8>ccv15<<a8>e8v10>ccv15<<f8>c8v10>cc
-v15<<g8>d8v10>ddv15<<c8v10>g8>ccv15<<d8>a8v10>ffv15<<a8>e8v10>eev15<<e
-8>b8v10>ggv15<<d8>a8v10>f+f+v15<<f8>c8v10>ccv15<<g8>d8v10>ddv13<<a8>e8
->ee<<a8>e8>e2
-]]
-,
-[[v15o2av10>eev15<f>v10ffv15<gv10bbv15c>v10eev15<av10>eev15<f>v10ffv15<g
-v10bbv15c>v10eev15<d>v10aav15<a>v10ccv15<ev10bbv15d>v10ddv15<fv10aav15
-gv10bbv15a>v10ccv15<a>v10ccv15<av10>eev15<f>v10ffv15<g>v10ggv15<c>v10e
-ev15<av10>eev15<f>v10ffv15<g>v10ggv15<c>v10e2v15<d>v10aav15<a>v10aav15
-<e>v10eev15<d>v10ddv15<f>v10ffv15<g>v10ggv13<a>aa<a>a2]]
-,
-[[v13<a2.b+bag2fe2.a2.b+bab8>c8d<g8.f16fe2a>dec2<abaga2.gfed2r8e8c2.v14<
-ba2v10o5a2.b+bag2fe2.a2.b+bab8>c8d<g8.f16fe2a>d.e8c2<abaga2.gfed2r8v12
-e8v8c1]]
-
 }
 
+LoveStory = {
+[[
+r1r1>a+8d8d8a+8a+2&a+8d8d8a+8a+8d8d+8d8c8c8c8a8a2&a8c8c8a8a8c8d8c8<a+8a+8a+8>g8g2&g8<a+8a+8>g8g8<a+8>c8<a+8a8a8a8>f+8f+2.g4a4d+4d2d2a+8d8d8a+8a+2&a+8d8d8a+8a+8d8d+8d8c8c8c8a8a2&a8c8c8a8a8c8d8c8<a+8a+8a+8>g8g2&g8<a+8a+8>g8g8<a+8>c8<a+8a8a8a8>f+8f+2.g4a4f+4b1&b4>c4d4<g4>d+2&d+8<g8>c8<g8g8a8a4.>c8d+8c8d2&d8<f8>d8<f8f8g8g4.a+8>d8<a+8
+>>c2&c8<a8>c8<a8a+4.a+8>d8<g8a+8>d8d+2&d+8<f8g8a+8a+4a4.a+8>c8<d+8d2&d8d8d+8f8a4g4.f8d+8d8c+2&c+8e8g8e8f+1a+8d8d8a+8a+2&a+8d8d8a+8a+8d8d+8d8c8c8c8a8a2&a8c8c8a8a8c8d8c8<a+8a+8a+8>g8g2&g8<a+8a+8>g8g8<a+8>c8<a+8a8a8a8>f+8f+2.g4a4f+4g1&g1<g1
+]],
+[[
+<<g8a+8>d8<a+8>g8d8<a+8d8g8a+8>d8<a+8>g8d8<a+8g8g8a+8>d8g8<g8a+8>d8g8<g8a+8>d8g8<g8a+8>d8g8<d8f+8a8>d8<d8f+8a8>d8<d8f+8a8>d8<d8f+8a8>d8<g8a+8>d8g8<g8a+8>d8g8<g8a+8>d8g8<g8a+8>d8g8<d8f+8a8>d8<d8f+8a8>d8<d8f+8a8>d8<d8f+8a8>d8<g8a+8>d8g8<g8a+8>d8g8<g8a+8>d8g8<g8a+8>d8g8<g8a+8>d8g8<g8a+8>d8g8<d8f+8a8>d8<d8f+8a8>d8<d8f+8a8>d8<d8f+8a8>d8<g8a+8>d8g8<g8a+8>d8g8<d+8g8a+8>d+8<d+8g8a+8>d+8<d8f+8a8>d8<d8f+8a8>d8<d8f+8a8>d8<d8f+8a8>d8<g8b8>d8g8<g8b8>d8g8<g8b8>d8g8<g8a+8>d8g8<c8d+8g8>c8<c8d+8g8>c8<f8a8>c8f8<f8a8>c8f8<<a+8>d8f8a+8<a+8>d8f8a+8d+8g8a+8>d+8<d+8g8a+8>d+8
+<<a8>c8d+8a8d8f+8a8>d8<g8a+8>d8g8<g8a+8>d8g8<c8d+8g8>c8<c8d+8g8>c8<f8a+8>c8f8<f8a+8>c8f8<<a+8>d8f8a+8<a+8>d8f8a+8d+8g8a+8>d+8<d+8g8a+8>d+8<<a8>c+8e8a8<a8>c+8e8a8d8f+8a8>d8<d8f+8a8>d8<g8a+8>d8g8<g8a+8>d8g8<g8a+8>d8g8<g8a+8>d8g8<d8f+8a8>d8<d8f+8a8>d8<d8f+8a8>d8<d8f+8a8>d8<g8a+8>d8g8<g8a+8>d8g8<d+8g8a+8>d+8<d+8g8a+8>d+8<d8f+8a8>d8<d8f+8a8>d8<d8f+8a8>d8<d8f+8a8>d8<g8a+8>d8g8<g8a+8>d8g8<g8a+8>d8g8<<a8a+8>d8g8g1
+]]
+}
+--https://archeagemmllibrary.com/abba-gimme-gimme-gimme/
+GimmeGimmeGimme ={
+[[
+v120t120l8<da>d.<a16da+>d.<a+16cg>d.<g16da>d.<a16da>d.<a16da+>d.<a+16cg>d.<g16da>d.<a16da>d.<a16da+>d.<a+16cg>d.<g16da>d.<a16da>d.<a16da+>d.<a+16cg>d.<g16d2&dl32>df16a>d8d<a16fd2&d8df16a>d8d<a16fl16defga4.f32al32>cf8fe16c<a2&a8ea16>ce8d<a16fd2&d8df16a>d8d<a16fd2&d8df16a>d8d<a16fl16defga4.f32al32>cf8fe16c<a2&a8ea16>ce8d<a16fd1l4dc<al8gfg4gf16g.adfg4gf16g4&g16dfggga16g.f32e16f32dcd1>d4c4<a4gfg4gf16g.adfg4gf16g4&g16dfggga16g.f32e16f32dcd1&d
+]],
+[[v110l1.rrrrrr2r2<a8l16dda8dda8dda8a4b8b+8ffb+8ff>c8d8<a8<aa>a8<aa>a8<aa>a8a8a8dda8dda8dda8a8a8dda8dda8dda8a4b8b+8ffb+8ff>c8d8<a8<aa>a8<aa>a8<aa>a8a8a1a4g4e4a4d8<gg>d8<gg>d8<gg>d8d8d8<gg>d8<gg>d8<gg>d8d8d8<gg>d8<gg>d8<gg>d8d8a1a4g4e4a4d8<gg>d8<gg>d8<gg>d8d8d8<gg>d8<gg>d8<gg>d8d8d8<gg>d8<gg>d8<ggl8>dda1
+]],
+[[v95l1rrr1r2r8l16o2efecd<al1>dddd&d2l4ddddd8e8fff8g8aaaaddddddddd8e8fff8g8aaaadddddc<a>d<gggggggggggg>d1dc<a>d<gggggggggggg
+]]
+}
 --http://www.bachcentral.com/midiindexcomplete.html
 --http://pasyuk.chat.ru/index_e.htm
 --http://www.netmftoolbox.com/tools/midi_to_mml.php
@@ -202,7 +202,7 @@ music.waveform = "piano"
 --music.play(furelise1, furelise2)
 --music.play(grendizer1, grendizer2)
 --music.play(tocatta)
-music.play(RomeoAndJuliet)
+music.play(GimmeGimmeGimme)
 
 canvas.text("Press s to stop", 10, 10)
 

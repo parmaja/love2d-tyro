@@ -34,9 +34,22 @@ waveforms_mt.__newindex =
 
 setmetatable(melody.waveforms, waveforms_mt)
 
+function melody.error(ch, msg, line, column)
+    msg = "[melody] " .. msg .." at: "
+
+    if ch and ch.name then
+        msg = msg .. ch.name .. ", "
+    end
+
+    if line then
+        msg = msg .. tostring(line) .. ":" .. tostring(column)
+    end
+    error(msg)
+end
+
 function melody.addWaveform(name, waveform)
     if type(waveform) ~= "function" then
-        error("waveform should fucntion")
+        melody.error(nil, "waveform should fucntion")
     end
     --melody.waveforms[#melody.waveforms + 1] = { name = name, waveform = waveform }
     melody.waveforms[name] = waveform
@@ -46,17 +59,21 @@ function melody.play(...)
 
     local args = {...}
     if #args == 0 then
-        error("No notes?!")
+        melody.error(nil, "No notes?!")
     end
-    local channels = {}
+
+    local channels = {
+    }
+
     for i, n in ipairs(args) do
         if not n or #n == 0 then
-            error("No notes?!")
+            melody.error(nil, "No notes?!")
         end
         local ch = {
             volume = 100,
             source = nil,
             finished = false,
+            name = "notdefined",
         }
         index = #channels + 1
         channels[index] = ch
@@ -173,6 +190,7 @@ local scores = {
 local baseNumber = 2 ^ (1/12)
 local baseOctave = 4
 local baseNoteC4 = 261.63
+local baseNote = 39
 local baseLength = 4
 local baseTempo  = 60
 
@@ -199,7 +217,7 @@ function mml_next(self)
     --playnote(char, number[-1,0,+1], number[1..16], number[1..2])
     --playnote("c#", 1, 0, 0)
     --playnote("r", 1)
-    --playnote(440, 1) --by number
+    --playnote(20, 1) --by number
     local function playnote(note, duration, offset, increase, tie)
         increase = increase or 0
         offset = offset or 0
@@ -208,11 +226,11 @@ function mml_next(self)
             f = 0
         elseif type(note) =="number" then
             index = note
-            f = math.floor(baseNoteC4 * (baseNumber ^ index))
+            f = math.floor((baseNote + self.shift_octave) * (baseNumber ^ index))
         else
             local index = scores[note]
             if not index then
-                error("We dont have it in music:" .. note .. " at "  .. tostring(line) .. ":" .. tostring(self.pos))
+                melody:error("We dont have it in music:" .. note ,line, self.pos)
             end
             --calc index using current octave
             index = ((self.octave + self.shift_octave)- baseOctave) * 12 + index + offset
@@ -356,7 +374,7 @@ function mml_next(self)
 
             local duration = scan_number() or self.length
             if duration > 96 then
-                error("Length should be less or equal 96: your length is: " .. tostring(duration)  .. " at " .. tostring(self.line) .. ":" .. tostring(self.pos))
+                melody:error("Length should be less or equal 96: your length is: " .. tostring(duration), self.line, self.pos)
             end
 
             local increase = 0
@@ -376,18 +394,18 @@ function mml_next(self)
 
             return playnote(note, duration, offset, increase, tie)
 
-        elseif self.chr == "n" then  --TODO: note index
+        elseif self.chr == "n" then
             step()
             local number = scan_number(2)
             if number == nil then
-                error("[music.play] n command need a number at :"  .. " at " .. tostring(self.line) .. ":" .. tostring(self.pos))
+                melody:error("'n' command need a number", self.line, self.pos)
             end
-            return playnote(number, duration)
+            return playnote(number, self.length)
         elseif self.chr == "q" then --by frequency
             step()
             local number = scan_number()
             if number == nil then
-                error("[music.play] F command need a number at :"  .. " at " .. tostring(self.line) .. ":" .. tostring(self.pos))
+                melody:error("'q' command need a number", self.line, self.pos)
             end
             return playnote(number, self.length)
         elseif self.chr == "t" then
@@ -397,7 +415,7 @@ function mml_next(self)
             step()
             local l = scan_number()
             if l > 96 then
-                error("Length should be less or equal 96: your length is:" .. tostring(l) .. " at " .. tostring(self.line) .. ":" .. tostring(self.pos))
+                melody:error("Length should be less or equal 96: your length is:" .. tostring(l), self.line, self.pos)
             end
             local increase = 0
             local by = 0.5
@@ -448,10 +466,10 @@ function mml_next(self)
             end
         elseif self.chr == "," then
             step()
-            error("command ',' not supported, it used to split song to multiple channels, use play(note1, note2) ")
-        elseif self.chr == ";" then --ignore it, can not support it
+            melody:error("command ',' not supported, it used to split song to multiple channels, use play(note1, note2)", self.line, self.pos)
+        elseif self.chr == ";" then --stop
             step()
-            --return playnote("r", 1, 0, 1)
+            return false --finish it
         elseif self.chr == "v" then --ignoring it
             step()
             self.volume = scan_number()
@@ -465,7 +483,7 @@ function mml_next(self)
                 local wf = scan_number()
                 local f = melody.waveforms[wf]
                 if not f then
-                    error("No waveform indexed for :"..tostring(wf))
+                    melody:error("No waveform indexed for :"..tostring(wf), self.line, self.pos)
                 end
                 self.waveform = f
             end
@@ -493,10 +511,10 @@ function mml_next(self)
                 step()
             else
                 step()
-                error("[music.play] Illegal subcommand for M" .. self.chr .. " at:" .. tostring(self.pos))
+                melody:error("Illegal subcommand for M" .. self.chr, self.line, self.pos)
             end
         else
-            error("[music.play] Can not recognize: " .. self.chr .. " at:" .. tostring(self.line) .. ":" .. tostring(self.pos))
+            melody:error("Can not recognize: " .. self.chr, self.line, self.pos)
         end
     end
 end
