@@ -482,6 +482,9 @@ function mml_next(self)
                 step()
                 local wf = scan_to("]") --by name
                 self.waveform = melody.waveforms[wf]
+                if not self.waveform then
+                    melody:error("No waveform: " .. wf)
+                end
             else
                 local wf = scan_number()
                 local f = melody.waveforms[wf]
@@ -532,10 +535,10 @@ function waveform_piano(index, samples, pitch, rate, tie)
     if not tie then
         fade = math.exp(-math.log(50) * index / samples / 3) --fadeout
     end
-    sample  = math.sin(index * (2 * math.pi) * pitch / rate)
-    local a = math.sin(index * (2 * math.pi) * pitch * 2 / rate)
-    local b = math.sin(index * (2 * math.pi) * pitch / 2 / rate)
-    sample = (sample - a - b) / 3
+    local sample  = math.sin(index * (2 * math.pi) * pitch / rate)
+    local a = math.sin(index * (2 * math.pi) * pitch * 2 / rate) / 2
+    local b = math.sin(index * (2 * math.pi) * pitch / 2 / rate) / 2
+    local sample = (sample - a - b) / 2 --2 not 3 cuz we divided a and b with 2
     return sample * fade
 end
 
@@ -574,7 +577,7 @@ function waveform_random(index, samples, pitch, rate, tie)
 end
 
 function waveform_organ(index, samples, pitch, rate, tie)
-    sample  = math.sin(index * (2 * math.pi) * pitch / rate)
+    local sample  = math.sin(index * (2 * math.pi) * pitch / rate)
     if math.abs(sample) > 0.5 then
         a = math.sin(index * (2 * math.pi) * pitch / 3 / rate) / 2
         sample = (sample + a) / 2
@@ -582,9 +585,24 @@ function waveform_organ(index, samples, pitch, rate, tie)
     return sample
 end
 
+function waveform_GB(index, samples, pitch, rate, tie)
+    wl = rate / pitch / 10
+    i = math.floor(index % wl)
+    if i <= (wl / 2) then
+        a = 1
+    else
+        a = -1
+    end
+
+    local sample  = math.sin(index * (2 * math.pi) * pitch / rate)
+    sample = (sample - a) / 2
+    return sample
+end
+
 melody.addWaveform("normal", waveform_normal)
 melody.addWaveform("piano", waveform_piano)
 melody.addWaveform("organ", waveform_organ)
+melody.addWaveform("gb", waveform_GB)
 melody.addWaveform("ramp", waveform_ramp)
 melody.addWaveform("triangle", waveform_triangle)
 melody.addWaveform("square", waveform_square)

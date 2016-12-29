@@ -117,7 +117,7 @@ mr
 ]]
 
 --https://archeagemmllibrary.com/super-mario-bros/
-mario = [[w[organ]
+mario = [[w[gb]
 t100>e16e8e8c16e8g4<g4>c8.<g8.e8.a8b8a+16a8g16.>e16g16.a8f16g8e8c16d16<b8.>c8.<g8.e8.a8b8a+16a8g16.>e16g16.a8f16g8e8c16d16<b4
 ]]
 
