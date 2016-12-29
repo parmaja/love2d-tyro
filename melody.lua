@@ -8,6 +8,9 @@
 -------------------------------------------------------------------------------
 --  Look at this site, it have many of songs
 --	https://archeagemmllibrary.com/
+--	usefull refereces
+--
+--  http://web.mit.edu/18.06/www/Essays/linear-algebra-and-music.pdf
 -------------------------------------------------------------------------------
 
 melody = {
