@@ -12,7 +12,7 @@ local length = 0.1
 local pitch = 440
 local amplitude = 50
 local samples = length * rate
-local scalex = 2
+local scalex = 1
 
 canvas.line(0, center.y - height / 2, canvas.width, center.y - height / 2)
 canvas.line(0, center.y + height / 2, canvas.width, center.y + height / 2)

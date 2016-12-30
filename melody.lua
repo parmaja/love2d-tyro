@@ -585,8 +585,8 @@ function waveform_organ(index, samples, pitch, rate, tie)
     return sample
 end
 
-function waveform_GB(index, samples, pitch, rate, tie)
-    wl = rate / pitch / 10
+function waveform_ss(index, samples, pitch, rate, tie)
+    wl = rate / pitch * 1.5 --not sure the size
     i = math.floor(index % wl)
     if i <= (wl / 2) then
         a = 1
@@ -594,7 +594,7 @@ function waveform_GB(index, samples, pitch, rate, tie)
         a = -1
     end
 
-    local sample  = math.sin(index * (2 * math.pi) * pitch / rate)
+    local sample  = math.sin(index * (2 * math.pi) * pitch / rate ) / 10
     sample = (sample - a) / 2
     return sample
 end
@@ -602,7 +602,7 @@ end
 melody.addWaveform("normal", waveform_normal)
 melody.addWaveform("piano", waveform_piano)
 melody.addWaveform("organ", waveform_organ)
-melody.addWaveform("gb", waveform_GB)
+melody.addWaveform("ss", waveform_ss) --sin square
 melody.addWaveform("ramp", waveform_ramp)
 melody.addWaveform("triangle", waveform_triangle)
 melody.addWaveform("square", waveform_square)

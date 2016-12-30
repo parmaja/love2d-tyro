@@ -117,7 +117,7 @@ mr
 ]]
 
 --https://archeagemmllibrary.com/super-mario-bros/
-mario = [[w[gb]
+mario = [[
 t100>e16e8e8c16e8g4<g4>c8.<g8.e8.a8b8a+16a8g16.>e16g16.a8f16g8e8c16d16<b8.>c8.<g8.e8.a8b8a+16a8g16.>e16g16.a8f16g8e8c16d16<b4
 ]]
 
@@ -198,7 +198,7 @@ v120t120l8<da>d.<a16da+>d.<a+16cg>d.<g16da>d.<a16da>d.<a16da+>d.<a+16cg>d.<g16da
 
 music.background = true
 --music.waveform = "organ"
-music.waveform = "piano"
+music.waveform = "ss"
 --music.play(furelise1, furelise2)
 --music.play(grendizer1, grendizer2)
 --music.play(tocatta)
