@@ -586,7 +586,7 @@ function waveform_organ(index, samples, pitch, rate, tie)
 end
 
 function waveform_ss(index, samples, pitch, rate, tie)
-    wl = rate / pitch * 1.5 --not sure the size
+    wl = rate / pitch * 2 --not sure the size
     i = math.floor(index % wl)
     if i <= (wl / 2) then
         a = 1
@@ -595,7 +595,7 @@ function waveform_ss(index, samples, pitch, rate, tie)
     end
 
     local sample  = math.sin(index * (2 * math.pi) * pitch / rate ) / 10
-    sample = (sample - a) / 2
+    sample = (sample - a) / 2 --<-- 2 is wrong
     return sample
 end
 
