@@ -536,9 +536,9 @@ function waveform_piano(index, samples, pitch, rate, tie)
         fade = math.exp(-math.log(50) * index / samples / 3) --fadeout
     end
     local sample  = math.sin(index * (2 * math.pi) * pitch / rate)
-    local a = math.sin(index * (2 * math.pi) * pitch * 2 / rate) / 2
-    local b = math.sin(index * (2 * math.pi) * pitch / 2 / rate) / 2
-    local sample = (sample - a - b) / 2 --2 not 3 cuz we divided a and b with 2
+    local a = math.sin(index * (2 * math.pi) * pitch * 2 / rate)
+    local b = math.sin(index * (2 * math.pi) * pitch / 2 / rate)
+    local sample = (sample - a - b) / 3
     return sample * fade
 end
 
