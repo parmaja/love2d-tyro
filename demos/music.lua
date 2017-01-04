@@ -190,6 +190,17 @@ v120t120l8<da>d.<a16da+>d.<a+16cg>d.<g16da>d.<a16da>d.<a16da+>d.<a+16cg>d.<g16da
 [[v95l1rrr1r2r8l16o2efecd<al1>dddd&d2l4ddddd8e8fff8g8aaaaddddddddd8e8fff8g8aaaadddddc<a>d<gggggggggggg>d1dc<a>d<gggggggggggg
 ]]
 }
+
+--https://archeagemmllibrary.com/pink-panther/
+PinkPanther = {
+[[
+t120r1r1r1r2rr8l16ro5<d+e4r8r16f+g4r8r16d+e8.f+g8.b+b8.eg8.ba+2l8agede2.rr16l16d+e4r8r16f+g4r8r16d+e8.f+g8.b+b8.gb8.>ed+1&d+2.&d+8r<d+e4r8r16f+g4r8r16d+e8.f+g8.b+b8.eg8.ba+2l8agede1r4>e.l16d<b8.ag8.ea+a8.a+a8.a+a8.a+l8a.gede&e2&e2.
+]],
+[[v50l16o3b1&b2&b8rg#a8ra#b1&b2&b8rg#a8ra#b1&b2&b8ra#a8rg#g1&g2&g8rg#a8ra#b1&b2&b8rg#a8ra#>c1&c2&c8r<g#a8ra#b1&b2&b8ra#a8rg#g1&g2&g8rg#a8ra#b8r4r8r2g2f#2b2&b8rg#a8ra#b2&b8
+]],
+[[v50l4o3e1&e2&e8l16rc+d8rd+e1&e2&e8rc+d8rd+e1&e2&e8rd+d8rc+c1&c2&c8rc+d8rd+e1&e2&e8rc+d8rd+f1&f2&f8rc+d8rd+e1&e2&e8rd+d8rc+c1&c2&c8rc+d8rd+e8r2r4r8c2c-2e2&e8rc+d8rd+e2&e8;
+]]
+}
 --http://www.bachcentral.com/midiindexcomplete.html
 --http://pasyuk.chat.ru/index_e.htm
 --http://www.netmftoolbox.com/tools/midi_to_mml.php
@@ -198,14 +209,17 @@ v120t120l8<da>d.<a16da+>d.<a+16cg>d.<g16da>d.<a16da>d.<a16da+>d.<a+16cg>d.<g16da
 
 music.background = true
 --music.waveform = "organ"
-music.waveform = "ss"
+music.waveform = "piano"
 --music.play(furelise1, furelise2)
 --music.play(grendizer1, grendizer2)
 --music.play(tocatta)
-music.play(mario)
+--music.play(PinkPanther)
 --music.play(GimmeGimmeGimme)
 
 canvas.text("Press s to stop", 10, 10)
+canvas.text("Press p to play", 10, 30)
+canvas.text("Press r to play", 10, 50)
+canvas.text("Press t to test", 10, 70)
 
 while true do
     canvas.refresh()
@@ -222,7 +236,16 @@ while true do
     if key() == "right" and music.busy() then
         music.volume = music.volume - music.volume
     end
+    if key() == "r" and not music.busy() then
+        music.waveform = "piano"
+        music.play(PinkPanther)
+    end
     if key() == "p" and not music.busy() then
+        music.waveform = "piano"
         music.play(furelise1, furelise2)
+    end
+    if key() == "t" and not music.busy() then
+        music.waveform = "piano"
+        music.play("v10mlccv100c")
     end
 end

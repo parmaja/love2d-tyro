@@ -107,9 +107,9 @@ function music.play(...)
     end
 end
 
-function melody.playsound(channel, pitch, length, rest, tie, wait)
+save_sample = 5 --count of samples to save to love dir
 
---saved = 1
+function melody.playsound(channel, pitch, length, rest, tie, volume, wait)
 
     local function generate_sample()
         local rate = 44100 --22050
@@ -130,18 +130,17 @@ function melody.playsound(channel, pitch, length, rest, tie, wait)
                 data:setSample(index, sample) --bug in miniedit, put cursor on data and ctrl+f it now show "data"
             end
         end
-    --    if saved < 5 then
-    --        s = data:getString()
-    --        love.filesystem.write("test"..tostring(saved)..".data", s)
-    --    end
-    --    saved = saved + 1
+        if save_sample >= 1 then
+            save_index = 1 + (save_index or 0)
+            s = data:getString()
+            love.filesystem.write("test"..tostring(save_index)..".data", s)
+            print("sample saved" ,  save_sample)
+            save_sample = save_sample - 1
+        end
         return data
     end
 
-    if channel.source then
---        if channel.source:isPlaying() then
---            error("it is playing, please wait")
---        end
+    if channel.source and channel.source:isPlaying() then
         channel.source:stop()
     end
 
@@ -154,11 +153,12 @@ function melody.playsound(channel, pitch, length, rest, tie, wait)
         channel.last.tie = tie
         channel.source = love.audio.newSource(sample)
         channel.source:setLooping(false)
-        channel.source:setVolume(channel.volume)
-        channel.source:play()
     else
         channel.source:rewind() --better than seek(0)
-        channel.source:setVolume(channel.volume)
+    end
+    channel.source:setVolume(volume / 100)
+    print("volume:", volume)
+    if not channel.source:isPlaying() then
         channel.source:play()
     end
 

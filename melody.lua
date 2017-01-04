@@ -103,7 +103,7 @@ function melody.play(...)
                 else
                     ch.expired = os.clock() + ch.sound.length + ch.sound.rest
                 end
-                if not melody.playsound(ch, ch.sound.pitch, ch.sound.length, ch.sound.rest, ch.sound.tie, false) then
+                if not melody.playsound(ch, ch.sound.pitch, ch.sound.length, ch.sound.rest, ch.sound.tie, ch.sound.volume, false) then
                     break
                 end
                 busy = true
@@ -254,7 +254,7 @@ function mml_next(self)
                 l = l - r
             end
         end
-        self.sound = {pitch = f, length = l, rest = r, ["tie"] = tie}
+        self.sound = {pitch = f, length = l, rest = r, ["tie"] = tie, volume = self.volume}
         --now use it to play
         return true
     end
@@ -473,7 +473,7 @@ function mml_next(self)
         elseif self.chr == ";" then --stop
             step()
             return false --finish it
-        elseif self.chr == "v" then --ignoring it
+        elseif self.chr == "v" then
             step()
             self.volume = scan_number()
         elseif self.chr == "w" then --set a waveform
