@@ -46,7 +46,7 @@ function music.busy()
 end
 
 function music.beep()
-    melody.playsound(440, 0.2)
+    melody.playsound({pitch = 440, length = 0.2})
 end
 
 function music.play(...)
@@ -107,22 +107,26 @@ function music.play(...)
     end
 end
 
-save_sample = 5 --count of samples to save to love dir
+--save_file = true
+--save_sample = 5 --count of samples to save to love dir
 
-function melody.playsound(channel, pitch, length, rest, tie, volume, wait)
+--ref: http://www.topherlee.com/software/pcm-tut-wavformat.html
+-- melody.playsound{ channel, pitch, length, rest, connected, volume, wait }
+
+function melody.playsound(sound)
 
     local function generate_sample()
-        local rate = 44100 --22050
-        local amplitude = 1 --not sure, i added it by my hand :P
-        local data = love.sound.newSoundData((length + rest) * rate, rate, 16, 1) --rest keep it empty
-        local samples = length * rate
+        local rate =  sound.rate or 44100 --22050
+        local amplitude = sound.amplitude or 1 --not sure, i added it by my hand :P
+        local data = love.sound.newSoundData((sound.length + sound.rest) * rate, rate, 16, 1) --rest keep it empty
+        local samples = sound.length * rate
         local sample = 0
-        local c = 2 * math.pi * pitch / rate
+        local c = 2 * math.pi * sound.pitch / rate
 
-        if pitch > 0 then
+        if sound.pitch > 0 then
             for index = 0, samples - 1 do
-                if channel.waveform then
-                    sample = channel.waveform(index, samples, pitch, rate, tie) * amplitude
+                if sound.waveform then
+                    sample = sound.waveform(index, samples, sound.pitch, rate, sound.connected) * amplitude
                 else
                     --to keep it simple to understand: sample = math.sin((index * pitch) * ((2 * math.pi) / rate)) * amplitude
                     sample = math.sin(index * c) * amplitude
@@ -130,40 +134,51 @@ function melody.playsound(channel, pitch, length, rest, tie, volume, wait)
                 data:setSample(index, sample) --bug in miniedit, put cursor on data and ctrl+f it now show "data"
             end
         end
-        if save_sample >= 1 then
-            save_index = 1 + (save_index or 0)
-            s = data:getString()
-            love.filesystem.write("test"..tostring(save_index)..".data", s)
-            print("sample saved" ,  save_sample)
-            save_sample = save_sample - 1
+
+        if save_file then
+            if not wave_file then
+                wave_file = love.filesystem.newFile("song.wav")
+                wave_file:open("a")
+            end
+            if sound.id == 1 then --only first channel
+                s = data:getString()
+                wave_file:write(s)
+            end
+
+            if save_sample and (save_sample >= 1) then
+                save_index = 1 + (save_index or 0)
+                s = data:getString()
+                love.filesystem.write("test"..tostring(save_index)..".data", s)
+                print("sample saved" ,  save_sample)
+                save_sample = save_sample - 1
+            end
         end
         return data
     end
 
-    if channel.source and channel.source:isPlaying() then
-        channel.source:stop()
+    if sound.source and sound.source:isPlaying() then
+        sound.source:stop()
     end
 
-    if not (channel.source and channel.last and (channel.last.length == length) and (channel.last.pitch == pitch) and (channel.last.rest == rest) and (channel.last.tie == tie)) then
-        local sample = generate_sample(pitch, length, rest, tie)
-        channel.last = {}
-        channel.last.pitch = pitch
-        channel.last.length = length
-        channel.last.rest = rest
-        channel.last.tie = tie
-        channel.source = love.audio.newSource(sample)
-        channel.source:setLooping(false)
+    if not (sound.source and sound.last and (sound.last.length == sound.length) and (sound.last.pitch == sound.pitch) and (sound.last.rest == sound.rest) and (sound.last.connected == sound.connected)) then
+        local sample = generate_sample(sound.pitch, sound.length, sound.rest, sound.connected)
+        sound.last = {}
+        sound.last.pitch = sound.pitch
+        sound.last.length = sound.length
+        sound.last.rest = sound.rest
+        sound.last.connected = sound.connected
+        sound.source = love.audio.newSource(sample)
+        sound.source:setLooping(false)
     else
-        channel.source:rewind() --better than seek(0)
+        sound.source:rewind() --better than seek(0)
     end
-    channel.source:setVolume(volume / 100)
-    print("volume:", volume)
-    if not channel.source:isPlaying() then
-        channel.source:play()
+    sound.source:setVolume(sound.volume / 100)
+    if not sound.source:isPlaying() then
+        sound.source:play()
     end
 
     if wait then
-        while channel.source:isPlaying() do
+        while sound.source:isPlaying() do
             --oh we need to wait it
         end
     end

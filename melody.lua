@@ -81,6 +81,7 @@ function melody.play(...)
         index = #channels + 1
         channels[index] = ch
 
+        ch.id = index
         ch.name = "channel"..tostring(index)
         ch.prepare = mml_prepare
         ch.next = mml_next
@@ -91,6 +92,18 @@ function melody.play(...)
     local count = #channels
     local busy = false
     while true do
+        --melody_events
+        if melody_events and (melody_events:getCount() > 0) then
+            --return false if thread terminated
+            local cmd = string.lower(melody_events:pop())
+            if cmd == "stop" then
+                if ch.sound.source then
+                    ch.sound.source:stop()
+                end
+                break
+            end
+        end
+
         ch = channels[index]
         if not ch.finished then
             --if ch.source and ch.source:isPlaying() then
@@ -98,12 +111,8 @@ function melody.play(...)
                 busy = true
             elseif ch:next() then
                 print(ch.name, "n, freq Hz, len ms, rest ms", ch.pos, ch.sound.pitch, math.floor(ch.sound.length * 100), math.floor(ch.sound.rest * 100))
-                if ch.sound.tie then
-                    ch.expired = os.clock() + ch.sound.length
-                else
-                    ch.expired = os.clock() + ch.sound.length + ch.sound.rest
-                end
-                if not melody.playsound(ch, ch.sound.pitch, ch.sound.length, ch.sound.rest, ch.sound.tie, ch.sound.volume, false) then
+                ch.expired = os.clock() + ch.sound.length + ch.sound.rest
+                if not melody.playsound(ch.sound) then
                     break
                 end
                 busy = true
@@ -221,7 +230,7 @@ function mml_next(self)
     --playnote("c#", 1, 0, 0)
     --playnote("r", 1)
     --playnote(20, 1) --by number
-    local function playnote(note, duration, offset, increase, tie)
+    local function playnote(note, duration, offset, increase, connected)
         increase = increase or 0
         offset = offset or 0
         local f = 0
@@ -245,7 +254,7 @@ function mml_next(self)
         local l = (baseLength / duration) * (baseTempo / self.tempo) * (1 + increase);
 
         local r = 0   --legato
-        if not tie then
+        if not connected then --only if not connected to the next note
             if self.subsequent == 1 then --normal
                 r = l / 8
                 l = l - r
@@ -254,7 +263,7 @@ function mml_next(self)
                 l = l - r
             end
         end
-        self.sound = {pitch = f, length = l, rest = r, ["tie"] = tie, volume = self.volume}
+        self.sound = {id = self.id, pitch = f, length = l, rest = r, ["connected"] = connected, volume = self.volume, waveform = self.waveform}
         --now use it to play
         return true
     end
@@ -389,13 +398,13 @@ function mml_next(self)
                 until not step() or self.chr ~= "."
             end
 
-            local tie = false
+            local connected = false
             if self.chr == "&" then  --trying to use it, but i think i cant
                 step()
-                tie = true
+                connected = true
             end
 
-            return playnote(note, duration, offset, increase, tie)
+            return playnote(note, duration, offset, increase, connected)
 
         elseif self.chr == "n" then
             step()
@@ -442,12 +451,10 @@ function mml_next(self)
                     by = by / 2
                 until not step() or self.chr ~= "."
             end
-            local tie = false
-            if self.chr == "&" then  --trying to use it, but i think i cant
+            if self.chr == "&" then  --skip it
                 step()
-                tie = true
             end
-            return playnote("r", duration, 0, increase, tie)
+            return playnote("r", duration, 0, increase, true)
         elseif self.chr == "o" then
             step()
             self.octave = scan_number()
@@ -525,14 +532,15 @@ function mml_next(self)
     end
 end
 
-function waveform_normal(index, samples, pitch, rate, tie)
+function waveform_sin(index, samples, pitch, rate, connected)
     return math.sin((index * pitch) * ((2 * math.pi) / rate))
 end
 
-function waveform_piano(index, samples, pitch, rate, tie)
+--ref: http://web.mit.edu/6.02/www/s2007/lab2.pdf
+function waveform_piano(index, samples, pitch, rate, connected)
     --https://stackoverflow.com/questions/20037947/fade-out-function-of-audio-between-samplerate-changes
     local fade = 1
-    if not tie then
+    if not connected then
         fade = math.exp(-math.log(50) * index / samples / 3) --fadeout
     end
     local sample  = math.sin(index * (2 * math.pi) * pitch / rate)
@@ -542,13 +550,13 @@ function waveform_piano(index, samples, pitch, rate, tie)
     return sample * fade
 end
 
-function waveform_ramp(index, samples, pitch, rate, tie)
+function waveform_ramp(index, samples, pitch, rate, connected)
     wl = rate / pitch
     sample = (index % wl) / wl
     return sample
 end
 
-function waveform_triangle(index, samples, pitch, rate, tie)
+function waveform_triangle(index, samples, pitch, rate, connected)
     wl = rate / pitch
     i = math.floor(index % wl)
     if i < (wl) then
@@ -559,7 +567,7 @@ function waveform_triangle(index, samples, pitch, rate, tie)
     return sample
 end
 
-function waveform_square(index, samples, pitch, rate, tie)
+function waveform_square(index, samples, pitch, rate, connected)
     wl = rate / pitch
     i = math.floor(index % wl)
     if i < (wl / 2) then
@@ -570,22 +578,21 @@ function waveform_square(index, samples, pitch, rate, tie)
     return sample
 end
 
-function waveform_random(index, samples, pitch, rate, tie)
+function waveform_random(index, samples, pitch, rate, connected)
     wl = rate / pitch
        sample = (math.random(wl * 2) - wl) / wl
     return sample
 end
 
-function waveform_organ(index, samples, pitch, rate, tie)
+function waveform_organ(index, samples, pitch, rate, connected)
     local sample  = math.sin(index * (2 * math.pi) * pitch / rate)
-    if math.abs(sample) > 0.5 then
-        a = math.sin(index * (2 * math.pi) * pitch / 3 / rate) / 2
-        sample = (sample + a) / 2
-    end
+    local a = math.sin(index * (2 * math.pi) * pitch * 2 / rate)
+    local b = math.sin(index * (2 * math.pi) * pitch / 2 / rate)
+    local sample = (sample - a - b) / 3
     return sample
 end
 
-function waveform_ss(index, samples, pitch, rate, tie)
+function waveform_ss(index, samples, pitch, rate, connected)
     wl = rate / pitch * 2 --not sure the size
     i = math.floor(index % wl)
     if i <= (wl / 2) then
@@ -594,12 +601,13 @@ function waveform_ss(index, samples, pitch, rate, tie)
         a = -1
     end
 
-    local sample  = math.sin(index * (2 * math.pi) * pitch / rate ) / 10
+    local sample  = math.sin(index * (2 * math.pi) * pitch / rate ) / 5
     sample = (sample - a) / 2 --<-- 2 is wrong
     return sample
 end
 
-melody.addWaveform("normal", waveform_normal)
+melody.addWaveform("normal", waveform_sin)
+melody.addWaveform("sin", waveform_sin)
 melody.addWaveform("piano", waveform_piano)
 melody.addWaveform("organ", waveform_organ)
 melody.addWaveform("ss", waveform_ss) --sin square
