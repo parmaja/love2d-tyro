@@ -446,6 +446,14 @@ function canvas.text(s, x, y)
     present()
 end
 
+
+function canvas.print(s)
+    love.graphics.print(s, canvas.last_x, canvas.last_y) --need improve, split by eol
+    canvas.last_y = canvas.last_y + love.graphics.getFont():getHeight(s)
+    --self.last_x = 0
+    present()
+end
+
 --------------------------
 -- Utils
 --------------------------

@@ -213,10 +213,10 @@ music.waveform = "piano"
 --music.play(PinkPanther)
 --music.play(GimmeGimmeGimme)
 
-canvas.text("Press s to stop", 10, 10)
-canvas.text("Press p to play", 10, 30)
-canvas.text("Press r to play", 10, 50)
-canvas.text("Press t to test", 10, 70)
+canvas.print("Press s to stop")
+canvas.print("Press p to play")
+canvas.print("Press r to play")
+canvas.print("Press t to test")
 
 while true do
     canvas.refresh()
