@@ -52,13 +52,18 @@ end
 -------------------------------------------------------------------------------
 
 function console:load()
-    --self.font = love.graphics.newFont(14)
-    --self.font = love.graphics.newFont("VeraMono.ttf", 14)
-    --self.font = love.graphics.newFont("Crisp.ttf", 14)
-    self.font = love.graphics.newFont("Terminus.ttf", 12)
+    self.font = love.graphics.newFont("Terminus.ttf", 16)
+    --self.font = love.graphics.newFont("Crisp.ttf", 16)
+    self.font:setFilter("nearest", "nearest")
+
     --self.font = love.graphics.newImageFont("love_font.png",  " abcdefghijklmnopqrstuvwxyz" ..
     --"ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.,!?-+/():;%&`'*#=[]\"", 1)
     --self.font:setLineHeight(10)
+
+    --self.font = love.graphics.newImageFont("my_font.png",  " abcdefghijklmnopqrstuvwxyz" ..
+    --"ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.,!?-+/():;%&`'*#=[]\"", 1)
+    --self.font:setLineHeight(10)
+
     self.charWidth  = self.font:getWidth("H")
     self.charHeight = self.font:getHeight("W")
     self.lineHeight = self.charHeight + self.lineSpacing
