@@ -6,7 +6,7 @@
 -------------------------------------------------------------------------------
 --
 -- Do not put this file in your project older
--- create new main.lua and put require("basic.main")
+-- create new main.lua and put require("basic.init")
 -- Have fun
 -------------------------------------------------------------------------------
 require "basic.utils"

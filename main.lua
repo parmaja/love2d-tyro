@@ -1,1 +1,1 @@
-require("basic.init")
+require("basic")
