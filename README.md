@@ -35,7 +35,7 @@ functions is easy, but drawing is my problem, i want to add circle, rectanlge, l
 For example from my mind
 
     sperite = object.sperite("sperite.png")
-    sperite:move(x, y)
+    sperite:put(x, y)
 
 I still work on it, do not use it.
 
@@ -43,16 +43,26 @@ I still work on it, do not use it.
 
 create new file "main.lua" in your projects folder with this lines
 
-	require("basic.main")
-	
-create your project file e.g "circles.lua", run love point to this folder with command argument of your lua file (circles.lua)
+    require("basic.main")
 
-	c:\lua\love\love . projects\circles.lua
-    c:\lua\love\lovec . projects\circles.lua
-	
-	
+copy "basic" folder into your project folder
+
+create your project file e.g "points.lua", run love point to this folder with command argument of your lua file (points.lua)
+
+c:\lua\love\love . points.lua
+
+for fast testing try to run one of demo files
+
+    c:\lua\love\love . demos\music.lua
+or
+    c:\lua\love\lovec . demos\points.lua
+
+if you inside demos folder use
+
+c:\lua\love\lovec .. points.lua
+    
 License
 =======
 
 The project is open-sourced software licensed under the [MIT license](http://opensource.org/licenses/MIT)
-	
+    

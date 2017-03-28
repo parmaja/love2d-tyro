@@ -52,7 +52,7 @@ c2.update = c1.update
 c2.color = {0,155,187}
 
 
-richard = objects.image("richard-say.png")
+richard = objects.image("demos/richard-say.png")
 richard.prepare = c1.prepare
 richard.oldupdate = c1.update
 

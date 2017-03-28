@@ -52,8 +52,7 @@ end
 -------------------------------------------------------------------------------
 
 function console:load()
-    self.font = love.graphics.newFont("Terminus.ttf", 16)
-    --self.font = love.graphics.newFont("Crisp.ttf", 16)
+    self.font = love.graphics.newFont("basic/Terminus.ttf", 16)
     self.font:setFilter("nearest", "nearest")
 
     --self.font = love.graphics.newImageFont("love_font.png",  " abcdefghijklmnopqrstuvwxyz" ..

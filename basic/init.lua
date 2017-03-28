@@ -12,4 +12,4 @@
 --In linux add it in ~/.profile or ~/.bashrc
 --	  export LUA_PATH="/home/user/lab/lua/lib/?.lua;/home/user/lab/lua/lib/?/init.lua"
 -------------------------------------------------------------------------------
-require("basic.utils")
+require("basic.core")

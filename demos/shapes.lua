@@ -1,7 +1,7 @@
 x, y = 0, 0
 c = 0
 
-humster = objects.image("hamster.png")
+humster = objects.image("demos/hamster.png")
 
 c1 = objects.circle(10, 10, 5)
 c1.color = colors.Green
