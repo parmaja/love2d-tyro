@@ -1,3 +1,6 @@
+print(love.filesystem.getWorkingDirectory())
+print(love.filesystem.getUserDirectory())
+
 x, y = 0, 0
 c = 0
 

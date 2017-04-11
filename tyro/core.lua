@@ -1,22 +1,22 @@
 -------------------------------------------------------------------------------
---  This file is part of the "Lua LOVE Basic"
+--  This file is part of the "Tyro"
 --
 --  @license   The MIT License (MIT) Included in this distribution
 --  @author    Zaher Dirkey <zaherdirkey at yahoo dot com>
 -------------------------------------------------------------------------------
 --
 -- Do not put this file in your project older
--- create new main.lua and put require("basic.init")
+-- create new main.lua and put require("tyro.init")
 -- Have fun
 -------------------------------------------------------------------------------
-require "basic.utils"
-require "basic.objects"
-require "basic.colors"
-require "basic.shaders"
+require "tyro.utils"
+require "tyro.objects"
+require "tyro.colors"
+require "tyro.shaders"
 
-require "basic.music"
-require "basic.spirits"
-require "basic.consoles"
+require "tyro.music"
+require "tyro.spirits"
+require "tyro.consoles"
 
 local debugging = false
 

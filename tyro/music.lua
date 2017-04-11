@@ -1,12 +1,12 @@
 -------------------------------------------------------------------------------
 --	Music and Audio lib
 --  https://en.wikipedia.org/wiki/Music_Macro_Language
---  This file is part of the "Lua LOVE Basic"
+--  This file is part of the "Tyro"
 --
 --  @license   The MIT License (MIT) Included in this distribution
 --  @author    Zaher Dirkey <zaherdirkey at yahoo dot com>
 -------------------------------------------------------------------------------
-require("basic.melody")
+require("tyro.melody")
 -------------------------------------------------
 -- source is an interface
 -- source:play()
@@ -67,7 +67,7 @@ function music.play(...)
         music.source = {
         }
 
-        local thread_body = [[require("basic.music")
+        local thread_body = [[require("tyro.music")
             require("love.sound")
             require("love.audio")]]..
             'music.waveform = "' .. music.waveform .. '"' ..

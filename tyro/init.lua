@@ -1,15 +1,15 @@
 -------------------------------------------------------------------------------
---  This file is part of the "Lua LOVE Basic"
+--  This file is part of the "Tyro"
 --
 --  @license   The MIT License (MIT) Included in this distribution
 --  @author    Zaher Dirkey <zaherdirkey at yahoo dot com>
 -------------------------------------------------------------------------------
 --USAGE:
---In Windows, Put "basic" folder in the same folder of lua.exe
---Or add to the environments, change the path to where basic folder exists
+--In Windows, Put "tyro" folder in the same folder of lua.exe
+--Or add to the environments, change the path to where tyro folder exists
 --
 --    LUA_PATH=!\?.lua;!\?\init.lua;d:\home\lua\lib\?.lua;d:\home\lua\lib\?\init.lua
 --In linux add it in ~/.profile or ~/.bashrc
 --	  export LUA_PATH="/home/user/lab/lua/lib/?.lua;/home/user/lab/lua/lib/?/init.lua"
 -------------------------------------------------------------------------------
-require("basic.core")
+require("tyro.core")

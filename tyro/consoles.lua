@@ -1,5 +1,5 @@
 -------------------------------------------------------------------------------
---  This file is part of the "Lua LOVE Basic"
+--  This file is part of the "Tyro"
 --
 --  @license   The MIT License (MIT) Included in this distribution
 --  @author    Zaher Dirkey <zaherdirkey at yahoo dot com>
@@ -52,7 +52,7 @@ end
 -------------------------------------------------------------------------------
 
 function console:load()
-    self.font = love.graphics.newFont("basic/Terminus.ttf", 16)
+    self.font = love.graphics.newFont("tyro/Terminus.ttf", 16)
     self.font:setFilter("nearest", "nearest")
 
     --self.font = love.graphics.newImageFont("love_font.png",  " abcdefghijklmnopqrstuvwxyz" ..

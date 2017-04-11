@@ -2,7 +2,7 @@
 --	Music Macro Language
 --  https://en.wikipedia.org/wiki/Music_Macro_Language
 --
---  This file is used part of the "Lua LOVE Basic"
+--  This file is used part of the "Tyro"
 --  @license   The MIT License (MIT) Included in this distribution
 --  @author    Zaher Dirkey <zaherdirkey at yahoo dot com>
 -------------------------------------------------------------------------------

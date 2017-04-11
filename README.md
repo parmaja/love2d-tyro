@@ -1,4 +1,4 @@
-# Lua LÖVE BASIC
+# Tyro, Lua and LÖVE2D for beginners
 
 Small Lua and Love2D module to add more simple functions make it easy for kids and beginners.
 
@@ -43,9 +43,9 @@ I still work on it, do not use it.
 
 create new file "main.lua" in your projects folder with this lines
 
-    require("basic.main")
+    require("tyro.main")
 
-copy "basic" folder into your project folder
+copy "tyro" folder into your project folder
 
 create your project file e.g "points.lua", run love point to this folder with command argument of your lua file (points.lua)
 
