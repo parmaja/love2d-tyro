@@ -38,6 +38,7 @@ if not program_file then
 	end
 end
 
+--check https://love2d.org/wiki/love.filesystem.load
 program = assert(loadfile(program_file))
 
 if debugging then
@@ -121,6 +122,7 @@ function love.threaderror(thread, errorstr)
 end
 
 function love.load()
+	love.filesystem.setIdentity("tyro") --look below
 	canvas.buffer = love.graphics.newCanvas()
 	canvas.lockbuffer = love.graphics.newCanvas()
 	canvas.width = canvas.buffer:getWidth()
@@ -140,6 +142,7 @@ function love.load()
 
 	if program then
 		love.window.setTitle(program_file)
+        --love.filesystem.setIdentity(program_file)
 		co = coroutine.create(program)
 	end
 end
