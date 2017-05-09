@@ -12,6 +12,6 @@ function star:draw()
     for i = 0 , 10 do
         canvas.circle(self.x + math.random(-5, 5), self.y + math.random(-5, 5), self.size)
     end
-    canvas.color(colors.Orange, 100)
+    canvas.color(colors.Orange, 70)
     canvas.circle(self.x, self.y, self.size)
 end

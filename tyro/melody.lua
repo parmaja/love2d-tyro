@@ -146,6 +146,9 @@ end
 --      https://stackoverflow.com/questions/11355353/how-can-i-convert-qbasic-play-commands-to-something-more-contemporary
 --ref:  http://www.phy.mtu.edu/~suits/notefreqs.html
 -- 		http://wiki.mabinogiworld.com/view/User:LexisMikaya/MML_101_Guide
+--ref:	The calculation of freq: http://www.phy.mtu.edu/~suits/NoteFreqCalcs.html
+-- Between C4 and C4# is one step so C4 freq * (2^1/12) = 262 * 1.059463
+-- Between C4 and D4 is 2 steps = so C4 freq * (2^1/12) = 262 * 1.059463 ^ 2
 -------------------------------------------------------------------------------
 --ref: http://www.qb64.net/wiki/index.php?title=SOUND
 --[[					The Seven Music Octaves
@@ -201,7 +204,7 @@ local scores = {
 
 local baseNumber = 2 ^ (1/12)
 local baseOctave = 4
-local baseNoteC4 = 261.63
+local baseNoteC4 = 261.63 -- yes i am using C4 not A4
 local baseNote = 39
 local baseLength = 4
 local baseTempo  = 60
@@ -605,6 +608,8 @@ function waveform_ss(index, samples, pitch, rate, connected)
     sample = (sample - a) / 2 --<-- 2 is wrong
     return sample
 end
+
+--http://www.phy.mtu.edu/~suits/clarinet.html
 
 melody.addWaveform("normal", waveform_sin)
 melody.addWaveform("sin", waveform_sin)
